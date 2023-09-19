@@ -1,0 +1,59 @@
+/* src/styles/tailwind.css */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+
+
+
+:root {
+  font-family: Poppins, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+
+
+h1{
+  font-weight: bold;
+  font-size: 2rem;
+}
+
+p{
+  font-weight: thin;
+  font-size: 1rem;
+}
+
+a{
+  font-size: 1rem;
+  color: #40B2B7;
+}
+
+
+a:hover{
+  color: #2a6a6c;
+}
+
+
+#remember:checked + label::before {
+  font-size: 1.2rem;
+  color: #6EE7B7 !important; /* Light blue color */
+}
+
+#remember:checked {
+  background-color: transparent !important;
+}
