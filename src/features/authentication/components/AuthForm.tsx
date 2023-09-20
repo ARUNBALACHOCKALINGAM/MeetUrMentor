@@ -46,12 +46,13 @@ export const AuthForm = (props: { type: string,userType: string }) => {
       ) : (
         ""
       )}
-      <RememberSection />
+       {props.type === "Signin" ? <RememberSection /> : ''}
       <Button
-        buttonText="Login"
-        additionalStyling="bg-orangejuice text-white shadow-lg lg:p-4"
+        buttonText={props.type === "Signin" ? "Sign in" : "Continue"}
+        additionalStyling="bg-orangejuice text-white shadow-lg drop-shadow-md shadow-orangejuice lg:p-4 mt-12"
       />
-      <NotRegisteredYet />
+      {props.type === "Signin" ? <NotRegisteredYet /> : <p className="text-xs text-center text-gray-400 mt-8 sm:text-sm">By joining I agree to the terms and conditions</p>}
     </div>
   );
 };
+ 
