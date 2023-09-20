@@ -9,7 +9,7 @@ import { NotRegisteredYet } from "../../../../components/form/NotRegisteredYet";
 
 export const SignInForm = () => {
   return (
-    <div className="mt-24 xl:w-9/12 xl:mt-36 lg:mt-28 md:w-9/12 w-11/12 mx-auto">
+    <div className="mt-24 xl:w-9/12 xl:mt-28 lg:mt-16 md:w-9/12 w-11/12 mx-auto md:mt-0">
       <Welcome userType="Mentor" type="Login" />
       <div className="flex justify-between w-full">
         <Button
@@ -23,7 +23,11 @@ export const SignInForm = () => {
           additionalStyling="border-2 bg-black custom-width-45 text-white ml-2"
         />
       </div>
-
+      <div className="flex items-center mt-8">
+        <div className="border-b border-gray-300 flex-grow mr-4"></div>
+        <div className="text-gray-500">or</div>
+        <div className="border-b border-gray-300 flex-grow ml-4"></div>
+      </div>
       <Input
         labelText="Email"
         placeholder="Email"

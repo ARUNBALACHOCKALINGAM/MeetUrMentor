@@ -8,7 +8,7 @@ export const Button = (buttonProps: ButtonProps) => {
   return (
     <button className={`flex items-center justify-center mt-4 p-2 w-full rounded-md shadow-sm ${buttonProps.additionalStyling}`}>
       {buttonProps.Icon}
-      <p className={buttonProps.Icon ? "hidden md:text-sm ml-2 md:block" : "mx-auto"}>{buttonProps.buttonText}</p>
+      <p className={buttonProps.Icon ? "hidden md:text-sm ml-2 md:hidden lg:block" : "mx-auto"}>{buttonProps.buttonText}</p>
     </button>
   );
 };
