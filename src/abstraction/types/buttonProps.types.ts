@@ -1,5 +1,5 @@
 export interface ButtonProps{
     Icon?: JSX.Element;
-    color?: string;
+    additionalStyling?: string;
     buttonText: string;
 }
