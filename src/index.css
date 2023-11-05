@@ -9,6 +9,7 @@
 :root {
   font-family: Poppins, sans-serif;
   line-height: 1.5;
+  width:100%;
   font-weight: 400;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -48,11 +49,4 @@ a:hover{
 }
 
 
-#remember:checked + label::before {
-  font-size: 1.2rem;
-  color: #6EE7B7 !important; /* Light blue color */
-}
 
-#remember:checked {
-  background-color: transparent !important;
-}
