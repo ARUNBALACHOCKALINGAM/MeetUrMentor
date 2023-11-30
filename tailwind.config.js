@@ -8,6 +8,10 @@ export default {
     extend: {
       colors: {
         orangejuice: '#F4694C',
+        bluebg: '#0d1324',
+        secondarycolor:'#0f172a',
+        bordercolor: '#1c2739',
+        textColor: '#A6B9D0'
       },
     },
   },

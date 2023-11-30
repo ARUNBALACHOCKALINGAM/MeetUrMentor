@@ -1,6 +1,13 @@
-import { XMarkIcon } from '@heroicons/react/20/solid'
 
-export default function Banner({formHeading}) {
+
+type BannerProps = {
+  title: string; // Assuming type is a string, adjust accordingly
+};
+
+
+export const Banner: React.FC<BannerProps> = ({title}) => {
+
+  console.log(typeof title);
   return (
     <div className="relative w-11/12 mx-auto isolate flex flex-row-reverse text-left items-center overflow-hidden bg-amber-400/50 p-4 rounded-t-xl mt-8 border-b-2 border-black sm:px-3.5 sm:before:flex-1 md:w-8/12 lg:w-1/2">
       <div
@@ -28,7 +35,7 @@ export default function Banner({formHeading}) {
         />
       </div>
       <div className="flex flex-col flex-wrap p-4 text-left text-gray-800 font-semibold">
-        <h1>{formHeading.title}</h1>
+        <h1>{title}</h1>
         <p className="text-gray-900 font-thin">Fill in your details</p>
       </div>
     </div>

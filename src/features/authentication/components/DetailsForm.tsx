@@ -1,14 +1,40 @@
 import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-export const DetailsForm = ({ type }) => {
 
+type DetailsFormProps = {
+  type: string; // Assuming type is a string, adjust accordingly
+};
+
+export const DetailsForm:  React.FC<DetailsFormProps> = ({ type }) => {
+
+  console.log(typeof type);
+  // states for each input
+  const [username, setUsername] = useState('');
+  const [about, setAbout] = useState('');
+  const [company, setCompany] = useState('');
+  const [role, setRole] = useState('');
+  const [highestQualification, setHighestQualification] = useState('');
+  const [university, setUniversity] = useState('');
+  const [cgpa, setCGPA] = useState('');
+  const [linkedIn, setLinkedIn] = useState('');
+  const [github, setGithub] = useState('');
+  const [leetcode, setLeetcode] = useState('');
+  const [codechef, setCodechef] = useState('');
+  const [portfolio, setPortfolio] = useState('');
+  const [coverphoto,setCoverPhoto] = useState('');
+
+  const navigate = useNavigate();
+
+  const handleSave = () => {
+    navigate('/mentortrack')
+  }
 
   return (
     <form>
       <div className="w-11/12 mx-auto space-y-12 text-left p-2 shadow-sm sm:w-full md:w-8/12 lg:w-1/2">
         <div className="border-b border-gray-900/10 pb-12 mt-12 ">
-    
-
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
             <div className="sm:col-span-4">
               <label
@@ -27,6 +53,8 @@ export const DetailsForm = ({ type }) => {
                     name="username"
                     id="username"
                     autoComplete="username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                     className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                     placeholder="janesmith"
                   />
@@ -38,6 +66,7 @@ export const DetailsForm = ({ type }) => {
               <label
                 htmlFor="about"
                 className="block text-sm font-medium leading-6 text-gray-900"
+                
               >
                 About
               </label>
@@ -48,6 +77,8 @@ export const DetailsForm = ({ type }) => {
                   rows={3}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   defaultValue={""}
+                  value={about}
+                onChange={(e) => setAbout(e.target.value)}
                 />
               </div>
               <p className="mt-3 text-sm leading-6 text-gray-600">
@@ -100,6 +131,8 @@ export const DetailsForm = ({ type }) => {
                         name="file-upload"
                         type="file"
                         className="sr-only"
+                        value={coverphoto}
+                        onChange={(e) => setCoverPhoto(e.target.value)}
                       />
                     </label>
                     <p className="pl-1">or drag and drop</p>
@@ -115,58 +148,57 @@ export const DetailsForm = ({ type }) => {
 
         <div className="border-b border-gray-900/10 pb-12">
           <h2 className="text-base font-semibold leading-7 text-gray-900">
-            Education {type==='student' ? '' : 'and Work'}
+            Education {type === "student" ? "" : "and Work"}
           </h2>
           <p className="mt-1 text-sm leading-6 text-gray-600">
             Enter your education and company details here
           </p>
 
-
-          
-
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-          {type === 'student' ? '' : 
-          <>
-          <div className="sm:col-span-3">
-           
-           <label
-             htmlFor="first-name"
-             className="block text-sm font-medium leading-6 text-gray-900"
-           >
-              Company
-           </label>
-           <div className="mt-2">
-             <input
-               type="text"
-               name="first-name"
-               id="first-name"
-               autoComplete="given-name"
-               className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-             />
-           </div>
-         </div>
-            <div className="sm:col-span-3">
-            <label
-              htmlFor="last-name"
-              className="block text-sm font-medium leading-6 text-gray-900"
-            >
-              Role
-            </label>
-            <div className="mt-2">
-              <input
-                type="text"
-                name="last-name"
-                id="last-name"
-                autoComplete="family-name"
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              />
-            </div>
-          </div>
-          </>
-         }
-
-           
-             
+            {type === "student" ? (
+              ""
+            ) : (
+              <>
+                <div className="sm:col-span-3">
+                  <label
+                    htmlFor="first-name"
+                    className="block text-sm font-medium leading-6 text-gray-900"
+                  >
+                    Company
+                  </label>
+                  <div className="mt-2">
+                    <input
+                      type="text"
+                      name="first-name"
+                      id="first-name"
+                      autoComplete="given-name"
+                      value={company}
+                      onChange={(e) => setCompany(e.target.value)}
+                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    />
+                  </div>
+                </div>
+                <div className="sm:col-span-3">
+                  <label
+                    htmlFor="last-name"
+                    className="block text-sm font-medium leading-6 text-gray-900"
+                  >
+                    Role
+                  </label>
+                  <div className="mt-2">
+                    <input
+                      type="text"
+                      name="last-name"
+                      id="last-name"
+                      autoComplete="family-name"
+                      value={role}
+                      onChange={(e) => setRole(e.target.value)}
+                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    />
+                  </div>
+                </div>
+              </>
+            )}
 
             <div className="sm:col-span-2 sm:col-start-1">
               <label
@@ -181,6 +213,8 @@ export const DetailsForm = ({ type }) => {
                   name="city"
                   id="city"
                   autoComplete="address-level2"
+                  value={highestQualification}
+                  onChange={(e) => setHighestQualification(e.target.value)}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
@@ -199,6 +233,8 @@ export const DetailsForm = ({ type }) => {
                   name="region"
                   id="region"
                   autoComplete="address-level1"
+                  value={university}
+                  onChange={(e) => setUniversity(e.target.value)}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
@@ -217,6 +253,8 @@ export const DetailsForm = ({ type }) => {
                   name="postal-code"
                   id="postal-code"
                   autoComplete="postal-code"
+                  value={cgpa}
+                  onChange={(e) => setCGPA(e.target.value)}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
@@ -238,7 +276,7 @@ export const DetailsForm = ({ type }) => {
                 htmlFor="first-name"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                 LinkedIn
+                LinkedIn
               </label>
               <div className="mt-2">
                 <input
@@ -246,6 +284,8 @@ export const DetailsForm = ({ type }) => {
                   name="first-name"
                   id="first-name"
                   autoComplete="given-name"
+                  value={linkedIn}
+                  onChange={(e) => setLinkedIn(e.target.value)}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
@@ -264,13 +304,12 @@ export const DetailsForm = ({ type }) => {
                   name="last-name"
                   id="last-name"
                   autoComplete="family-name"
+                  value={github}
+                  onChange={(e) => setGithub(e.target.value)}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
-
-           
-             
 
             <div className="sm:col-span-2 sm:col-start-1">
               <label
@@ -285,6 +324,8 @@ export const DetailsForm = ({ type }) => {
                   name="city"
                   id="city"
                   autoComplete="address-level2"
+                  value={leetcode}
+                  onChange={(e) => setLeetcode(e.target.value)}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
@@ -303,6 +344,8 @@ export const DetailsForm = ({ type }) => {
                   name="region"
                   id="region"
                   autoComplete="address-level1"
+                  value={codechef}
+                  onChange={(e) => setCodechef(e.target.value)}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
@@ -321,14 +364,14 @@ export const DetailsForm = ({ type }) => {
                   name="postal-code"
                   id="postal-code"
                   autoComplete="postal-code"
+                  value={portfolio}
+                  onChange={(e) => setPortfolio(e.target.value)}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
           </div>
         </div>
-
-      
       </div>
 
       <div className="w-11/12 mx-auto mt-6 flex items-center justify-end gap-x-6 pb-10 md:w-8/12 lg:w-1/2">
@@ -340,6 +383,7 @@ export const DetailsForm = ({ type }) => {
         </button>
         <button
           type="submit"
+          onClick={handleSave}
           className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
           Save

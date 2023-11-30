@@ -13,6 +13,7 @@ import { Button } from "../../../components/ui/Button";
 import { Welcome } from "../../../components/ui/Welcome";
 import { RememberSection } from "../../../components/form/RememberSection";
 import { NotRegisteredYet } from "../../../components/form/NotRegisteredYet";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -24,6 +25,8 @@ export const AuthForm = (props: { type: string; userType: string }) => {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
+  const navigate = useNavigate();
+
   
   const handleMentorSignIn = () => {
     console.log("mentor sign in API call happens here",email,password);
@@ -31,6 +34,7 @@ export const AuthForm = (props: { type: string; userType: string }) => {
 
   const handleMentorSignUp = () => {
     console.log("mentor sign up API call happens here");
+    navigate('/mentordetails');
   };
 
   const handleStundentSignIn = () => {
@@ -39,6 +43,7 @@ export const AuthForm = (props: { type: string; userType: string }) => {
 
   const handleStundentSignUp = () => {
     console.log("student sign up API call happens here");
+    
   };
 
   function handleGoogleSignin(): void {

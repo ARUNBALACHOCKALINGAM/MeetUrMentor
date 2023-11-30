@@ -5,8 +5,15 @@ import { StudentSignUp } from "./StudentSignUp";
 import { StudentSignIn } from "./StudentSignIn";
 import MentorDetails from "./MentorDetails";
 import StudentDetails from "./StudentDetails";
+import StudentTrack from './StudentTrack';
+import MentorTrack from "./MentorTrack";
 
 const pagesData: routerType[] = [
+  {
+    path: "/",
+    element: <MentorSignIn />,
+    title: "mentorsignin",
+  },
   {
     path: "mentorsignin",
     element: <MentorSignIn />,
@@ -36,6 +43,16 @@ const pagesData: routerType[] = [
     path: "studentdetails",
     element: <StudentDetails />,
     title: "studentdetailsform",
+  },
+  {
+    path: "studenttrack",
+    element: <StudentTrack />,
+    title: "studenttrack",
+  },
+  {
+    path: "mentortrack",
+    element: <MentorTrack />,
+    title: "mentortrack",
   },
 ];
 

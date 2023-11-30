@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export const Welcome = (props: { type: string; userType: string }) => {
   return (
     <div>
@@ -10,7 +12,7 @@ export const Welcome = (props: { type: string; userType: string }) => {
         </p>
       ) : (
         <p className="text-xs text-left text-gray-400 mt-2 sm:text-sm">
-          Already have an account? <a>Login</a>
+          Already have an account? <Link to='/mentorsignin'>Login</Link>
         </p>
       )}
     </div>
