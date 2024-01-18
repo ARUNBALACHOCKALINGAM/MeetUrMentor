@@ -1,24 +1,40 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  score: 0,
+  mentor: {}
 };
 
-const scoreSlice = createSlice({
-  name: "score",
+const mentorSlice = createSlice({
+  name: "mentor",
   initialState,
   reducers: {
-    increaseScore: (state) => {
-      state.score += 1;
+    setMentorLoginInfo: (state,action) => {
+      state.mentor = {
+        ...state.mentor,
+       ...action.payload
+      };
     },
-    reduceScore: (state) => {
-      console.log(state);
-      if (state.score > 0) {
-        state.score -= 1;
+    setMentorDetails: (state,action) => {
+        state.mentor = {
+            ...state.mentor,
+            ...action.payload
+        }
+    },
+    setMentorPrompts: (state,action) => {
+      state.mentor = {
+          ...state.mentor,
+          ...action.payload
       }
-    },
+  },
+    setMentorTrack: (state,action) => {
+        state.mentor = {
+            ...state.mentor,
+            track: action.payload.track
+        }
+    }
+
   },
 });
 
-export const { increaseScore, reduceScore } = scoreSlice.actions;
-export default scoreSlice.reducer;
+export const { setMentorLoginInfo,setMentorTrack,setMentorPrompts,setMentorDetails } = mentorSlice.actions;
+export default mentorSlice.reducer;

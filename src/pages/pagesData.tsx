@@ -3,10 +3,11 @@ import { MentorSignIn } from "./MentorSignIn";
 import { MentorSignUp } from "./MentorSignUp";
 import { StudentSignUp } from "./StudentSignUp";
 import { StudentSignIn } from "./StudentSignIn";
+import StudentPrompts from "./StudentPrompts";
+import MentorPrompts from "./MentorPrompts";
 import MentorDetails from "./MentorDetails";
 import StudentDetails from "./StudentDetails";
-import StudentTrack from './StudentTrack';
-import MentorTrack from "./MentorTrack";
+import Track from "./Track";
 
 const pagesData: routerType[] = [
   {
@@ -46,13 +47,23 @@ const pagesData: routerType[] = [
   },
   {
     path: "studenttrack",
-    element: <StudentTrack />,
+    element: <Track />,
     title: "studenttrack",
   },
   {
     path: "mentortrack",
-    element: <MentorTrack />,
+    element: <Track />,
     title: "mentortrack",
+  },
+  {
+    path: "studentprompts",
+    element: <StudentPrompts />,
+    title: "studentprompts",
+  },
+  {
+    path: "mentorprompts",
+    element: <MentorPrompts />,
+    title: "mentorprompts",
   },
 ];
 

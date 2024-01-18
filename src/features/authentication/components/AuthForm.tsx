@@ -1,5 +1,6 @@
 // INBUILT IMPORTS
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 
 // EXTERNAL IMPORTS
 import { FaGithubAlt } from "react-icons/fa";
@@ -14,36 +15,48 @@ import { Welcome } from "../../../components/ui/Welcome";
 import { RememberSection } from "../../../components/form/RememberSection";
 import { NotRegisteredYet } from "../../../components/form/NotRegisteredYet";
 import { useNavigate } from "react-router-dom";
+import { setStudentLoginInfo } from "../../../data/store/student";
+import { setMentorLoginInfo } from "../../../data/store/mentor";
 
 
 
 
 export const AuthForm = (props: { type: string; userType: string }) => {
 
+  // state for our form data
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+
+  const dispatch = useDispatch();
+  //const mentor = useSelector((state: {mentor: {mentor: unknown}}) => state.mentor);
 
   const navigate = useNavigate();
 
   
   const handleMentorSignIn = () => {
     console.log("mentor sign in API call happens here",email,password);
+    dispatch(setMentorLoginInfo({email:email}))
   };
 
   const handleMentorSignUp = () => {
     console.log("mentor sign up API call happens here");
+    dispatch(setMentorLoginInfo({email:email}))
     navigate('/mentordetails');
   };
 
   const handleStundentSignIn = () => {
     console.log("student sign in API call happens here");
+    dispatch(setStudentLoginInfo({email:email}))
+    navigate('/studentdetails');
+
   };
 
   const handleStundentSignUp = () => {
     console.log("student sign up API call happens here");
-    
+    dispatch(setStudentLoginInfo({email:email}));
+    navigate('/studentdetails');
   };
 
   function handleGoogleSignin(): void {
