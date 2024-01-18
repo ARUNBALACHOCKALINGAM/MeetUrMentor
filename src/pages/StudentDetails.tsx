@@ -1,15 +1,14 @@
-import { DetailsForm } from "../features/authentication/components/DetailsForm";
-import Banner from "../layouts/Banner";
+import { DetailsForm } from "../features/authentication/details/DetailsForm";
+//import Header from "../layouts/Header";
+import {Banner} from "../layouts/Banner";
 
-const MentorDetails = () => {
-  
-
+const StudentDetails = () => {
   return (
-    <div className="w-screen mx-auto text-center">
+    <div className="w-screen mx-auto text-center bg-bluebg ">
       <Banner title="Sign up as a student"/>
       <DetailsForm type='student'/>
     </div>
   );
 };
 
-export default MentorDetails;
+export default StudentDetails;
