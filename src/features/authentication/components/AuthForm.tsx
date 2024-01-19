@@ -76,7 +76,7 @@ export const AuthForm = (props: { type: string; userType: string }) => {
    }
 
   return (
-    <div className="mt-24 xl:w-9/12 xl:mt-28 lg:mt-12 md:w-9/12 w-11/12 mx-auto md:mt-0">
+    <div className="text-white xl:w-9/12 xl:mt-28 lg:mt-12 md:w-9/12 w-11/12 mx-auto md:mt-0">
       <Welcome userType={props.userType} type={props.type} />
       <div className="flex justify-between w-full">
         <Button
@@ -87,7 +87,7 @@ export const AuthForm = (props: { type: string; userType: string }) => {
               ? "Sign in with Google"
               : "Sign up with Google"
           }
-          additionalStyling="border-2 custom-width-45 mr-2"
+          additionalStyling="flex rounded-md bg-bluefill shadow-sm ring-1 ring-inset ring-gray-600 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md"
         />
         <Button
           Icon={<FaGithubAlt className="w-8 sm:w-5" />}
@@ -97,13 +97,13 @@ export const AuthForm = (props: { type: string; userType: string }) => {
               ? "Sign in with Github"
               : "Sign up with Github"
           }
-          additionalStyling="border-2 bg-black custom-width-45 text-white ml-2"
+          additionalStyling="flex rounded-md bg-bluefill shadow-sm ring-1 ring-inset ring-gray-600 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md ml-2"
         />
       </div>
       <div className="flex items-center mt-8">
-        <div className="border-b border-gray-300 flex-grow mr-4"></div>
-        <div className="text-gray-500">or</div>
-        <div className="border-b border-gray-300 flex-grow ml-4"></div>
+        <div className="border-b border-gray-600 flex-grow mr-4"></div>
+        <div className="text-gray-400">or</div>
+        <div className="border-b border-gray-600 flex-grow ml-4"></div>
       </div>
       <Input
         labelText="Email"
@@ -153,12 +153,12 @@ export const AuthForm = (props: { type: string; userType: string }) => {
             ? handleMentorSignIn
             : handleMentorSignUp
         }
-        additionalStyling="bg-orangejuice text-white shadow-lg drop-shadow-md shadow-orangejuice lg:p-4 mt-12"
+        additionalStyling={`bg-purple-600 text-white shadow-lg drop-shadow-md shadow-purple-600 lg:p-4 ${props.type === "Signin" ? "mt-12" : "mt-16"}`}
       />
       {props.type === "Signin" ? (
         <NotRegisteredYet />
       ) : (
-        <p className="text-xs text-center text-gray-400 mt-8 sm:text-sm">
+        <p className="text-xs text-right text-gray-400 mt-6 sm:text-sm">
           By joining I agree to the terms and conditions
         </p>
       )}
