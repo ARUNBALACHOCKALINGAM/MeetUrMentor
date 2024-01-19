@@ -1,4 +1,5 @@
-import { DetailsForm } from "../features/authentication/details/DetailsForm";
+
+import { DetailsForm } from "../features/details/DetailsForm";
 import {Banner} from "../layouts/Banner";
 
 const MentorDetails = () => {

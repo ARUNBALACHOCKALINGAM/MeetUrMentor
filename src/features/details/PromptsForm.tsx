@@ -1,6 +1,6 @@
 // import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setStudentDetails } from "../../data/store/student";
 import { setMentorDetails } from "../../data/store/mentor";
@@ -12,17 +12,25 @@ type PromptsFormProps = {
 export const PromptsForm: React.FC<PromptsFormProps> = ({ type }) => {
   // states for each input
   //const [username, setUsername] = useState("");
-  const [about, setAbout] = useState("");
+  const [answerOne, setAnswerOne] = useState("");
+  const [answerTwo, setAnswerTwo] = useState("");
+  const [answerThree, setanswerThree] = useState("");
   
 
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
 
+
+  const trackDetails = useSelector((state: any) => type === "mentor" ? state.mentor.track : state.student.track);
+  
+
   const handleStudentSave = () => {
     dispatch(
       setStudentDetails({
-        about: about
+        answerOne: answerOne,
+        answerTwo: answerTwo,
+        answerThree: answerThree
       })
     );
     navigate("/");
@@ -31,7 +39,9 @@ export const PromptsForm: React.FC<PromptsFormProps> = ({ type }) => {
   const handleMentorSave = () => {
     dispatch(
       setMentorDetails({
-        about: about
+        answerOne: answerOne,
+        answerTwo: answerTwo,
+        answerThree: answerThree
       })
     );
     navigate("/");
@@ -45,7 +55,7 @@ export const PromptsForm: React.FC<PromptsFormProps> = ({ type }) => {
                 htmlFor="about"
                 className="block text-sm font-medium leading-6 text-white"
               >
-                {type === "mentor" ? `I’d like to help with this because` : `I'd like to learn this because`}
+                {type === "mentor" ? `Why do you want to teach ${trackDetails}?` : `Why do you want to learn ${trackDetails} ?`}
               </label>
               <div className="mt-2 bg-bluefill">
                 <textarea
@@ -54,8 +64,8 @@ export const PromptsForm: React.FC<PromptsFormProps> = ({ type }) => {
                   rows={3}
                   className="block w-full rounded-md bg-transparent border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   defaultValue={""}
-                  value={about}
-                  onChange={(e) => setAbout(e.target.value)}
+                  value={answerOne}
+                  onChange={(e) => setAnswerOne(e.target.value)}
                 />
               </div>
             </div>
@@ -64,7 +74,7 @@ export const PromptsForm: React.FC<PromptsFormProps> = ({ type }) => {
                 htmlFor="about"
                 className="block text-sm font-medium leading-6 text-white"
               >
-                {type === "mentor" ? `I feel like I’m good at  *track name* because` : `I feel like I can learn this because` }
+                {type === "mentor" ? `I feel like I’m good at ${trackDetails} because` : `I feel like I can learn ${trackDetails} because` }
               </label>
               <div className="mt-2 bg-bluefill">
                 <textarea
@@ -73,8 +83,8 @@ export const PromptsForm: React.FC<PromptsFormProps> = ({ type }) => {
                   rows={3}
                   className="block w-full rounded-md bg-transparent border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   defaultValue={""}
-                  value={about}
-                  onChange={(e) => setAbout(e.target.value)}
+                  value={answerTwo}
+                  onChange={(e) => setAnswerTwo(e.target.value)}
                 />
               </div>
             </div>
@@ -83,7 +93,7 @@ export const PromptsForm: React.FC<PromptsFormProps> = ({ type }) => {
                 htmlFor="about"
                 className="block text-sm font-medium leading-6 text-white"
               >
-                {type === "mentor" ? `I feel like I’m good at *Framework* because` : `Why do you want to learn this?` } 
+                {type === "mentor" ? `What is your teaching method?` : `What kind of learning method you follow?` } 
               </label>
               <div className="mt-2 bg-bluefill">
                 <textarea
@@ -92,8 +102,8 @@ export const PromptsForm: React.FC<PromptsFormProps> = ({ type }) => {
                   rows={3}
                   className="block w-full rounded-md bg-transparent border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   defaultValue={""}
-                  value={about}
-                  onChange={(e) => setAbout(e.target.value)}
+                  value={answerThree}
+                  onChange={(e) => setanswerThree(e.target.value)}
                 />
               </div>
             </div>
@@ -159,8 +169,9 @@ export const PromptsForm: React.FC<PromptsFormProps> = ({ type }) => {
           </div>
    
 
-      <div className="w-11/12 mx-auto mt-12 flex items-center justify-end gap-x-6 md:w-8/12 lg:w-1/2">
+      <div className="w-11/12 mx-auto mt-12 pb-12 flex items-center justify-end gap-x-6 md:w-8/12 lg:w-1/2">
         <button
+          onClick={()=>navigate('/')}
           type="button"
           className="text-sm font-semibold leading-6 text-white"
         >

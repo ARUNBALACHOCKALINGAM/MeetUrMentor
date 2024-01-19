@@ -4,7 +4,7 @@ import {Banner} from "../layouts/Banner";
 
 const MentorPrompts = () => {
   return (
-    <div className="w-screen h-screen mx-auto text-center bg-bluebg ">
+    <div className="w-screen mx-auto text-center bg-bluebg">
       <Banner title="Become a mentor"/>
       <PromptsForm type='mentor'/>
     </div>

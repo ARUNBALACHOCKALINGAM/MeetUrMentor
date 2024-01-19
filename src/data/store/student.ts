@@ -1,7 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  student: {}
+  email: "",
+  username: "",
+  about: "",
+  highestQualification: "",
+  university: "",
+  cgpa: "",
+  linkedIn: "",
+  github: "",
+  leetcode: "",
+  codechef: "",
+  portfolio: "",
+  track: ""
 };
 
 const studentSlice = createSlice({
@@ -9,28 +20,28 @@ const studentSlice = createSlice({
   initialState,
   reducers: {
     setStudentLoginInfo: (state,action) => {
-      state.student = {
-        ...state.student,
-       ...action.payload
+      return {
+        ...state,
+        ...action.payload
       };
     },
     setStudentDetails: (state,action) => {
-        state.student = {
-            ...state.student,
+        return {
+            ...state,
             ...action.payload
-        }
+        };
     },
     setStudentPrompts: (state,action) => {
-      state.student = {
-          ...state.student,
+      return {
+          ...state,
           ...action.payload
-      }
+      };
   },
     setStudentTrack: (state,action) => {
-        state.student = {
-            ...state.student,
+        return {
+            ...state,
             track: action.payload.track
-        }
+        };
     }
 
   },

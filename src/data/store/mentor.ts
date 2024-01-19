@@ -1,7 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  mentor: {}
+  email: "",
+  username: "",
+  about: "",
+  highestQualification: "",
+  university: "",
+  cgpa: "",
+  linkedIn: "",
+  github: "",
+  leetcode: "",
+  codechef: "",
+  portfolio: "",
+  company: "",
+  role: "",
+  track: ""
 };
 
 const mentorSlice = createSlice({
@@ -9,28 +22,28 @@ const mentorSlice = createSlice({
   initialState,
   reducers: {
     setMentorLoginInfo: (state,action) => {
-      state.mentor = {
-        ...state.mentor,
-       ...action.payload
+      return {
+        ...state,
+        ...action.payload
       };
     },
     setMentorDetails: (state,action) => {
-        state.mentor = {
-            ...state.mentor,
+        return {
+            ...state,
             ...action.payload
-        }
+        };
     },
     setMentorPrompts: (state,action) => {
-      state.mentor = {
-          ...state.mentor,
+      return {
+          ...state,
           ...action.payload
-      }
+      };
   },
     setMentorTrack: (state,action) => {
-        state.mentor = {
-            ...state.mentor,
+        return {
+            ...state,
             track: action.payload.track
-        }
+        };
     }
 
   },
