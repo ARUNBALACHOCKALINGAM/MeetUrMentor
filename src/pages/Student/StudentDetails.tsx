@@ -1,7 +1,7 @@
 
 //import Header from "../layouts/Header";
-import { DetailsForm } from "../features/details/DetailsForm";
-import {Banner} from "../layouts/Banner";
+import { DetailsForm } from "../../features/details/DetailsForm";
+import {Banner} from "../../layouts/Banner";
 
 const StudentDetails = () => {
   return (

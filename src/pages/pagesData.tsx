@@ -1,12 +1,13 @@
 import { routerType } from "../abstraction/types/router.types";
-import { MentorSignIn } from "./MentorSignIn";
-import { MentorSignUp } from "./MentorSignUp";
-import { StudentSignUp } from "./StudentSignUp";
-import { StudentSignIn } from "./StudentSignIn";
-import StudentPrompts from "./StudentPrompts";
-import MentorPrompts from "./MentorPrompts";
-import MentorDetails from "./MentorDetails";
-import StudentDetails from "./StudentDetails";
+import { MentorSignIn } from "./Mentor/MentorSignIn";
+import { MentorSignUp } from "./Mentor/MentorSignUp";
+import { StudentSignUp } from "./Student/StudentSignUp";
+import { StudentSignIn } from "./Student/StudentSignIn";
+import StudentPrompts from "./Student/StudentPrompts";
+import MentorPrompts from "./Mentor/MentorPrompts";
+import MentorDetails from "./Mentor/MentorDetails";
+import MentorHome from "./Mentor/MentorHome";
+import StudentDetails from "./Student/StudentDetails";
 import Track from "./Track";
 
 const pagesData: routerType[] = [
@@ -24,6 +25,11 @@ const pagesData: routerType[] = [
     path: "mentorsignup",
     element: <MentorSignUp />,
     title: "mentorsignup",
+  },
+  {
+    path: "mentorhome",
+    element: <MentorHome />,
+    title: "mentorhome",
   },
   {
     path: "studentsignup",

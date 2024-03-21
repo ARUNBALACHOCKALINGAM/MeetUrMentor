@@ -44,7 +44,7 @@ export const PromptsForm: React.FC<PromptsFormProps> = ({ type }) => {
         answerThree: answerThree
       })
     );
-    navigate("/");
+    navigate("/mentorhome");
   };
 
   return (

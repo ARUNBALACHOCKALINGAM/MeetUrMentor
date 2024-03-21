@@ -1,6 +1,6 @@
-import { PromptsForm } from "../features/details/PromptsForm";
+import { PromptsForm } from "../../features/details/PromptsForm";
 //import Header from "../layouts/Header";
-import {Banner} from "../layouts/Banner";
+import {Banner} from "../../layouts/Banner";
 
 const StudentPrompts = () => {
   return (

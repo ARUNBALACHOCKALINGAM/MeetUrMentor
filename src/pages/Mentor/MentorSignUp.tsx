@@ -1,5 +1,5 @@
-import { MentorIllustration } from "../features/authentication/components/MentorIllustration";
-import { AuthForm } from "../features/authentication/components/AuthForm";
+import { MentorIllustration } from "../../features/authentication/components/MentorIllustration";
+import { AuthForm } from "../../features/authentication/components/AuthForm";
 
 export const MentorSignUp = () => {
   return (
