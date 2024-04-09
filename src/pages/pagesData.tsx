@@ -9,6 +9,7 @@ import MentorDetails from "./Mentor/MentorDetails";
 import MentorHome from "./Mentor/MentorHome";
 import StudentDetails from "./Student/StudentDetails";
 import Track from "./Track";
+import MentorMatch from "./Mentor/MentorMatch";
 
 const pagesData: routerType[] = [
   {
@@ -30,6 +31,11 @@ const pagesData: routerType[] = [
     path: "mentorhome",
     element: <MentorHome />,
     title: "mentorhome",
+  },
+  {
+    path: "mentormatch",
+    element: <MentorMatch />,
+    title: "mentormatch",
   },
   {
     path: "studentsignup",
