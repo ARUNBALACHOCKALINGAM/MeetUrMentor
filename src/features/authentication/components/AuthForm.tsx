@@ -76,7 +76,7 @@ export const AuthForm = (props: { type: string; userType: string }) => {
    }
 
   return (
-    <div className="mt-24 xl:w-9/12 xl:mt-28 lg:mt-12 md:w-9/12 w-11/12 mx-auto md:mt-0">
+    <div className={`mt-[30%] h-full xl:w-9/12 xl:${props.userType==="Student" ? (props.type==="Signin" ? "mt-60" : "mt-60") : "mt-28"} lg:mt-60 md:w-9/12 w-11/12 mx-auto md:mt-0`}>
       <Welcome userType={props.userType} type={props.type} />
       <div className="flex justify-between w-full">
         <Button
@@ -87,17 +87,17 @@ export const AuthForm = (props: { type: string; userType: string }) => {
               ? "Sign in with Google"
               : "Sign up with Google"
           }
-          additionalStyling="border-2 custom-width-45 mr-2"
+          additionalStyling="border-2 custom-width-45 mr-2 text-2xl"
         />
         <Button
-          Icon={<FaGithubAlt className="w-8 sm:w-5" />}
+          Icon={<FaGithubAlt className="w-20 sm:w-5" />}
           onClick={props.type==='Signin' ? handleGithubSignin : handleGithubSignup}
           buttonText={
             props.type === "Signin"
               ? "Sign in with Github"
               : "Sign up with Github"
           }
-          additionalStyling="border-2 bg-black custom-width-45 text-white ml-2"
+          additionalStyling="border-2 bg-white text-black custom-width-45 ml-2"
         />
       </div>
       <div className="flex items-center mt-8">
@@ -153,7 +153,7 @@ export const AuthForm = (props: { type: string; userType: string }) => {
             ? handleMentorSignIn
             : handleMentorSignUp
         }
-        additionalStyling="bg-orangejuice text-white shadow-lg drop-shadow-md shadow-orangejuice lg:p-4 mt-12"
+        additionalStyling={`${props.userType==="Student" ? 'bg-studentPrimary shadow-studentPrimary' : 'bg-mentorPrimary'} text-white font-semibold shadow-lg drop-shadow-md shadow-mentorPrimary lg:p-4 mt-14`}
       />
       {props.type === "Signin" ? (
         <NotRegisteredYet />

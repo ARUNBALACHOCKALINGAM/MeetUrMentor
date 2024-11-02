@@ -4,7 +4,7 @@ const MentorHome = () => {
 
   return (
     <div className="w-screen mx-auto text-center bg-bluebg">
-      <SideBar/>
+      
     </div>
   );
 };

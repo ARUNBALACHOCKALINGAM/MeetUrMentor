@@ -29,24 +29,9 @@ body {
 
 
 
-h1{
-  font-weight: bold;
-  font-size: 2rem;
-}
+
 
 p{
   font-weight: thin;
   font-size: 1rem;
 }
-
-a{
-  color: #40B2B7;
-}
-
-
-a:hover{
-  color: #2a6a6c;
-}
-
-
-

@@ -12,7 +12,12 @@ export default {
         bluefill: '#1D2432',
         secondarycolor:'#0f172a',
         bordercolor: '#1c2739',
-        textColor: '#A6B9D0'
+        textColor: '#A6B9D0',
+        mentorPrimary: "#FF9100",
+        mentorSecondary: "#FFC400",
+        mentorAccent:"#DD2C00",
+        studentPrimary: '#3b5998',
+        studentAccent: '#60a5fa'
       },
     },
   },
