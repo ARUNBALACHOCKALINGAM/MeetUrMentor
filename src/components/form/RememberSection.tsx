@@ -2,7 +2,8 @@
 
 import { Link } from "react-router-dom";
 
-export const RememberSection = (userType:any) => {
+export const RememberSection = ({userType}:any) => {
+  console.log(userType)
     return (
       <div className="flex items-center justify-between text-sm mt-4 p-2">
         <div className="flex items-center">

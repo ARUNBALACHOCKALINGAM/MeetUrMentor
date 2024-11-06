@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-export const NotRegisteredYet = (userType:any) => {
+export const NotRegisteredYet = ({userType}:any) => {
 
 
 
