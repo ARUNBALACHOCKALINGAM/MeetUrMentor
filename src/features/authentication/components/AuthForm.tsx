@@ -141,7 +141,7 @@ export const AuthForm = (props: { type: string; userType: string }) => {
       ) : (
         ""
       )}
-      {props.type === "Signin" ? <RememberSection /> : ""}
+      {props.type === "Signin" ? <RememberSection userType={props.userType} /> : ""}
       <Button
         buttonText={props.type === "Signin" ? "Sign in" : "Continue"}
         onClick={
@@ -156,7 +156,7 @@ export const AuthForm = (props: { type: string; userType: string }) => {
         additionalStyling={`${props.userType==="Student" ? 'bg-studentPrimary shadow-studentPrimary' : 'bg-mentorPrimary'} text-white font-semibold shadow-lg drop-shadow-md shadow-mentorPrimary lg:p-4 mt-14`}
       />
       {props.type === "Signin" ? (
-        <NotRegisteredYet />
+        <NotRegisteredYet userType={props.userType}/>
       ) : (
         <p className="text-xs text-center text-gray-400 mt-8 sm:text-sm">
           By joining I agree to the terms and conditions
