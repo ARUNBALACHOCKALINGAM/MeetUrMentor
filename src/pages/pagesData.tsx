@@ -1,8 +1,4 @@
 import { routerType } from "../abstraction/types/router.types";
-import { MentorSignIn } from "./Mentor/MentorSignIn";
-import { MentorSignUp } from "./Mentor/MentorSignUp";
-import { StudentSignUp } from "./Student/StudentSignUp";
-import { StudentSignIn } from "./Student/StudentSignIn";
 import StudentPrompts from "./Student/StudentPrompts";
 import MentorPrompts from "./Mentor/MentorPrompts";
 import MentorDetails from "./Mentor/MentorDetails";
@@ -10,22 +6,23 @@ import MentorHome from "./Mentor/MentorHome";
 import StudentDetails from "./Student/StudentDetails";
 import Track from "./Track";
 import MentorMatch from "./Mentor/MentorMatch";
+import { SignIn } from "./SignIn";
 
 const pagesData: routerType[] = [
   {
     path: "/",
-    element: <MentorSignIn />,
-    title: "mentorsignin",
+    element: <SignIn type="Signin"/>,
+    title: "signin",
   },
   {
-    path: "mentorsignin",
-    element: <MentorSignIn />,
-    title: "mentorsignin",
+    path: "signin",
+    element: <SignIn type="Signin"/>,
+    title: "signin",
   },
   {
-    path: "mentorsignup",
-    element: <MentorSignUp />,
-    title: "mentorsignup",
+    path: "signup",
+    element: <SignIn type="Signup" />,
+    title: "signup",
   },
   {
     path: "mentorhome",
@@ -36,16 +33,6 @@ const pagesData: routerType[] = [
     path: "mentormatch",
     element: <MentorMatch />,
     title: "mentormatch",
-  },
-  {
-    path: "studentsignup",
-    element: <StudentSignUp />,
-    title: "studentsignup",
-  },
-  {
-    path: "studentsignin",
-    element: <StudentSignIn />,
-    title: "studentsignin",
   },
   {
     path: "mentordetails",
