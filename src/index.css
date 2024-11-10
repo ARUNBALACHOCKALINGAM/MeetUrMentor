@@ -28,10 +28,18 @@ body {
 }
 
 
-
-
-
 p{
   font-weight: thin;
   font-size: 1rem;
+}
+
+/* Button.css */
+.disabled-button {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

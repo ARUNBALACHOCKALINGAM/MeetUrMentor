@@ -71,7 +71,7 @@ export const AuthForm = ({ type, userType }: AuthFormProps) => {
   };
 
   return (
-    <div className={`mt-[30%] h-full xl:w-9/12 xl:${userType==="student" ? (type==="Signin" ? "mt-60" : "mt-60") : "mt-28"} lg:mt-60 md:w-9/12 w-11/12 mx-auto md:mt-0`}>
+    <div className={`mt-[30%] h-full xl:w-9/12 xl:${userType==="student" ? (type==="Signin" ? "mt-52" : "mt-28") : "mt-28"} lg:mt-52 md:w-9/12 w-11/12 mx-auto md:mt-0`}>
       <Welcome userType={userType} type={type} />
 
       <div className="flex justify-between w-full mt-4">

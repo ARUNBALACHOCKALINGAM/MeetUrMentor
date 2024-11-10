@@ -6,23 +6,36 @@ import MentorHome from "./Mentor/MentorHome";
 import StudentDetails from "./Student/StudentDetails";
 import Track from "./Track";
 import MentorMatch from "./Mentor/MentorMatch";
-import { SignIn } from "./SignIn";
+import { AuthPage } from "./AuthPage";
+import { ForgotPassword } from "../features/authentication/components/ForgotPassword";
+import { ResetPassword } from "../features/authentication/components/ResetPassword";
+import Details from "./Details";
 
 const pagesData: routerType[] = [
   {
     path: "/",
-    element: <SignIn type="Signin"/>,
+    element: <AuthPage type="Signin"/>,
     title: "signin",
   },
   {
     path: "signin",
-    element: <SignIn type="Signin"/>,
+    element: <AuthPage type="Signin"/>,
     title: "signin",
   },
   {
     path: "signup",
-    element: <SignIn type="Signup" />,
+    element: <AuthPage type="Signup" />,
     title: "signup",
+  },
+  {
+    path: "forgotpassword",
+    element: <AuthPage  forgotPassword={true}/>,
+    title: "forgotpassword",
+  },
+  {
+    path: "resetpassword",
+    element: <AuthPage reset={true}/>,
+    title: "resetpassword",
   },
   {
     path: "mentorhome",
@@ -35,9 +48,9 @@ const pagesData: routerType[] = [
     title: "mentormatch",
   },
   {
-    path: "mentordetails",
-    element: <MentorDetails />,
-    title: "mentordetailsform",
+    path: "details",
+    element: <Details/>,
+    title: "detailsform",
   },
   {
     path: "studentdetails",

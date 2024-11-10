@@ -17,6 +17,7 @@ export default {
         mentorSecondary: "#FFC400",
         mentorAccent:"#DD2C00",
         studentPrimary: '#3b5998',
+        studentSecondary:"#8b9dc3",
         studentAccent: '#60a5fa'
       },
     },

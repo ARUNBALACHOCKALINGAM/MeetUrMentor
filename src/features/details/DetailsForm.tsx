@@ -8,10 +8,10 @@ import { setMentorDetails } from "../../data/store/mentor";
 
 
 type DetailsFormProps = {
-  type: 'student' | 'mentor'; // Assuming type is a string, adjust accordingly
+  userType?: 'student' | 'mentor'; // Assuming userType is a string, adjust accordingly
 };
 
-export const DetailsForm:  React.FC<DetailsFormProps> = ({ type }) => {
+export const DetailsForm:  React.FC<DetailsFormProps> = ({ userType }) => {
 
   // states for each input
   const [username, setUsername] = useState('');
@@ -69,7 +69,7 @@ export const DetailsForm:  React.FC<DetailsFormProps> = ({ type }) => {
 
 
   return (
-    <form>
+    <form className="bg-white">
       <div className="w-full mx-auto space-y-12 text-left p-2 shadow-sm sm:w-full md:w-8/12 lg:w-1/2">
         <div className="border-b border-gray-900/10 pb-12 mt-4">
           <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
@@ -186,14 +186,14 @@ export const DetailsForm:  React.FC<DetailsFormProps> = ({ type }) => {
 
         <div className="border-b border-gray-900/10 pb-12">
           <h2 className="text-base font-semibold leading-7 text-white">
-            Education {type === "student" ? "" : "and Work"}
+            Education {userType === "student" ? "" : "and Work"}
           </h2>
           <p className="mt-1 text-sm leading-6 text-gray-300">
             Enter your education and company details here
           </p>
 
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-            {type === "student" ? (
+            {userType === "student" ? (
               ""
             ) : (
               <>
@@ -421,7 +421,7 @@ export const DetailsForm:  React.FC<DetailsFormProps> = ({ type }) => {
         </button>
         <button
           type="submit"
-          onClick={type==='student' ? handleStudentSave : handleMentorSave}
+          onClick={userType==='student' ? handleStudentSave : handleMentorSave}
           className="rounded-md bg-purple-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
           Save

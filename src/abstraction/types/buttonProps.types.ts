@@ -6,4 +6,5 @@ export interface ButtonProps{
     additionalStyling?: string;
     buttonText: string;
     onClick: authFunction
+    disabled?: boolean;
 }

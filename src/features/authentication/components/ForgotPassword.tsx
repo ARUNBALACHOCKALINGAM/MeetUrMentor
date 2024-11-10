@@ -1,166 +1,104 @@
-// INBUILT IMPORTS
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-
-// EXTERNAL IMPORTS
-import { FaGithubAlt } from "react-icons/fa";
-import { FcGoogle } from "react-icons/fc";
-import { AiOutlineLock, AiOutlineMail } from "react-icons/ai";
-
-
-// INTERNAL COMPONENTS
 import { Input } from "../../../components/form/Input";
 import { Button } from "../../../components/ui/Button";
-import { Welcome } from "../../../components/ui/Welcome";
-import { RememberSection } from "../../../components/form/RememberSection";
-import { NotRegisteredYet } from "../../../components/form/NotRegisteredYet";
-import { useNavigate } from "react-router-dom";
-import { setStudentLoginInfo } from "../../../data/store/student";
-import { setMentorLoginInfo } from "../../../data/store/mentor";
+import { AiOutlineMail } from "react-icons/ai";
+import { AuthFormProps } from "../../../abstraction/types/authentication.types";
+import { Link } from "react-router-dom";
 
-
-
-
-export const ForgotPassword = (props: { type: string; userType: string }) => {
-
-  // state for our form data
+export const ForgotPassword = ({ userType }: AuthFormProps) => {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-
+  const [resetMessage, setResetMessage] = useState("");
+  const [resendEnabled, setResendEnabled] = useState(false);
   const dispatch = useDispatch();
-  //const mentor = useSelector((state: {mentor: {mentor: unknown}}) => state.mentor);
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    if (resetMessage) {
+      const timer = setTimeout(() => setResendEnabled(true), 30000); // Enable resend after 30 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [resetMessage]);
 
-  
-  const handleMentorSignIn = () => {
-    console.log("mentor sign in API call happens here",email,password);
-    dispatch(setMentorLoginInfo({email:email}))
+  const handleResetPassword = () => {
+    if (emailError || !email) {
+      setEmailError("Please enter a valid email address.");
+      return;
+    }
+
+    // Simulate email sending by dispatching action or calling API here
+    console.log("Reset password for", email);
+
+    setResetMessage("Check your inbox for a password reset link.");
+    setResendEnabled(false); // Disable resend initially
   };
 
-  const handleMentorSignUp = () => {
-    console.log("mentor sign up API call happens here");
-    dispatch(setMentorLoginInfo({email:email}))
-    navigate('/mentordetails');
+  const handleResendLink = () => {
+    setResetMessage("A new reset link has been sent to your email.");
+    setResendEnabled(false);
+    console.log("Resend reset password link to", email);
   };
 
-  const handleStundentSignIn = () => {
-    console.log("student sign in API call happens here");
-    dispatch(setStudentLoginInfo({email:email}))
-    navigate('/studentdetails');
-
+  const validateEmail = () => {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setEmailError("Invalid email address");
+    } else {
+      setEmailError("");
+    }
   };
-
-  const handleStundentSignUp = () => {
-    console.log("student sign up API call happens here");
-    dispatch(setStudentLoginInfo({email:email}));
-    navigate('/studentdetails');
-  };
-
-  function handleGoogleSignin(): void {
-   console.log("Function not implemented.");
-  }
-
-  function handleGoogleSignup(): void {
-    console.log("Function not implemented.");
-   }
-
-  function handleGithubSignin(): void {
-    console.log("Function not implemented.");
-   }
-
-   function handleGithubSignup(): void {
-    console.log("Function not implemented.");
-   }
 
   return (
-    <div className={`mt-[30%] h-full xl:w-9/12 xl:${props.userType==="Student" ? (props.type==="Signin" ? "mt-60" : "mt-60") : "mt-28"} lg:mt-60 md:w-9/12 w-11/12 mx-auto md:mt-0`}>
-      <Welcome userType={props.userType} type={props.type} />
-      <div className="flex justify-between w-full">
-        <Button
-          Icon={<FcGoogle className="w-8 sm:w-5" />}
-          onClick={props.type==='Signin' ? handleGoogleSignin : handleGoogleSignup}
-          buttonText={
-            props.type === "Signin"
-              ? "Sign in with Google"
-              : "Sign up with Google"
-          }
-          additionalStyling="border-2 custom-width-45 mr-2 text-2xl"
-        />
-        <Button
-          Icon={<FaGithubAlt className="w-20 sm:w-5" />}
-          onClick={props.type==='Signin' ? handleGithubSignin : handleGithubSignup}
-          buttonText={
-            props.type === "Signin"
-              ? "Sign in with Github"
-              : "Sign up with Github"
-          }
-          additionalStyling="border-2 bg-white text-black custom-width-45 ml-2"
-        />
-      </div>
-      <div className="flex items-center mt-8">
-        <div className="border-b border-gray-300 flex-grow mr-4"></div>
-        <div className="text-gray-500">or</div>
-        <div className="border-b border-gray-300 flex-grow ml-4"></div>
-      </div>
+    <div className="mt-[30%] h-full xl:w-9/12 xl:mt-60 lg:mt-52 md:w-9/12 w-11/12 mx-auto md:mt-0">
+      <h2 className="text-xl font-semibold text-neutral-800 text-left sm:text-2xl md:text-xl lg:text-2xl">Forgot Password</h2>
+      <p className="text-sm text-left text-gray-400 mt-2 sm:text-sm">Enter your email to reset your password</p>
+
       <Input
         labelText="Email"
         placeholder="Email"
-        Icon={<AiOutlineMail />}
         type="email"
         value={email}
         errorMessage={emailError}
         onChange={setEmail}
-        onBlur={() => {
-          if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            setEmailError("Invalid email address");
-          } else {
-            setEmailError(""); // Reset error message
-          }
-        }}
+        onBlur={validateEmail}
+        Icon={<AiOutlineMail />}
       />
-      {props.type === "Signin" ? (
-        <Input
-          labelText="Password"
-          placeholder="Password"
-          Icon={<AiOutlineLock />}
-          type="password"
-          value={password}
-          errorMessage={passwordError}
-          onChange={setPassword}
-          onBlur={() => {
-            if (password.length < 8) {
-              setPasswordError("Password must be at least 8 characters long");
-            } else {
-              setPasswordError(""); // Reset error message
-            }
-          }}
-        />
-      ) : (
-        ""
-      )}
-      {props.type === "Signin" ? <RememberSection userType={props.userType} /> : ""}
+
+      <div className="w-full mb-4">
+        <Link
+          className={`text-left ${userType === "mentor" ? "text-mentorAccent/75 font-semibold hover:text-mentorAccent" : "text-studentAccent/75 font-semibold hover:text-studentAccent"}`}
+          to="/"
+        >
+          Go back
+        </Link>
+      </div>
+
       <Button
-        buttonText={props.type === "Signin" ? "Sign in" : "Continue"}
-        onClick={
-          props.userType === "Student"
-            ? props.type === "Signin"
-              ? handleStundentSignIn
-              : handleStundentSignUp
-            : props.type === "Signin"
-            ? handleMentorSignIn
-            : handleMentorSignUp
-        }
-        additionalStyling={`${props.userType==="Student" ? 'bg-studentPrimary shadow-studentPrimary' : 'bg-mentorPrimary'} text-white font-semibold shadow-lg drop-shadow-md shadow-mentorPrimary lg:p-4 mt-14`}
+        buttonText="Reset Password"
+        onClick={handleResetPassword}
+        additionalStyling={`${userType === "mentor" ? "bg-mentorAccent" : "bg-studentPrimary"} text-white font-semibold mt-4`}
+        disabled={!email || !!emailError || !!resetMessage}
       />
-      {props.type === "Signin" ? (
-        <NotRegisteredYet userType={props.userType}/>
-      ) : (
-        <p className="text-xs text-center text-gray-400 mt-8 sm:text-sm">
-          By joining I agree to the terms and conditions
+
+      {resetMessage && (
+        <p className={`text-center ${userType === "mentor" ? "text-mentorAccent" : "text-studentPrimary"} mt-4`}>
+          {resetMessage}
         </p>
+      )}
+
+      {resetMessage && resendEnabled && (
+        <div className={`text-center ${userType === "mentor" ? "text-mentorAccent" : "text-studentPrimary"} mt-4`}>
+          <p className="text-sm mb-2">Didn't receive the link? 
+             
+            { } 
+            <button
+              onClick={handleResendLink}
+              className={`font-semibold ml-2 ${userType === "mentor" ? "text-mentorAccent hover:text-mentorAccent/75" : "text-studentAccent hover:text-studentAccent/75"}`}
+            >
+               Resend Link
+            </button>
+          </p>
+
+        </div>
       )}
     </div>
   );
