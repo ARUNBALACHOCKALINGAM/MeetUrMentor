@@ -138,20 +138,14 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
 
   const dispatch = useDispatch();
 
-  const handleStudentSave = () => {
+  const handleSave = () => {
     dispatch(setUserDetails({
       formData
     }))
-    navigate('/studenttrack');
+    navigate('/track');
 
   }
 
-  const handleMentorSave = () => {
-    dispatch(setUserDetails({
-      formData
-    }))
-    navigate('/mentortrack');
-  }
 
 
   return (
@@ -302,7 +296,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
             />
             <Button
 
-              onClick={() => { console.log("Save") }}
+              onClick={handleSave}
               buttonText={"Save"}
               additionalStyling={`${userType === "mentor" ? "bg-mentorPrimary shadow-mentorPrimary/50" : "bg-studentAccent shadow-studentAccent/50"}  text-white font-semibold w-9/12 ml-2 shadow-md`}
             />
