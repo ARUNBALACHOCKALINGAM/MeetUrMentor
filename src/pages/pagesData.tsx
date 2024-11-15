@@ -53,11 +53,6 @@ const pagesData: routerType[] = [
     title: "detailsform",
   },
   {
-    path: "studentdetails",
-    element: <StudentDetails />,
-    title: "studentdetailsform",
-  },
-  {
     path: "studenttrack",
     element: <Track />,
     title: "studenttrack",

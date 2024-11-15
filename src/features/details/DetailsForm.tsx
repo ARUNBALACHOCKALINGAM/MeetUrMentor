@@ -2,8 +2,14 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setStudentDetails } from "../../data/store/student";
-import { setMentorDetails } from "../../data/store/mentor";
+import { setUserDetails } from "../../data/store/user";
+import { Banner } from "../../layouts/Banner";
+import { Button } from "../../components/ui/Button";
+
+import { UserCircleIcon } from "@heroicons/react/20/solid";
+import { Input } from "../../components/form/Input";
+import { Textarea } from "../../components/form/TextArea";
+import { FaLinkedin, FaGithub, FaCode, FaDev, FaGlobe, FaUserTie, FaBriefcase, FaUniversity, FaGraduationCap, FaClipboardList } from 'react-icons/fa';
 
 
 
@@ -11,21 +17,121 @@ type DetailsFormProps = {
   userType?: 'student' | 'mentor'; // Assuming userType is a string, adjust accordingly
 };
 
-export const DetailsForm:  React.FC<DetailsFormProps> = ({ userType }) => {
+export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
 
   // states for each input
-  const [username, setUsername] = useState('');
-  const [about, setAbout] = useState('');
-  const [company, setCompany] = useState('');
-  const [role, setRole] = useState('');
-  const [highestQualification, setHighestQualification] = useState('');
-  const [university, setUniversity] = useState('');
-  const [cgpa, setCGPA] = useState('');
-  const [linkedIn, setLinkedIn] = useState('');
-  const [github, setGithub] = useState('');
-  const [leetcode, setLeetcode] = useState('');
-  const [codechef, setCodechef] = useState('');
-  const [portfolio, setPortfolio] = useState('');
+  const [formData, setFormData] = useState({
+    username: "",
+    about: "",
+    company: "",
+    role: "",
+    highestQualification: "",
+    university: "",
+    cgpa: "",
+    linkedin: "",
+    github: "",
+    leetcode: "",
+    codechef: "",
+    portfolio: ""
+  });
+
+
+  const handleInputChange = (value: string, field: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value, // Replace the field's value with the new input value
+    }));
+  };
+
+
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    newErrors.about = "";
+    // Validate required fields
+    if (!formData.username) newErrors.username = "Username is required";
+    if (!formData.highestQualification) newErrors.highestQualification = "Qualification is required";
+    if (!formData.university) newErrors.university = "University is required";
+    if (!formData.cgpa) newErrors.cgpa = "CGPA is required";
+
+    // Validate social media URLs
+    const urlPattern = /^(https?:\/\/)?([a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+)([\/\w\.-]*)*\/?$/; // Basic URL regex
+
+    if (formData.linkedin && !urlPattern.test(formData.linkedin)) newErrors.linkedin = "Invalid LinkedIn URL";
+    if (formData.github && !urlPattern.test(formData.github)) newErrors.github = "Invalid GitHub URL";
+    if (formData.leetcode && !urlPattern.test(formData.leetcode)) newErrors.leetcode = "Invalid LeetCode URL";
+    if (formData.codechef && !urlPattern.test(formData.codechef)) newErrors.codechef = "Invalid CodeChef URL";
+    if (formData.portfolio && !urlPattern.test(formData.portfolio)) newErrors.portfolio = "Invalid Portfolio URL";
+
+    // Validate mentor fields
+    if (!formData.company) newErrors.company = "Company is required";
+    if (!formData.role) newErrors.role = "Role is required";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const socialMediaFields = [
+    {
+      name: "linkedin",
+      logo: <FaLinkedin />,
+      placeholder: "LinkedIn Profile URL",
+    },
+    {
+      name: "github",
+      logo: <FaGithub />,
+      placeholder: "GitHub Profile URL",
+    },
+    {
+      name: "leetcode",
+      logo: <FaCode />,
+      placeholder: "Leetcode Profile URL",
+    },
+    {
+      name: "codechef",
+      logo: <FaDev />,
+      placeholder: "CodeChef Profile URL",
+    },
+    {
+      name: "portfolio",
+      logo: <FaGlobe />,
+      placeholder: "Portfolio URL",
+    },
+  ];
+
+  const mentorFields = [
+    {
+      name: "company",
+      logo: <FaBriefcase />,
+      placeholder: "Company Name",
+    },
+    {
+      name: "role",
+      logo: <FaUserTie />,
+      placeholder: "Mentor's Role",
+    },
+  ];
+
+  const studentFields = [
+    {
+      name: "university",
+      logo: <FaUniversity />,
+      placeholder: "University Name",
+    },
+    {
+      name: "highest qualification",
+      logo: <FaGraduationCap />,
+      placeholder: "Highest Qualification",
+    },
+    {
+      name: "cgpa",
+      logo: <FaClipboardList />,
+      placeholder: "CGPA",
+    },
+  ];
+
 
 
   const navigate = useNavigate();
@@ -33,400 +139,178 @@ export const DetailsForm:  React.FC<DetailsFormProps> = ({ userType }) => {
   const dispatch = useDispatch();
 
   const handleStudentSave = () => {
-    dispatch(setStudentDetails({
-      username: username,
-      about: about,
-      highestQualification: highestQualification,
-      university: university,
-      cgpa: cgpa,
-      linkedIn: linkedIn,
-      github: github,
-      leetcode: leetcode,
-      codechef: codechef,
-      portfolio: portfolio
+    dispatch(setUserDetails({
+      formData
     }))
     navigate('/studenttrack');
-    
+
   }
 
   const handleMentorSave = () => {
-    dispatch(setMentorDetails({
-      username: username,
-      about: about,
-      highestQualification: highestQualification,
-      university: university,
-      cgpa: cgpa,
-      linkedIn: linkedIn,
-      github: github,
-      leetcode: leetcode,
-      codechef: codechef,
-      portfolio: portfolio,
-      company: company,
-      role:role
+    dispatch(setUserDetails({
+      formData
     }))
     navigate('/mentortrack');
   }
 
 
   return (
-    <form className="bg-white">
-      <div className="w-full mx-auto space-y-12 text-left p-2 shadow-sm sm:w-full md:w-8/12 lg:w-1/2">
-        <div className="border-b border-gray-900/10 pb-12 mt-4">
-          <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+    <form className={` lg:py-20 ${userType === "mentor" ? "bg-mentorPrimary/75" : "bg-studentAccent/75"}`}>
+
+      <div className="mx-auto bg-white py-20 space-y-12 text-left p-2 px-10 sm:w-full md:w-8/12 lg:w-9/12 xl:1/2 lg:rounded-lg">
+        <Banner userType={userType} title={`Become a ${userType==="student" ? "Study Buddy!" : "Knowledge Guru!"}`} />
+        <div className="">
+          <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-6">
             <div className="sm:col-span-4">
-              <label
-                htmlFor="username"
-                className="block text-sm font-medium leading-6 text-white"
-              >
-                Username
-              </label>
               <div className="mt-2">
-                <div className="flex rounded-md bg-bluefill shadow-sm ring-1 ring-inset ring-gray-600 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-                  <span className="flex select-none items-center pl-3 text-gray-400 sm:text-sm">
-                    mentorme.com/
-                  </span>
-                  <input
+                <div className="flex rounded-md bg-white sm:max-w-md">
+                  <Input
                     type="text"
-                    name="username"
-                    id="username"
-                    autoComplete="username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-white placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                    placeholder="janesmith"
+                    value={formData.username}
+                    onChange={handleInputChange}
+                    field="username"
+                    onBlur={validateForm}
+                    placeholder="Enter your username"
+                    errorMessage={errors.username}
+                    additionalStyling={`border-black ${userType==="mentor" ? "text-mentorAccent/75" : "text-studentPrimary"}`} 
+                    containerStyles={`border-1 ${userType==="mentor" ? "text-mentorAccent" : "text-studentPrimary"} `}
+                    labelStyles={`font-semibold ${userType==="mentor" ? "text-mentorAccent" : "text-studentPrimary"}`}
+                    labelText="Username"
                   />
                 </div>
               </div>
             </div>
 
             <div className="col-span-full">
-              <label
-                htmlFor="about"
-                className="block text-sm font-medium leading-6 text-white"
-                
-              >
-                About
-              </label>
-              <div className="mt-2 bg-bluefill">
-                <textarea
-                  id="about"
-                  name="about"
-                  rows={3}
-                  className="block w-full rounded-md bg-transparent border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  defaultValue={""}
-                  value={about}
-                onChange={(e) => setAbout(e.target.value)}
+              <div className="mt-2 bg-white">
+                <Textarea
+                  placeholder={"Write a few sentences about yourself"}
+                  value={formData.about}
+                  onChange={handleInputChange}
+                  field="about"
+                  onBlur={validateForm}
+                  labelText="About"
+                  errorMessage={errors.about}
+                  additionalStyling={`border-black ${userType==="mentor" ? "text-mentorAccent" : "text-studentPrimary"}`} 
+                  labelStyles={`font-semibold ${userType==="mentor" ? "text-mentorAccent" : "text-studentPrimary"}`}
+                  containerStyles={`border-1 ${userType==="mentor" ? "text-mentorAccent" : "text-studentPrimary"} shadow-sm`}
+                  type="text"
                 />
               </div>
-              <p className="mt-3 text-sm leading-6 text-gray-300">
-                Write a few sentences about yourself.
-              </p>
             </div>
-
-
-            {/* <div className="col-span-full">
-              <label
-                htmlFor="photo"
-                className="block text-sm font-medium leading-6 text-white"
-              >
-                Photo
-              </label>
-              <div className="mt-2 flex items-center gap-x-3">
-                <UserCircleIcon
-                  className="h-12 w-12 text-gray-300"
-                  aria-hidden="true"
-                />
-                <button
-                  type="button"
-                  className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                >
-                  Change
-                </button>
-              </div>
-            </div> */}
-
-            {/* <div className="col-span-full">
-              <label
-                htmlFor="cover-photo"
-                className="block text-sm font-medium leading-6 text-white"
-              >
-                Cover photo
-              </label>
-              <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
-                <div className="text-center">
-                  <PhotoIcon
-                    className="mx-auto h-12 w-12 text-gray-300"
-                    aria-hidden="true"
-                  />
-                  <div className="mt-4 flex text-sm leading-6 text-gray-300">
-                    <label
-                      htmlFor="file-upload"
-                      className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
-                    >
-                      <span>Upload a file</span>
-                      <input
-                        id="file-upload"
-                        name="file-upload"
-                        type="file"
-                        className="sr-only"
-                        value={coverphoto}
-                        onChange={(e) => setCoverPhoto(e.target.value)}
-                      />
-                    </label>
-                    <p className="pl-1">or drag and drop</p>
-                  </div>
-                  <p className="text-xs leading-5 text-gray-300">
-                    PNG, JPG, GIF up to 10MB
-                  </p>
-                </div>
-              </div> 
-            </div> */}
           </div>
         </div>
 
         <div className="border-b border-gray-900/10 pb-12">
-          <h2 className="text-base font-semibold leading-7 text-white">
+          <h2 className={`text-base lg:text-2xl  font-semibold leading-7 ${userType==="mentor" ? "text-mentorAccent" : "text-studentPrimary"}`}>
             Education {userType === "student" ? "" : "and Work"}
           </h2>
-          <p className="mt-1 text-sm leading-6 text-gray-300">
-            Enter your education and company details here
-          </p>
-
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-            {userType === "student" ? (
-              ""
-            ) : (
-              <>
-                <div className="sm:col-span-3">
-                  <label
-                    htmlFor="first-name"
-                    className="block text-sm font-medium leading-6 text-white"
-                  >
-                    Company
-                  </label>
-                  <div className="mt-2 bg-bluefill">
-                    <input
+            {userType === "mentor" && (
+              mentorFields.map((field, index) => (
+                <div key={field.name} className="sm:col-span-3">
+                  <div className="mt-2 bg-white">
+                    <Input
                       type="text"
-                      name="first-name"
-                      id="first-name"
-                      autoComplete="given-name"
-                      value={company}
-                      onChange={(e) => setCompany(e.target.value)}
-                      className="block bg-transparent  w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      value={formData[field.name]} // Dynamically access the value for this field
+                      onChange={handleInputChange}
+                      onBlur={validateForm}
+                      labelText={field.name.charAt(0).toUpperCase() + field.name.slice(1)} // Convert field name to uppercase for label
+                      field={field.name.toLowerCase()} // Pass the current field name
+                      placeholder={field.placeholder} // Use the appropriate placeholder
+                      errorMessage={errors[field.name]} // Dynamically access the error for this field
+                      additionalStyling={`border-studentPrimary ${userType==="mentor" ? "text-mentorAccent/75" : "text-studentPrimary"}`} 
+                      labelStyles={`${userType==="mentor" ? "text-mentorAccent/75" : "text-studentPrimary/75"}`}
+                      containerStyles={`border-1 ${userType==="mentor" ? "text-mentorAccent" : "text-studentPrimary"} shadow-sm`}
                     />
                   </div>
                 </div>
-                <div className="sm:col-span-3">
-                  <label
-                    htmlFor="last-name"
-                    className="block text-sm font-medium leading-6 text-white"
-                  >
-                    Role
-                  </label>
-                  <div className="mt-2 bg-bluefill">
-                    <input
-                      type="text"
-                      name="last-name"
-                      id="last-name"
-                      autoComplete="family-name"
-                      value={role}
-                      onChange={(e) => setRole(e.target.value)}
-                      className="block bg-transparent  w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                </div>
-              </>
+              ))
             )}
+            {
+              studentFields.map((field, index) => (
+                <div key={field.name} className="sm:col-span-2">
+                  <div className="mt-2 bg-white">
+                    <Input
+                      type="text"
+                      value={formData[field.name]} // Dynamically access the value for this field
+                      onChange={handleInputChange}
+                      onBlur={validateForm}
+                      labelText={field.name.charAt(0).toUpperCase() + field.name.slice(1)}// Convert field name to uppercase for label
+                      field={field.name.trim().toLowerCase()} // Pass the current field name
+                      placeholder={field.placeholder} // Use the appropriate placeholder
+                      errorMessage={errors[field.name.trim().toLowerCase()]} // Dynamically access the error for this field
+                      additionalStyling={`border-black ${userType==="mentor" ? "text-mentorAccent/75" : "text-studentPrimary"}`} 
+                      labelStyles={`${userType==="mentor" ? "text-mentorAccent/75" : "text-studentPrimary/75"}`}
+                      containerStyles={`border-1 ${userType==="mentor" ? "text-mentorAccent" : "text-studentPrimary"} shadow-sm`}
+                    />
+                  </div>
+                </div>
+              ))}
 
-            <div className="sm:col-span-2 sm:col-start-1">
-              <label
-                htmlFor="city"
-                className="block text-sm font-medium leading-6 text-white"
-              >
-                Highest qualification
-              </label>
-              <div className="mt-2 bg-bluefill">
-                <input
-                  type="text"
-                  name="city"
-                  id="city"
-                  autoComplete="address-level2"
-                  value={highestQualification}
-                  onChange={(e) => setHighestQualification(e.target.value)}
-                  className="block bg-transparent  w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
-
-            <div className="sm:col-span-2">
-              <label
-                htmlFor="region"
-                className="block text-sm font-medium leading-6 text-white "
-              >
-                University
-              </label>
-              <div className="mt-2 bg-bluefill">
-                <input
-                  type="text"
-                  name="region"
-                  id="region"
-                  autoComplete="address-level1"
-                  value={university}
-                  onChange={(e) => setUniversity(e.target.value)}
-                  className="block w-full bg-transparent  rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
-
-            <div className="sm:col-span-2">
-              <label
-                htmlFor="postal-code"
-                className="block text-sm font-medium leading-6 text-white"
-              >
-                CGPA
-              </label>
-              <div className="mt-2 bg-bluefill">
-                <input
-                  type="text"
-                  name="postal-code"
-                  id="postal-code"
-                  autoComplete="postal-code"
-                  value={cgpa}
-                  onChange={(e) => setCGPA(e.target.value)}
-                  className="block w-full bg-transparent rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
           </div>
         </div>
 
         <div className="border-b border-gray-900/10 pb-12">
-          <h2 className="text-base font-semibold leading-7 text-white">
+          <h2 className={`text-base lg:text-2xl  font-semibold leading-7 ${userType==="mentor" ? "text-mentorAccent" : "text-studentPrimary"}`}>
             Socials
           </h2>
-          <p className="mt-1 text-sm leading-6 text-gray-300">
-            Update your socials link here
-          </p>
-
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-            <div className="sm:col-span-3">
-              <label
-                htmlFor="first-name"
-                className="block text-sm font-medium leading-6 text-white"
+            {socialMediaFields.map((field, index) => (
+              <div
+                key={field.name}
+                className={`${index === 0 || index === 1
+                  ? "sm:col-span-3"
+                  : index === 2
+                    ? "sm:col-span-2 sm:col-start-1"
+                    : "sm:col-span-2"
+                  }`}
               >
-                LinkedIn
-              </label>
-              <div className="mt-2 bg-bluefill">
-                <input
-                  type="text"
-                  name="first-name"
-                  id="first-name"
-                  autoComplete="given-name"
-                  value={linkedIn}
-                  onChange={(e) => setLinkedIn(e.target.value)}
-                  className="block w-full bg-transparent  rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
+                <div className="mt-2 bg-white">
+                  <Input
+                    type="text"
+                    value={formData[field.name]} // Dynamically access the value for this field
+                    onChange={handleInputChange}
+                    onBlur={validateForm}
+                    labelText={field.name.charAt(0).toUpperCase() + field.name.slice(1)} // Convert field name to uppercase for label
+                    field={field.name.toLowerCase()} // Pass the current field name
+                    placeholder={field.placeholder} // Use the appropriate placeholder
+                    errorMessage={errors[field.name]} // Dynamically access the error for this field
+                    additionalStyling={`border-black ${userType==="mentor" ? "text-mentorAccent/75" : "text-studentPrimary"}`} 
+                    containerStyles={`border-1 ${userType==="mentor" ? "text-mentorAccent" : "text-studentPrimary"} shadow-sm`}
+                    labelStyles={`${userType==="mentor" ? "text-mentorAccent/75" : "text-studentPrimary/75"}`}
+                    Icon={field.logo} // Use the field's logo
+                  />
+                </div>
               </div>
-            </div>
+            ))}
 
-            <div className="sm:col-span-3">
-              <label
-                htmlFor="last-name"
-                className="block text-sm font-medium leading-6 text-white"
-              >
-                Github
-              </label>
-              <div className="mt-2 bg-bluefill">
-                <input
-                  type="text"
-                  name="last-name"
-                  id="last-name"
-                  autoComplete="family-name"
-                  value={github}
-                  onChange={(e) => setGithub(e.target.value)}
-                  className="block w-full bg-transparent rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
 
-            <div className="sm:col-span-2 sm:col-start-1">
-              <label
-                htmlFor="city"
-                className="block text-sm font-medium leading-6 text-white"
-              >
-                Leetcode
-              </label>
-              <div className="mt-2 bg-bluefill">
-                <input
-                  type="text"
-                  name="city"
-                  id="city"
-                  autoComplete="address-level2"
-                  value={leetcode}
-                  onChange={(e) => setLeetcode(e.target.value)}
-                  className="block w-full bg-transparent  rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
 
-            <div className="sm:col-span-2">
-              <label
-                htmlFor="region"
-                className="block text-sm font-medium leading-6 text-white"
-              >
-                Codechef
-              </label>
-              <div className="mt-2 bg-bluefill">
-                <input
-                  type="text"
-                  name="region"
-                  id="region"
-                  autoComplete="address-level1"
-                  value={codechef}
-                  onChange={(e) => setCodechef(e.target.value)}
-                  className="block w-full bg-transparent  rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
 
-            <div className="sm:col-span-2">
-              <label
-                htmlFor="postal-code"
-                className="block text-sm font-medium leading-6 text-white"
-              >
-                Portfolio
-              </label>
-              <div className="mt-2 bg-bluefill">
-                <input
-                  type="text"
-                  name="postal-code"
-                  id="postal-code"
-                  autoComplete="postal-code"
-                  value={portfolio}
-                  onChange={(e) => setPortfolio(e.target.value)}
-                  className="block w-full bg-transparent  rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
+
+
           </div>
         </div>
+        <div className="w-full flex justify-end">
+          <div className="w-full lg:w-1/2 flex mt-4">
+            <Button
+
+              onClick={() => { console.log("Save") }}
+              buttonText="Cancel"
+              additionalStyling="mr-2 text-2xl"
+            />
+            <Button
+
+              onClick={() => { console.log("Save") }}
+              buttonText={"Save"}
+              additionalStyling={`${userType === "mentor" ? "bg-mentorPrimary shadow-mentorPrimary/50" : "bg-studentAccent shadow-studentAccent/50"}  text-white font-semibold w-9/12 ml-2 shadow-md`}
+            />
+          </div>
+        </div>
+
       </div>
 
-      <div className="w-11/12 mx-auto mt-6 flex items-center justify-end gap-x-6 pb-10 md:w-8/12 lg:w-1/2">
-        <button
-          type="button"
-          className="text-sm font-semibold leading-6 text-white"
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          onClick={userType==='student' ? handleStudentSave : handleMentorSave}
-          className="rounded-md bg-purple-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-        >
-          Save
-        </button>
-      </div>
     </form>
   );
 };

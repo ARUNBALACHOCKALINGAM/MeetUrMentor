@@ -51,10 +51,11 @@ export const AuthForm = ({ type, userType }: AuthFormProps) => {
     if (userType === "student") {
       console.log("student sign in API call");
       dispatch(setStudentLoginInfo({ email }));
-      navigate("/studentdetails");
+      navigate("/details");
     } else {
       console.log("mentor sign in API call");
       dispatch(setMentorLoginInfo({ email }));
+      navigate("/details");
     }
   };
 
@@ -62,11 +63,11 @@ export const AuthForm = ({ type, userType }: AuthFormProps) => {
     if (userType === "student") {
       console.log("student sign up API call");
       dispatch(setStudentLoginInfo({ email }));
-      navigate("/studentdetails");
+      navigate("/details");
     } else {
       console.log("mentor sign up API call");
       dispatch(setMentorLoginInfo({ email }));
-      navigate("/mentordetails");
+      navigate("/details");
     }
   };
 
