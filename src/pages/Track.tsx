@@ -1,62 +1,134 @@
 import { useNavigate } from "react-router-dom";
 import Header from "../layouts/Header";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setMentorTrack } from "../data/store/mentor";
 import { setStudentTrack } from "../data/store/student";
 
+import { FaReact, FaAndroid, FaDocker } from "react-icons/fa";
+import { VscTools } from "react-icons/vsc";
+import { IoGameController } from "react-icons/io5";
+import { SiFlutter } from "react-icons/si";
+import { AiOutlineCloudServer } from "react-icons/ai"; // For Backend example
+import { IoIosStats } from "react-icons/io"; // For AI and Data Scientist
+import { SiHiveBlockchain } from "react-icons/si"; // For Blockchain
+import { FaPen } from "react-icons/fa"; // For Technical Writer
+
 const Track = () => {
+  
   const roles = [
-    "Frontend",
-    "Backend",
-    "Devops",
-    "Fullstack",
-    "Android",
-    "AI and data scientist",
-    "BlockChain",
-    "Game developer",
-    "Technical writer",
-    "React",
-    "React Native",
-    "Flutter"
+    {
+      role: "Frontend",
+      roleIcon: <FaReact size={20}/>,
+    },
+    {
+      role: "Backend",
+      roleIcon: <AiOutlineCloudServer />,
+    },
+    {
+      role: "DevOps",
+      roleIcon: <VscTools />,
+    },
+    {
+      role: "Fullstack",
+      roleIcon: <FaReact />,
+    },
+    {
+      role: "Android",
+      roleIcon: <FaAndroid />,
+    },
+    {
+      role: "AI and Data Scientist",
+      roleIcon: <IoIosStats />,
+    },
+    {
+      role: "Blockchain",
+      roleIcon: <SiHiveBlockchain />,
+    },
+    {
+      role: "Game Developer",
+      roleIcon: <IoGameController />,
+    },
+    {
+      role: "Technical Writer",
+      roleIcon: <FaPen />,
+    },
+    {
+      role: "React",
+      roleIcon: <FaReact />,
+    },
+    {
+      role: "React Native",
+      roleIcon: <FaReact />,
+    },
+    {
+      role: "Flutter",
+      roleIcon: <SiFlutter />,
+    },
   ];
 
   const dispatch = useDispatch();
-
   const navigate = useNavigate();
-
   const type = window.location.pathname;
+  const userType = useSelector((state: any) => state.user.userType);
+
+  // Use original color palette
+  const colors =
+    userType === "mentor"
+      ? {
+          bg: "bg-gray-100",
+          border: "border-[#FFC400]",
+          text: "text-[#FF8C00]",
+          hoverBg: "hover:bg-[#FFF5E6]",
+          shadow: "hover:shadow-lg shadow-[#FFC400]",
+        }
+      : {
+          bg: "bg-gray-50",
+          border: "border-[#1D4ED8]",
+          text: "text-[#1D4ED8]",
+          hoverBg: "hover:bg-[#E0F2FE]",
+          shadow: "hover:shadow-lg shadow-[#1D4ED8]",
+        };
 
   const handleMentorRole = (role: string) => {
-    console.log(role);
-    dispatch(setMentorTrack({track: role}));
-    navigate('/mentorprompts');
-  }
+    dispatch(setMentorTrack({ track: role }));
+    navigate("/mentorprompts");
+  };
 
   const handleStudentRole = (role: string) => {
-    dispatch(setStudentTrack({track: role}));
-    navigate('/studentprompts');
-  }
-
+    dispatch(setStudentTrack({ track: role }));
+    navigate("/studentprompts");
+  };
 
   return (
-    <div className="w-screen h-screen bg-bluebg flex flex-col justify-center">
-      <Header />
-      <div className="mb-20">
-        <div className="w-full flex items-center">
-          <hr className="flex-grow border-bordercolor" />
-          <div className="bg-slate-900 font-regular px-3 py-1 rounded-md text-slate-400 border-bordercolor border-2">
-            <h3>Role Based Tracks</h3>
+    <div className={`w-screen min-h-screen ${colors.bg} flex flex-col items-center`}>
+      <Header userType={userType} />
+      <div className="w-full px-6 py-8">
+        <div className="w-full flex items-center mb-6">
+          <hr className={`flex-grow ${colors.border}`} />
+          <div
+            className={`font-regular px-4 py-1 rounded-md bg-white border ${colors.border} shadow`}
+          >
+            <h3 className={`text-lg font-medium ${colors.text}`}>Role-Based Tracks</h3>
           </div>
-          <hr className="flex-grow border-bordercolor" />
+          <hr className={`flex-grow ${colors.border}`} />
         </div>
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 mx-auto w-1/2 p-8 text-md">
-          {roles.map((role) => {
-            return (
-              <button key={role} onClick={() => type==="/mentortrack" ? handleMentorRole(role) : handleStudentRole(role)} className="border border-slate-800 bg-slate-900 p-2.5  sm:p-3.5 block no-underline rounded-lg relative text-slate-400 font-regular text-md hover:border-slate-600 hover:text-slate-100 text-slate-400 p-4  border-bordercolor border-2 rounded-md">
-                {role}
-              </button>
-            );
-          })}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 mx-auto w-full p-8 text-md md:w-3/4">
+          {roles.map((role) => (
+            <button
+              key={role}
+              onClick={() =>
+                type === "/mentortrack" ? handleMentorRole(role) : handleStudentRole(role)
+              }
+              className={`transition-all duration-200 border ${colors.border} bg-white rounded-md p-3 sm:p-4 text-left text-sm font-semibold ${colors.text} ${colors.shadow} ${colors.hoverBg} hover:scale-105 focus:ring-2 focus:ring-offset-2 focus:outline-none`}
+            >
+              <div className="flex items-center">
+                <span className={`material-icons text-base mr-2 ${userType==="mentor" ? "text-[#1D4ED8]" : "text-[#FF8C00]"}`}>
+                  {role.roleIcon}
+                </span>
+                <span>{role.role}</span>
+              </div>
+            </button>
+          ))}
         </div>
       </div>
     </div>

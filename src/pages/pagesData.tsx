@@ -10,6 +10,7 @@ import { AuthPage } from "./AuthPage";
 import { ForgotPassword } from "../features/authentication/components/ForgotPassword";
 import { ResetPassword } from "../features/authentication/components/ResetPassword";
 import Details from "./Details";
+import Prompts from "./Prompts";
 
 const pagesData: routerType[] = [
   {
@@ -36,6 +37,11 @@ const pagesData: routerType[] = [
     path: "resetpassword",
     element: <AuthPage reset={true}/>,
     title: "resetpassword",
+  }, 
+  {
+    path: "track",
+    element: <Track />,
+    title: "tack",
   },
   {
     path: "mentorhome",
@@ -56,22 +62,7 @@ const pagesData: routerType[] = [
     path: "studenttrack",
     element: <Track />,
     title: "studenttrack",
-  },
-  {
-    path: "mentortrack",
-    element: <Track />,
-    title: "mentortrack",
-  },
-  {
-    path: "studentprompts",
-    element: <StudentPrompts />,
-    title: "studentprompts",
-  },
-  {
-    path: "mentorprompts",
-    element: <MentorPrompts />,
-    title: "mentorprompts",
-  },
+  }
 ];
 
 export default pagesData;
