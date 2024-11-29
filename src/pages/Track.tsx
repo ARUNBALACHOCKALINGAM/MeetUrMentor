@@ -1,10 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import Header from "../layouts/Header";
-import { useDispatch, useSelector } from "react-redux";
-import { setMentorTrack } from "../data/store/mentor";
-import { setStudentTrack } from "../data/store/student";
+import { useSelector } from "react-redux";
 
-import { FaReact, FaAndroid, FaDocker } from "react-icons/fa";
+import { FaReact, FaAndroid} from "react-icons/fa";
 import { VscTools } from "react-icons/vsc";
 import { IoGameController } from "react-icons/io5";
 import { SiFlutter } from "react-icons/si";
@@ -66,9 +64,7 @@ const Track = () => {
     },
   ];
 
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const type = window.location.pathname;
   const userType = useSelector((state: any) => state.user.userType);
 
   // Use original color palette
@@ -89,15 +85,7 @@ const Track = () => {
           shadow: "hover:shadow-lg shadow-[#1D4ED8]",
         };
 
-  const handleMentorRole = (role: string) => {
-    dispatch(setMentorTrack({ track: role }));
-    navigate("/mentorprompts");
-  };
-
-  const handleStudentRole = (role: string) => {
-    dispatch(setStudentTrack({ track: role }));
-    navigate("/studentprompts");
-  };
+  
 
   return (
     <div className={`w-screen min-h-screen ${colors.bg} flex flex-col items-center`}>
@@ -115,9 +103,9 @@ const Track = () => {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 mx-auto w-full p-8 text-md md:w-3/4">
           {roles.map((role) => (
             <button
-              key={role}
+              key={role.role}
               onClick={() =>
-                type === "/mentortrack" ? handleMentorRole(role) : handleStudentRole(role)
+                navigate("/home")
               }
               className={`transition-all duration-200 border ${colors.border} bg-white rounded-md p-3 sm:p-4 text-left text-sm font-semibold ${colors.text} ${colors.shadow} ${colors.hoverBg} hover:scale-105 focus:ring-2 focus:ring-offset-2 focus:outline-none`}
             >
