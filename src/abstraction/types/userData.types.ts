@@ -18,7 +18,7 @@ export interface UserState {
     }
 }
 
-export type FormData = {
+export interface FormData {
     username: string;
     about: string;
     company: string;

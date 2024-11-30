@@ -1,9 +1,9 @@
 import { routerType } from "../abstraction/types/router.types";
 
-import MentorHome from "./Mentor/MentorHome";
+
 
 import Track from "./Track";
-import MentorMatch from "./Mentor/MentorMatch";
+
 import { AuthPage } from "./AuthPage";
 
 import Details from "./Details";
@@ -41,16 +41,6 @@ const pagesData: routerType[] = [
     path: "track",
     element: <Track />,
     title: "tack",
-  },
-  {
-    path: "mentorhome",
-    element: <MentorHome />,
-    title: "mentorhome",
-  },
-  {
-    path: "mentormatch",
-    element: <MentorMatch />,
-    title: "mentormatch",
   },
   {
     path: "details",

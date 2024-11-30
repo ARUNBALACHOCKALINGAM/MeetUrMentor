@@ -1,18 +1,13 @@
-// import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setUserDetails } from "../../data/store/user";
 import { Banner } from "../../layouts/Banner";
 import { Button } from "../../components/ui/Button";
-
-
 import { Input } from "../../components/form/Input";
 import { Textarea } from "../../components/form/TextArea";
 import { FaLinkedin, FaGithub, FaCode, FaDev, FaGlobe, FaUserTie, FaBriefcase, FaUniversity, FaGraduationCap, FaClipboardList } from 'react-icons/fa';
 import { FormData } from "../../abstraction/types/userData.types";
-
-
 
 type DetailsFormProps = {
   userType?: 'student' | 'mentor'; // Assuming userType is a string, adjust accordingly
@@ -34,14 +29,16 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
     portfolio: "",
   });
 
-  const handleInputChange = (value: string, field: keyof FormData) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value, // TypeScript will infer the field is valid here
-    }));
+  // Fix: Explicitly type `field` as keyof FormData
+  const handleInputChange = (value: string, field?: string) => {
+    if (field) {
+      setFormData((prev) => ({
+        ...prev,
+        [field]: value, // TypeScript will know `field` is a valid key of FormData
+      }));
+    }
   };
 
-  
   const [errors, setErrors] = useState<Record<string, string>>({});
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -140,7 +137,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
                 <div key={field.name} className="sm:col-span-2">
                   <Input
                     type="text"
-                    value={formData[field.name]}
+                    value={formData[field.name as keyof FormData]}
                     onChange={handleInputChange}
                     field={field.name.toLowerCase()}
                     placeholder={field.placeholder}
@@ -150,7 +147,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
                         ? "text-[#FF7324]"
                         : "text-[#4267B2]"
                     }`}
-                    
+                    onBlur={validateForm}
                   />
                 </div>
               )
@@ -175,7 +172,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
               >
                 <Input
                   type="text"
-                  value={formData[field.name]}
+                  value={formData[field.name as keyof FormData]}
                   onChange={handleInputChange}
                   field={field.name.toLowerCase()}
                   placeholder={field.placeholder}
@@ -184,6 +181,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
                     userType === "mentor" ? "text-[#FF7324]" : "text-[#4267B2]"
                   }`}
                   Icon={field.logo}
+                  onBlur={validateForm}
                 />
               </div>
             ))}

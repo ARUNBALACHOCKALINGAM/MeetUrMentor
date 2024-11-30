@@ -1,4 +1,3 @@
-import React from 'react';
 import { AuthFormProps } from '../abstraction/types/authentication.types';
 import { FaExchangeAlt } from 'react-icons/fa';
 
