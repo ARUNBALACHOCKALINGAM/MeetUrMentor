@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useState, useEffect } from "react";
 import { Input } from "../../../components/form/Input";
 import { Button } from "../../../components/ui/Button";
 import { AiOutlineMail } from "react-icons/ai";
@@ -11,7 +10,7 @@ export const ForgotPassword = ({ userType }: AuthFormProps) => {
   const [emailError, setEmailError] = useState("");
   const [resetMessage, setResetMessage] = useState("");
   const [resendEnabled, setResendEnabled] = useState(false);
-  const dispatch = useDispatch();
+
 
   useEffect(() => {
     if (resetMessage) {
@@ -60,8 +59,7 @@ export const ForgotPassword = ({ userType }: AuthFormProps) => {
         errorMessage={emailError}
         onChange={setEmail}
         onBlur={validateEmail}
-        Icon={<AiOutlineMail />}
-      />
+        Icon={<AiOutlineMail />} field={""}      />
 
       <div className="w-full mb-4">
         <Link

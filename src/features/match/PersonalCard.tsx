@@ -8,9 +8,10 @@ import {
 } from "react-icons/fa";
 import { SiCodechef, SiLeetcode } from "react-icons/si";
 import { useSelector } from "react-redux";
+import { UserState } from "../../abstraction/types/userData.types";
 
 export const PersonalCard = () => {
-  const userType = useSelector((state: any) => state.user.userType);
+  const userType = useSelector((state: UserState) => state.user.userType);
   const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
   const [isFading, setIsFading] = useState(false);
 
