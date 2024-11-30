@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import useRoleChange from "../../utils/hooks/useRoleChange";
+import { AuthFormProps } from "../../abstraction/types/authentication.types";
 
-export const NotRegisteredYet = ({userType}:any) => {
+export const NotRegisteredYet = ({userType}:AuthFormProps) => {
   
   const handleRoleChange = useRoleChange();
 

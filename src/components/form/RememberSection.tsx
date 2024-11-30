@@ -2,8 +2,9 @@
 
 import { Link } from "react-router-dom";
 import useRoleChange from "../../utils/hooks/useRoleChange";
+import { AuthFormProps } from "../../abstraction/types/authentication.types";
 
-export const RememberSection = ({userType}:any) => {
+export const RememberSection = ({userType}:AuthFormProps) => {
 
   const handleRoleChange = useRoleChange();
   

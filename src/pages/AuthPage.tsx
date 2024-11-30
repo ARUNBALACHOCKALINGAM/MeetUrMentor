@@ -5,9 +5,10 @@ import { MentorIllustration } from "../features/authentication/components/Mentor
 import { ForgotPassword } from "../features/authentication/components/ForgotPassword";
 import { AuthFormProps } from "../abstraction/types/authentication.types";
 import { ResetPassword } from "../features/authentication/components/ResetPassword";
+import { UserState } from "../abstraction/types/userData.types";
 
 export const AuthPage = ({ type,forgotPassword=false,reset=false}: AuthFormProps) => {
-    const userType = useSelector((state: any) => state.user.userType);
+    const userType = useSelector((state: UserState) => state.user.userType);
     console.log(userType);
     
     return (

@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useState } from "react";
 import { Input } from "../../../components/form/Input";
 import { Button } from "../../../components/ui/Button";
 import { AuthFormProps } from "../../../abstraction/types/authentication.types";
@@ -11,7 +10,7 @@ export const ResetPassword = ({ userType }: AuthFormProps) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [newPasswordError,setNewPasswordError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const dispatch = useDispatch();
+  
 
   const validatePassword = () => {
     if (newPassword.length < 8) {

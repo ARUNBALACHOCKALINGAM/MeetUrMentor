@@ -3,7 +3,7 @@ import { InputField } from "../../abstraction/types/inputField.types";
 
 export const Input = ({type,value,placeholder,additionalStyling,labelText,errorMessage,Icon,onBlur,onChange,field,containerStyles,labelStyles}: InputField) => {
 
-  const handleChange = (eVal:any) => {
+  const handleChange = (eVal:string) => {
     onChange(eVal,field);
     onBlur() // Reset error message on input change
   };

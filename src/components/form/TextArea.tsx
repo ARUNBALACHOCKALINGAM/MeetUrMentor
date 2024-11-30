@@ -13,7 +13,7 @@ export const Textarea = ({
   containerStyles,
   labelStyles
 }: InputField) => {
-  const handleChange = (eVal: any) => {
+  const handleChange = (eVal: string) => {
     onChange(eVal, field);
     onBlur(); // Reset error message on input change
   };

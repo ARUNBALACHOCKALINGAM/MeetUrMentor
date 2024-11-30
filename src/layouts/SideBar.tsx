@@ -13,11 +13,12 @@ import { IoMdClose } from "react-icons/io";
 import { FaChalkboardTeacher, FaTasks, FaTrophy } from "react-icons/fa";
 import { FaBarsProgress, FaMessage, FaNoteSticky } from "react-icons/fa6";
 import { useSelector } from "react-redux";
+import { UserState } from "../abstraction/types/userData.types";
 
 export function SideBar() {
     const [sideBarOpen, setSideBarOpen] = React.useState(false);
     const [selectedItem, setSelectedItem] = React.useState(0);
-    const userType = useSelector((state: any) => state.user.userType);
+    const userType = useSelector((state: UserState) => state.user.userType);
 
     const colors =
         userType === "mentor"

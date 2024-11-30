@@ -1,8 +1,6 @@
-import { PromptsForm } from "../../features/details/PromptsForm";
 import { PersonalCard } from "../../features/match/PersonalCard";
 import { WorkInfo } from "../../features/match/WorkInfo";
 //import Header from "../layouts/Header";
-import { Banner } from "../../layouts/Banner";
 
 const MentorMatch = () => {
     return (

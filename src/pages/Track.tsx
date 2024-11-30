@@ -10,6 +10,7 @@ import { AiOutlineCloudServer } from "react-icons/ai"; // For Backend example
 import { IoIosStats } from "react-icons/io"; // For AI and Data Scientist
 import { SiHiveBlockchain } from "react-icons/si"; // For Blockchain
 import { FaPen } from "react-icons/fa"; // For Technical Writer
+import { UserState } from "../abstraction/types/userData.types";
 
 const Track = () => {
   
@@ -65,7 +66,7 @@ const Track = () => {
   ];
 
   const navigate = useNavigate();
-  const userType = useSelector((state: any) => state.user.userType);
+  const userType = useSelector((state: UserState) => state.user.userType);
 
   // Use original color palette
   const colors =

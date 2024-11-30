@@ -1,7 +1,5 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
-  FaCode,
-  FaDev,
   FaGithub,
   FaGlobe,
   FaTimes,

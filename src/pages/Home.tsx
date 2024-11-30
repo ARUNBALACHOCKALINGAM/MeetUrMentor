@@ -1,11 +1,12 @@
-import React from 'react';
+
 import { PersonalCard } from '../features/match/PersonalCard';
 import { SideBar } from '../layouts/SideBar';
 import { Logo } from '../layouts/Logo';
 import { useSelector } from 'react-redux';
+import { UserState } from '../abstraction/types/userData.types';
 
 export const Home = () => {
-  const userType = useSelector((state: any) => state.user.userType);
+  const userType = useSelector((state: UserState) => state.user.userType);
 
   return (
     <div className="flex w-screen h-screen">

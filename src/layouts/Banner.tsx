@@ -1,5 +1,5 @@
 type BannerProps = { 
-  userType: any; // Assuming type is a string, adjust accordingly
+  userType?: string; // Assuming type is a string, adjust accordingly
 };
 
 export const Banner: React.FC<BannerProps> = ({ userType }) => {

@@ -6,10 +6,11 @@ import { setUserDetails } from "../../data/store/user";
 import { Banner } from "../../layouts/Banner";
 import { Button } from "../../components/ui/Button";
 
-import { UserCircleIcon } from "@heroicons/react/20/solid";
+
 import { Input } from "../../components/form/Input";
 import { Textarea } from "../../components/form/TextArea";
 import { FaLinkedin, FaGithub, FaCode, FaDev, FaGlobe, FaUserTie, FaBriefcase, FaUniversity, FaGraduationCap, FaClipboardList } from 'react-icons/fa';
+import { FormData } from "../../abstraction/types/userData.types";
 
 
 
@@ -18,7 +19,7 @@ type DetailsFormProps = {
 };
 
 export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     username: "",
     about: "",
     company: "",
@@ -33,13 +34,14 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
     portfolio: "",
   });
 
-  const handleInputChange = (value: string, field: string) => {
+  const handleInputChange = (value: string, field: keyof FormData) => {
     setFormData((prev) => ({
       ...prev,
-      [field]: value,
+      [field]: value, // TypeScript will infer the field is valid here
     }));
   };
 
+  
   const [errors, setErrors] = useState<Record<string, string>>({});
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -118,6 +120,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
               labelStyles={`font-semibold ${
                 userType === "mentor" ? "text-[#FF7324]" : "text-[#4267B2]"
               }`}
+              type="text"
             />
           </div>
         </div>
@@ -133,7 +136,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
           </h2>
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
             {(userType === "mentor" ? mentorFields : studentFields).map(
-              (field, index) => (
+              (field) => (
                 <div key={field.name} className="sm:col-span-2">
                   <Input
                     type="text"
@@ -147,6 +150,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
                         ? "text-[#FF7324]"
                         : "text-[#4267B2]"
                     }`}
+                    
                   />
                 </div>
               )
