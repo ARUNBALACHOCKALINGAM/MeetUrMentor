@@ -9,6 +9,11 @@ pipeline {
                 sh 'npm install'
             }
         }
+        stage('Update Browserslist DB') {
+            steps {
+                sh 'npx update-browserslist-db@latest'
+            }
+        }
         stage('Lint Code') {
             steps {
                 sh 'npm run lint'
