@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   FaGithub,
   FaGlobe,
@@ -12,6 +12,8 @@ import { AuthFormProps } from "../../abstraction/types/authentication.types";
 export const PersonalCard = ({ userType }: AuthFormProps) => {
   const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
   const [isFading, setIsFading] = useState(false);
+  const [fallingDirection, setFallingDirection] = useState<"left" | "right" | null>(null);
+  const [entering, setEntering] = useState(false);
 
   const profiles = [
     {
@@ -44,34 +46,46 @@ export const PersonalCard = ({ userType }: AuthFormProps) => {
   const colors =
     userType === "mentor"
       ? {
-        bg: "bg-white",
-        border: "border-[#FFC400]",
-        text: "text-[#FF8C00]",
-        hoverBg: "hover:bg-[#FFF5E6]",
-        shadow: "hover:shadow-sm shadow-[#FFC400]",
-      }
+          bg: "bg-white",
+          border: "border-[#FFC400]",
+          text: "text-[#FF8C00]",
+          hoverBg: "hover:bg-[#FFF5E6]",
+          shadow: "hover:shadow-sm shadow-[#FFC400]",
+        }
       : {
-        bg: "bg-white",
-        border: "border-[#1D4ED8]",
-        text: "text-[#1D4ED8]",
-        hoverBg: "hover:bg-[#1D4ED8]",
-        shadow: "shadow-xs hover:shadow-[#1D4ED8]",
-      };
+          bg: "bg-white",
+          border: "border-[#1D4ED8]",
+          text: "text-[#1D4ED8]",
+          hoverBg: "hover:bg-[#1D4ED8]",
+          shadow: "shadow-xs hover:shadow-[#1D4ED8]",
+        };
 
-  const handleAction = () => {
-    setIsFading(true); // Trigger fade-out
+  const handleAction = (direction: "left" | "right") => {
+    setFallingDirection(direction);
+    setIsFading(true); // Trigger fade-out animation
     setTimeout(() => {
-      setIsFading(false); // Reset fade-out
-      setCurrentProfileIndex((prevIndex) => (prevIndex + 1) % profiles.length); // Show next profile
-    }, 500); // Match CSS transition duration
+      setEntering(true); // Start entering animation
+      setTimeout(() => {
+        setIsFading(false); // Reset fade-out animation
+        setCurrentProfileIndex((prevIndex) => (prevIndex + 1) % profiles.length); // Show next profile
+        setEntering(false); // Reset entering animation
+      }, 500); // Wait for the enter animation to complete (500ms)
+    }, 500); // Wait for the fall animation to complete (500ms)
   };
 
   const currentProfile = profiles[currentProfileIndex];
 
   return (
     <div
-      className={`mt-20 mx-auto rounded-2xl shadow-md border-gray-300 border relative transition-opacity duration-500 h-[85%] ${isFading ? "opacity-0" : "opacity-100"
-        }`}
+      className={`mt-20 mx-auto rounded-2xl shadow-md border-gray-300 border relative transition-opacity duration-500 h-[85%] ${
+        isFading ? "opacity-0" : "opacity-100"
+      } ${
+        fallingDirection === "right"
+          ? "animate-fall-right"
+          : fallingDirection === "left"
+          ? "animate-fall-left"
+          : ""
+      }`}
     >
       <div className="flex flex-col lg:flex-row h-full">
         {/* Image Section */}
@@ -113,24 +127,32 @@ export const PersonalCard = ({ userType }: AuthFormProps) => {
             </p>
           </div>
         </div>
+
         {/* Tick and Cross Actions */}
         <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 flex justify-center gap-10 items-center">
           <button
-            className={`bg-white border border-2 ${userType === "mentor" ? "shadow-red-500" : "shadow-red-500"} text-gray-700 rounded-full w-16 h-16 flex shadow-md items-center justify-center transition-all ${colors.shadow}`}
-          onClick={handleAction}
+            className={`bg-white border border-2 ${
+              userType === "mentor" ? "shadow-red-500" : "shadow-red-500"
+            } text-gray-700 rounded-full w-16 h-16 flex shadow-md items-center justify-center transition-all ${colors.shadow}`}
+            onClick={() => handleAction("left")}
           >
-          <FaTimes size={28} />
-        </button>
-        <button
-          className={`bg-white ${userType === "mentor" ? "text-yellow-500 shadow-yellow-500" : "text-blue-500 shadow-blue-500"} border border-2 shadow-md rounded-full w-16 h-16 flex items-center justify-center transition-all ${colors.shadow}`}
-        onClick={handleAction}
+            <FaTimes size={28} />
+          </button>
+          <button
+            className={`bg-white ${
+              userType === "mentor" ? "text-yellow-500 shadow-yellow-500" : "text-blue-500 shadow-blue-500"
+            } border border-2 shadow-md rounded-full w-16 h-16 flex items-center justify-center transition-all ${colors.shadow}`}
+            onClick={() => handleAction("right")}
           >
-        <FaHeart size={28} />
-      </button>
+            <FaHeart size={28} />
+          </button>
+        </div>
+      </div>
+
+      {/* Enter Animation for the Next Card */}
+      <div
+        className={`absolute inset-0 ${entering ? (fallingDirection === "right" ? "animate-enter-right" : "animate-enter-left") : ""}`}
+      ></div>
     </div>
-      </div >
-
-
-    </div >
   );
 };

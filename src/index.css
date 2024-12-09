@@ -43,3 +43,63 @@ button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+@keyframes fall-right {
+  0% {
+    transform: translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%) rotate(30deg);
+    opacity: 0;
+  }
+}
+
+@keyframes fall-left {
+  0% {
+    transform: translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-100%) rotate(-30deg);
+    opacity: 0;
+  }
+}
+
+@keyframes enter-right {
+  0% {
+    transform: translateX(100%) rotate(30deg);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes enter-left {
+  0% {
+    transform: translateX(-100%) rotate(-30deg);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+.animate-fall-right {
+  animation: fall-right 0.5s forwards;
+}
+
+.animate-fall-left {
+  animation: fall-left 0.5s forwards;
+}
+
+.animate-enter-right {
+  animation: enter-right 0.5s forwards;
+}
+
+.animate-enter-left {
+  animation: enter-left 0.5s forwards;
+}
