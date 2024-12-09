@@ -72,7 +72,7 @@ export const AuthForm = ({ type, userType }: AuthFormProps) => {
   };
 
   return (
-    <div className={`h-full xl:w-9/12 md:w-9/12 w-11/12 mx-auto md:mt-0 lg:mt-[12.5%]`}>
+    <div className={`h-full xl:w-9/12 md:w-9/12 w-11/12 mx-auto md:mt-0 ${type==="Signin" ? "lg:mt-[6.5%]" : "lg:mt-[12.5%]"}`}>
       <Welcome userType={userType} type={type} />
 
       <div className="flex justify-between w-full mt-4">

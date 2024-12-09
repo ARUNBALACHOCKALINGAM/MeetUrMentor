@@ -3,7 +3,6 @@ import {
     Card,
     List,
     ListItem,
-    ListItemPrefix,
     ListItemSuffix,
     Chip,
 } from "@material-tailwind/react";
@@ -13,45 +12,47 @@ import { IoMdClose } from "react-icons/io";
 import { FaChalkboardTeacher, FaTasks, FaTrophy } from "react-icons/fa";
 import { FaBarsProgress, FaMessage, FaNoteSticky } from "react-icons/fa6";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { UserState } from "../abstraction/types/userData.types";
 
 export function SideBar() {
     const [sideBarOpen, setSideBarOpen] = React.useState(false);
     const [selectedItem, setSelectedItem] = React.useState(0);
     const userType = useSelector((state: UserState) => state.user.userType);
+    const navigate = useNavigate();
 
     const colors =
         userType === "mentor"
             ? {
-                bg: "bg-white", // Keep bg as white
+                bg: "bg-white",
                 border: "border-[#FFC400]",
                 text: "text-gray-600/80",
                 hoverBg: "hover:bg-[#FFF5E6]",
                 shadow: "hover:shadow-sm shadow-[#FFC400]",
-                selectedText: "text-[#FF8C00] font-semibold", // Darker color for selected
-                selectedBg: "bg-[#FFF5E6]", // Light background for selected
+                selectedText: "text-[#FF8C00] font-semibold",
+                selectedBg: "bg-[#FFF5E6]",
             }
             : {
-                bg: "bg-white", // Keep bg as white
+                bg: "bg-white",
                 border: "border-[#1D4ED8]",
                 text: "text-gray-600/80",
                 hoverBg: "hover:bg-studentButtonColor hover:text-white",
                 shadow: "shadow-xs hover:shadow-[#1D4ED8]",
-                selectedText: "text-white font-semibold", // Darker color for selected
-                selectedBg: "bg-[#1D4ED8]", // Dark background for selected
+                selectedText: "text-white font-semibold",
+                selectedBg: "bg-[#1D4ED8]",
             };
 
     const items = [
-        { item: `Find your ${userType === "mentor" ? "student" : "mentor"}`, icon: <FaChalkboardTeacher /> },
-        { item: "Chat", icon: <FaMessage /> },
-        { item: "Tasks", icon: <FaTasks /> },
-        { item: "Progress", icon: <FaBarsProgress /> },
-        { item: "Achievements", icon: <FaTrophy /> },
-        { item: "Resources", icon: <FaNoteSticky /> },
+        { item: `Find your ${userType === "mentor" ? "student" : "mentor"}`, icon: <FaChalkboardTeacher />, to: "/home" },
+        { item: "Chat", icon: <FaMessage />, to: "/chat" },
+        { item: "Tasks", icon: <FaTasks />, to: "/tasks" },
+        { item: "Progress", icon: <FaBarsProgress />, to: "/progress" },
+        { item: "Achievements", icon: <FaTrophy />, to: "/achievements" },
+        { item: "Resources", icon: <FaNoteSticky />, to: "/resources" },
     ];
 
     return (
-        <div className="absolute lg:grid lg:grid-cols-[24rem_auto] h-screen lg:relative">
+        <div className="absolute lg:grid lg:grid-cols-[20rem_auto] h-screen lg:relative">
             {/* Hamburger Menu (Small Screens) */}
             <div className="lg:hidden">
                 <HiOutlineMenuAlt3
@@ -80,15 +81,18 @@ export function SideBar() {
                 <hr className="my-2 border-blue-gray-50" />
                 {/* Main Content Area */}
                 <div className="flex flex-col items-center flex-grow text-center">
-                    <List className="text-lg flex flex-col items-center w-full">
+                    <List className="text-md flex flex-col items-center w-full">
 
                         {items.map((item, index) => (
                             <ListItem
-                                className={`text-center ${selectedItem === index ? colors.selectedText : colors.text} ${selectedItem === index ? colors.selectedBg : ''} ${colors.border} ${colors.hoverBg} mt-4 w-full cursor-pointer`} // Hover text color
+                                className={`text-center ${selectedItem === index ? colors.selectedText : colors.text} ${selectedItem === index ? colors.selectedBg : ''} ${colors.border} ${colors.hoverBg} mt-2 w-full cursor-pointer`}
                                 key={item.item}
-                                onClick={() => setSelectedItem(index)} // Update selected item on click
+                                onClick={() => {
+                                    setSelectedItem(index); // Update selected item
+                                    navigate(item.to); // Navigate to the respective route
+                                    setSideBarOpen(false); // Close the sidebar on small screens
+                                }}
                             >
-                                {/* <ListItemPrefix>{item.icon}</ListItemPrefix> */}
                                 {item.item}
                                 {item.item === "Chat" && (
                                     <ListItemSuffix>
@@ -106,32 +110,31 @@ export function SideBar() {
                     </List>
 
                     {/* Profile, Settings, Log Out at the Bottom */}
-                    <div className="mt-auto w-full">
+                    <div className="text-sm mt-auto w-full">
                         <ListItem
                             className={`${colors.text} ${colors.border} hover:${colors.selectedText} hover:${colors.selectedBg} cursor-pointer`}
+                            onClick={() => navigate("/profile")} // Add navigation for Profile
                         >
-                            <ListItemPrefix>
-                                <UserCircleIcon className="h-5 w-5" />
-                            </ListItemPrefix>
+                            <UserCircleIcon className="h-5 w-5 mr-2" />
                             Profile
                         </ListItem>
                         <ListItem
                             className={`${colors.text} ${colors.border} hover:${colors.selectedText} hover:${colors.selectedBg} cursor-pointer`}
+                            onClick={() => navigate("/settings")} // Add navigation for Settings
                         >
-                            <ListItemPrefix>
-                                <Cog6ToothIcon className="h-5 w-5" />
-                            </ListItemPrefix>
+                            <Cog6ToothIcon className="h-5 w-5 mr-2" />
                             Settings
                         </ListItem>
                         <ListItem
                             className={`${colors.text} ${colors.border} hover:${colors.selectedText} hover:${colors.selectedBg} cursor-pointer`}
+                            onClick={() => {
+                                // Handle Logout Logic
+                                navigate("/signin");
+                            }}
                         >
-                            <ListItemPrefix>
-                                <PowerIcon className="h-5 w-5" />
-                            </ListItemPrefix>
+                            <PowerIcon className="h-5 w-5 mr-2" />
                             Log Out
-                        </ListItem>;
-
+                        </ListItem>
                     </div>
                 </div>
             </Card>

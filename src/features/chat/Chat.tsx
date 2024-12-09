@@ -1,158 +1,94 @@
-import { useState, useEffect } from "react";
-import {
-  FaGithub,
-  FaGlobe,
-  FaTimes,
-  FaLinkedin,
-  FaHeart,
-} from "react-icons/fa";
-import { SiCodechef, SiLeetcode } from "react-icons/si";
-import { AuthFormProps } from "../../abstraction/types/authentication.types";
+import React, { useState } from 'react';
+import { Message, ChatProps } from '../../abstraction/types/chat.types'; // Assuming types are in a separate file
 
-export const PersonalCard = ({ userType }: AuthFormProps) => {
-  const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
-  const [isFading, setIsFading] = useState(false);
-  const [fallingDirection, setFallingDirection] = useState<"left" | "right" | null>(null);
-  const [entering, setEntering] = useState(false);
+export const Chat: React.FC<ChatProps> = ({ userType }) => {
+    const [messages, setMessages] = useState<Message[]>([{ text: "hi", sender: "mentor" }]);
+    const [inputValue, setInputValue] = useState<string>("");
 
-  const profiles = [
-    {
-      name: "Angela, 29",
-      track: "Frontend",
-      job: "Software Engineer at NatWest",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cum, laborum eveniet.",
-      socialMedia: [
-        { name: "Linkedin", logo: <FaLinkedin />, url: "#" },
-        { name: "Github", logo: <FaGithub />, url: "#" },
-        { name: "Leetcode", logo: <SiLeetcode />, url: "#" },
-        { name: "Codechef", logo: <SiCodechef />, url: "#" },
-        { name: "Portfolio", logo: <FaGlobe />, url: "#" },
-      ],
-    },
-    {
-      name: "John, 32",
-      track: "Backend",
-      job: "Senior Developer at Amazon",
-      description:
-        "John is an experienced developer specializing in cloud solutions and microservices.",
-      socialMedia: [
-        { name: "Linkedin", logo: <FaLinkedin />, url: "#" },
-        { name: "Github", logo: <FaGithub />, url: "#" },
-      ],
-    },
-  ];
+    const colors: Record<"mentor" | "student", { bg: string; border: string; text: string; buttonBg: string; buttonHoverBg: string }> = {
+        mentor: {
+            bg: "bg-[#FFF5E6]",
+            border: "border-[#FFC400]",
+            text: "text-[#FF8C00]",
+            buttonBg: "bg-[#FFC400]",
+            buttonHoverBg: "hover:bg-[#FFD966]",
+        },
+        student: {
+            bg: "bg-[#EFF6FF]",
+            border: "border-[#1D4ED8]",
+            text: "text-[#1D4ED8]",
+            buttonBg: "bg-[#1D4ED8]",
+            buttonHoverBg: "hover:bg-[#3B82F6]",
+        },
+    };
 
-  const colors =
-    userType === "mentor"
-      ? {
-          bg: "bg-white",
-          border: "border-[#FFC400]",
-          text: "text-[#FF8C00]",
-          hoverBg: "hover:bg-[#FFF5E6]",
-          shadow: "hover:shadow-sm shadow-[#FFC400]",
+
+
+    const handleSendMessage = (): void => {
+        if (inputValue.trim()) {
+            setMessages([...messages, { text: inputValue, sender: userType }]);
+            setInputValue("");
         }
-      : {
-          bg: "bg-white",
-          border: "border-[#1D4ED8]",
-          text: "text-[#1D4ED8]",
-          hoverBg: "hover:bg-[#1D4ED8]",
-          shadow: "shadow-xs hover:shadow-[#1D4ED8]",
-        };
+    };
 
-  const handleAction = (direction: "left" | "right") => {
-    setFallingDirection(direction);
-    setIsFading(true); // Trigger fade-out animation
-    setTimeout(() => {
-      setEntering(true); // Start entering animation
-      setTimeout(() => {
-        setIsFading(false); // Reset fade-out animation
-        setCurrentProfileIndex((prevIndex) => (prevIndex + 1) % profiles.length); // Show next profile
-        setEntering(false); // Reset entering animation
-      }, 500); // Wait for the enter animation to complete (500ms)
-    }, 500); // Wait for the fall animation to complete (500ms)
-  };
+    return (
+        <div className="h-full rounded-lg py-8 px-4 relative bg-gray-100 border border-gray-300 shadow-md">
+            {/* Message Display Section */}
+            <div className="overflow-y-auto h-[90%] mb-2">
+                {messages.map((message, index) => (
+                    <div
+                        key={index}
+                        className={`flex ${message.sender === userType ? "justify-end" : "justify-start"
+                            } mb-2`}
+                    >
+                        <div
+                            className={`flex items-center ${message.sender === userType ? "flex-row-reverse" : "flex-row"
+                                }`}
+                        >
+                            {/* Avatar */}
+                            <div
+                                className={`w-10 h-10 rounded-full ${message.sender === "mentor" ? "bg-[#FFC400]" : "bg-[#1D4ED8]"
+                                    } flex items-center justify-center text-white font-bold`}
+                            >
+                                {message.sender === "mentor" ? "M" : "U"}
+                            </div>
 
-  const currentProfile = profiles[currentProfileIndex];
+                            {/* Message Bubble */}
+                            <div
+                                className={`${message.sender===userType ? "mr-2" : "ml-2"} p-2 rounded-lg ${colors[message.sender as "mentor" | "student"].bg
+                                    } ${colors[message.sender as "mentor" | "student"].border} ${colors[message.sender as "mentor" | "student"].text
+                                    } border shadow-md`}
+                            >
+                                {message.text}
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
 
-  return (
-    <div
-      className={`mt-20 mx-auto rounded-2xl shadow-md border-gray-300 border relative transition-opacity duration-500 h-[85%] ${
-        isFading ? "opacity-0" : "opacity-100"
-      } ${
-        fallingDirection === "right"
-          ? "animate-fall-right"
-          : fallingDirection === "left"
-          ? "animate-fall-left"
-          : ""
-      }`}
-    >
-      <div className="flex flex-col lg:flex-row h-full">
-        {/* Image Section */}
-        <div className="w-full lg:w-1/2 h-full">
-          <img
-            className="w-full h-full object-cover"
-            src="https://via.placeholder.com/300"
-            alt="Profile Background"
-          />
+            {/* Input Section */}
+            <div className="md:w-[98%] flex items-center mx-auto pt-4">
+                <input
+                    type="text"
+                    className="w-1/2 lg:w-full flex-1 p-2 rounded-lg outline-none border border-gray-400"
+                    placeholder="Send a message..."
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                            handleSendMessage();
+                        }
+                    }}
+                />
+                <button
+                    className={`ml-2 px-4 py-2 rounded-lg ${colors[userType].buttonBg} ${colors[userType].buttonHoverBg} text-white shadow-md`}
+                    onClick={handleSendMessage}
+                >
+                    Send
+                </button>
+
+            </div>
         </div>
-
-        {/* Content Section */}
-        <div className="w-full lg:w-1/2 p-6 mb-[20%] lg:mt-[12%] relative overflow-auto h-full">
-          <div className="text-center lg:text-left mt-4 lg:mt-0">
-            <h1 className={`text-xl lg:text-3xl font-bold ${colors.text}`}>
-              {currentProfile.name}
-            </h1>
-            <h2 className="text-sm text-gray-700 mt-1">Track: {currentProfile.track}</h2>
-            <p className="text-gray-600 text-sm mt-2">{currentProfile.job}</p>
-          </div>
-
-          {/* Social Media Tags */}
-          <div className="flex flex-wrap justify-center lg:justify-start gap-2 mt-6">
-            {currentProfile.socialMedia.map((socialMediaField) => (
-              <a
-                key={socialMediaField.name}
-                href={socialMediaField.url}
-                className={`flex items-center gap-2 rounded-full px-4 py-1.5 border text-gray-600 text-sm transition-all ${colors.border} ${colors.bg} hover:${colors.hoverBg} hover:text-gray-800`}
-              >
-                {socialMediaField.logo}
-                <span className="font-medium">{socialMediaField.name}</span>
-              </a>
-            ))}
-          </div>
-
-          <div>
-            <p className="text-sm text-gray-700 mt-10 text-left">
-              {currentProfile.description}
-            </p>
-          </div>
-        </div>
-
-        {/* Tick and Cross Actions */}
-        <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 flex justify-center gap-10 items-center">
-          <button
-            className={`bg-white border border-2 ${
-              userType === "mentor" ? "shadow-red-500" : "shadow-red-500"
-            } text-gray-700 rounded-full w-16 h-16 flex shadow-md items-center justify-center transition-all ${colors.shadow}`}
-            onClick={() => handleAction("left")}
-          >
-            <FaTimes size={28} />
-          </button>
-          <button
-            className={`bg-white ${
-              userType === "mentor" ? "text-yellow-500 shadow-yellow-500" : "text-blue-500 shadow-blue-500"
-            } border border-2 shadow-md rounded-full w-16 h-16 flex items-center justify-center transition-all ${colors.shadow}`}
-            onClick={() => handleAction("right")}
-          >
-            <FaHeart size={28} />
-          </button>
-        </div>
-      </div>
-
-      {/* Enter Animation for the Next Card */}
-      <div
-        className={`absolute inset-0 ${entering ? (fallingDirection === "right" ? "animate-enter-right" : "animate-enter-left") : ""}`}
-      ></div>
-    </div>
-  );
+    );
 };
+

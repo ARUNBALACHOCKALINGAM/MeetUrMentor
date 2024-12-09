@@ -70,7 +70,7 @@ export const PersonalCard = ({ userType }: AuthFormProps) => {
 
   return (
     <div
-      className={`mt-20 mx-auto rounded-2xl shadow-md border-gray-300 border relative transition-opacity duration-500 h-[85%] ${isFading ? "opacity-0" : "opacity-100"
+      className={`mt-[2%] mx-auto rounded-2xl shadow-md border-gray-300 border relative transition-opacity duration-500 h-[90%] ${isFading ? "opacity-0" : "opacity-100"
         }`}
     >
       <div className="flex flex-col lg:flex-row h-full">

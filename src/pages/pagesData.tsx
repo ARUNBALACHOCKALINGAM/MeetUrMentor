@@ -1,15 +1,17 @@
 import { routerType } from "../abstraction/types/router.types";
-
-
-
 import Track from "./Track";
-
 import { AuthPage } from "./AuthPage";
-
 import Details from "./Details";
-
-
 import { Home } from "./Home";
+import { PersonalCard } from "../features/match/PersonalCard";
+import { Chat } from "../features/chat/Chat";
+import { Tasks } from "../features/tasks/Tasks";
+import { Progress } from "../features/progress/Progress";
+import { Achievements } from "../features/achievements/Achievements";
+import { Resources } from "../features/resources/Resources";
+import { Profile } from "../features/profile/Profile";
+import { Settings } from "../features/settings/settings";
+
 
 const pagesData: routerType[] = [
   {
@@ -54,9 +56,45 @@ const pagesData: routerType[] = [
   },
   {
     path: "home",
-    element: <Home />,
+    element: <Home children={<PersonalCard/>}/>,
     title: "home",
-  }
+  },
+  {
+    path: "chat",
+    element: <Home children={<Chat userType={"student"}/>}/>,
+    title: "chat",
+  },
+  {
+    path: "tasks",
+    element: <Home children={<Tasks/>}/>,
+    title: "tasks",
+  },
+  {
+    path: "progress",
+    element: <Home children={<Progress/>}/>,
+    title: "progress",
+  },
+  {
+    path: "achievements",
+    element: <Home children={<Achievements/>}/>,
+    title: "achievements",
+  },
+  {
+    path: "resources",
+    element: <Home children={<Resources/>}/>,
+    title: "resources",
+  },
+  {
+    path: "profile",
+    element: <Home children={<Profile/>}/>,
+    title: "profile",
+  },
+  {
+    path: "settings",
+    element: <Home children={<Settings/>}/>,
+    title: "settings",
+  },
+  
 ];
 
 export default pagesData;
