@@ -14,7 +14,7 @@ export const Logo = ({ userType }: AuthFormProps) => {
         };
 
   return (
-    <div className={`flex w-11/12 justify-end items-center mx-auto mt-6 lg:w-8/12 md:justify-between self-start`}>
+    <div className={`flex w-11/12 justify-end items-center mx-auto mt-2 lg:w-8/12 md:justify-between self-start`}>
       {/* Change Track Section */}
       <div className="flex text-xs items-center justify-end w-full lg:justify-start">
         <FaExchangeAlt className={`text-sm mr-2 ${colors.actionText}`} />

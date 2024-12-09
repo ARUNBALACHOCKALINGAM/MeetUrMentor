@@ -72,7 +72,7 @@ export const PersonalCard = () => {
 
   return (
     <div
-      className={`w-[98%] lg:w-[75%] mt-20 mx-auto rounded-2xl overflow-hidden shadow-md border-gray-300 border relative transition-opacity duration-500 ${
+      className={`w-[98%] lg:w-[75%] mt-[4%] mx-auto rounded-2xl overflow-hidden shadow-md border-gray-300 border relative transition-opacity duration-500 ${
         isFading ? "opacity-0" : "opacity-100"
       }`}
     >
