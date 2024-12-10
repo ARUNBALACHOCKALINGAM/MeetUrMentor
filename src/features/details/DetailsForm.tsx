@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setUserDetails } from "../../data/store/user";
+import { setAvatar, setUserDetails } from "../../data/store/user";
 import { Banner } from "../../layouts/Banner";
 import { Button } from "../../components/ui/Button";
 import { Input } from "../../components/form/Input";
 import { Textarea } from "../../components/form/TextArea";
 import { FaLinkedin, FaGithub, FaCode, FaDev, FaGlobe, FaUserTie, FaBriefcase, FaUniversity, FaGraduationCap, FaClipboardList } from 'react-icons/fa';
 import { FormData } from "../../abstraction/types/userData.types";
+
 
 type DetailsFormProps = {
   userType?: 'student' | 'mentor'; // Assuming userType is a string, adjust accordingly
@@ -27,6 +28,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
     leetcode: "",
     codechef: "",
     portfolio: "",
+    avatar: ""
   });
 
   // Fix: Explicitly type `field` as keyof FormData
@@ -69,6 +71,11 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
     { name: "cgpa", logo: <FaClipboardList />, placeholder: "CGPA" },
   ];
 
+  const handleAvatarSelect = (avatar: string) => {
+    setFormData((prev) => ({ ...prev, avatar }));
+  };
+
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -79,9 +86,8 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
 
   return (
     <form
-      className={`lg:py-20 ${
-        userType === "mentor" ? "bg-[#FFF5E6]" : "bg-[#F0F5FF]"
-      }`}
+      className={`lg:py-20 ${userType === "mentor" ? "bg-[#FFF5E6]" : "bg-[#F0F5FF]"
+        }`}
     >
       <div className="mx-auto bg-white py-20 space-y-12 text-left p-2 px-10 sm:w-full md:w-8/12 lg:w-9/12 xl:1/2 lg:rounded-lg">
         <Banner userType={userType} />
@@ -98,14 +104,31 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
               errorMessage={errors.username}
               labelText="Username"
               additionalStyling="border-gray-300 focus:border-blue-500"
-              labelStyles={`font-semibold ${
-                userType === "mentor" ? "text-[#FF7324]" : "text-[#4267B2]"
-              }`}
+              labelStyles={`font-semibold ${userType === "mentor" ? "text-[#FF7324]" : "text-[#4267B2]"
+                }`}
             />
+          </div>
+          {/* Avatar Selection */}
+          <div className="sm:col-span-4 mt-4">
+            <h2 className={`text-sm md:text-lg font-semibold ${userType === "mentor" ? "text-[#FF7324]" : "text-[#4267B2]"}`}>
+              Select Your Avatar
+            </h2>
+            <div className="mt-6 flex space-x-4">
+              {[{ src: "src/assets/aiavatars/jack.png", name: "jack.png" }, { src: "src/assets/aiavatars/ryan.png", name: "ryan.png" }].map((avatar) => (
+                <div
+                  key={avatar.name}
+                  className={`p-2 border rounded-full cursor-pointer ${formData.avatar === avatar.name ? userType === "student" ? "border-blue-500 shadow-blue-500 shadow-lg" : "border-red-500 shadow-red-500 shadow-lg" : "border-gray-300"
+                    }`}
+                  onClick={() => handleAvatarSelect(avatar.name)}
+                >
+                  <img src={avatar.src} alt={avatar.name} className="w-20 h-20 object-cover rounded-full" />
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* About Textarea */}
-          <div className="col-span-full">
+          <div className="col-span-full mt-4">
             <Textarea
               placeholder="Write a few sentences about yourself"
               value={formData.about}
@@ -114,20 +137,20 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
               onBlur={validateForm}
               labelText="About"
               errorMessage={errors.about}
-              labelStyles={`font-semibold ${
-                userType === "mentor" ? "text-[#FF7324]" : "text-[#4267B2]"
-              }`}
+              labelStyles={`font-semibold ${userType === "mentor" ? "text-[#FF7324]" : "text-[#4267B2]"
+                }`}
               type="text"
             />
           </div>
         </div>
 
+
+
         {/* Education or Work */}
         <div>
           <h2
-            className={`text-lg lg:text-2xl font-semibold ${
-              userType === "mentor" ? "text-[#FF7324]" : "text-[#4267B2]"
-            }`}
+            className={`text-lg lg:text-2xl font-semibold ${userType === "mentor" ? "text-[#FF7324]" : "text-[#4267B2]"
+              }`}
           >
             Education {userType === "student" ? "" : "and Work"}
           </h2>
@@ -142,11 +165,10 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
                     field={field.name.toLowerCase()}
                     placeholder={field.placeholder}
                     labelText={field.name}
-                    labelStyles={`font-semibold ${
-                      userType === "mentor"
+                    labelStyles={`font-semibold ${userType === "mentor"
                         ? "text-[#FF7324]"
                         : "text-[#4267B2]"
-                    }`}
+                      }`}
                     onBlur={validateForm}
                   />
                 </div>
@@ -158,9 +180,8 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
         {/* Social Links */}
         <div>
           <h2
-            className={`text-lg lg:text-2xl font-semibold ${
-              userType === "mentor" ? "text-[#FF7324]" : "text-[#4267B2]"
-            }`}
+            className={`text-lg lg:text-2xl font-semibold ${userType === "mentor" ? "text-[#FF7324]" : "text-[#4267B2]"
+              }`}
           >
             Socials
           </h2>
@@ -177,9 +198,8 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
                   field={field.name.toLowerCase()}
                   placeholder={field.placeholder}
                   labelText={field.name}
-                  labelStyles={`font-semibold ${
-                    userType === "mentor" ? "text-[#FF7324]" : "text-[#4267B2]"
-                  }`}
+                  labelStyles={`font-semibold ${userType === "mentor" ? "text-[#FF7324]" : "text-[#4267B2]"
+                    }`}
                   Icon={field.logo}
                   onBlur={validateForm}
                 />
@@ -196,12 +216,14 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
             additionalStyling="bg-gray-200 text-gray-600"
           />
           <Button
-            onClick={handleSave}
+            onClick={() => {
+              dispatch(setUserDetails({ ...formData }));
+              dispatch(setAvatar(formData.avatar));
+              navigate("/track");
+            }}
             buttonText="Save"
             additionalStyling={`${
-              userType === "mentor"
-                ? "bg-[#FF7324] hover:bg-[#FF6B00]"
-                : "bg-[#4267B2] hover:bg-[#365899]"
+              userType === "mentor" ? "bg-[#FF7324] hover:bg-[#FF6B00]" : "bg-[#4267B2] hover:bg-[#365899]"
             } text-white`}
           />
         </div>

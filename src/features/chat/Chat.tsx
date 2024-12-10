@@ -32,7 +32,7 @@ export const Chat: React.FC<ChatProps> = ({ userType }) => {
     };
 
     return (
-        <div className="h-full rounded-lg py-8 px-4 relative bg-gray-100 border border-gray-300 shadow-md">
+        <div className="h-full md:rounded-lg py-8 px-4 relative md:bg-gray-100 md:border md:border-gray-300 md:shadow-md">
             {/* Message Display Section */}
             <div className="overflow-y-auto h-[90%] mb-2">
                 {messages.map((message, index) => (

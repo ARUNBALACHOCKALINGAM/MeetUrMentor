@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
     Card,
     List,
@@ -16,10 +16,20 @@ import { useNavigate } from "react-router-dom";
 import { UserState } from "../abstraction/types/userData.types";
 
 export function SideBar() {
-    const [sideBarOpen, setSideBarOpen] = React.useState(false);
-    const [selectedItem, setSelectedItem] = React.useState(0);
-    const userType = useSelector((state: UserState) => state.user.userType);
+    const [sideBarOpen, setSideBarOpen] = useState(false);
+    const [selectedItem, setSelectedItem] = useState(0);
+    const userType = useSelector((state: UserState) => state.user?.userType || "student");
+    const unreadMessages = useSelector((state: UserState) => state.chat?.unreadCount || 0);
     const navigate = useNavigate();
+
+    // Responsive sidebar behavior
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth >= 1024) setSideBarOpen(false);
+        };
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
     const colors =
         userType === "mentor"
@@ -52,12 +62,12 @@ export function SideBar() {
     ];
 
     return (
-        <div className="absolute lg:grid lg:grid-cols-[20rem_auto] h-screen lg:relative">
+        <div className="z-50 absolute lg:grid lg:grid-cols-[20rem_auto] h-screen lg:relative">
             {/* Hamburger Menu (Small Screens) */}
-            <div className="lg:hidden">
+            <div onClick={() => setSideBarOpen(true)} className="z-10  lg:hidden">
                 <HiOutlineMenuAlt3
                     className="text-gray-900 text-4xl m-4 cursor-pointer z-50"
-                    onClick={() => setSideBarOpen(true)}
+
                 />
             </div>
 
@@ -68,8 +78,20 @@ export function SideBar() {
             >
                 <div className="flex items-center text-center justify-between my-2 ml-2">
                     <div className="flex items-center">
-                        <UserCircleIcon className={`h-12 w-12 ${userType === "mentor" ? 'text-mentorButtonColor' : 'text-studentPrimary/80'}`} />
-                        <h1 className={`ml-2  tracking-wide text-lg ml-4 lg:text-xl ${userType === "mentor" ? 'text-mentorButtonColor' : 'text-studentButtonColor'}`}>Hey Arun!</h1>
+                        <UserCircleIcon
+                            className={`h-12 w-12 ${userType === "mentor"
+                                    ? "text-mentorButtonColor"
+                                    : "text-studentPrimary/80"
+                                }`}
+                        />
+                        <h1
+                            className={`ml-2 tracking-wide text-lg ml-4 lg:text-xl ${userType === "mentor"
+                                    ? "text-mentorButtonColor"
+                                    : "text-studentButtonColor"
+                                }`}
+                        >
+                            Hey Arun!
+                        </h1>
                     </div>
                     {/* Close Button for Small Screens */}
                     <IoMdClose
@@ -82,29 +104,33 @@ export function SideBar() {
                 {/* Main Content Area */}
                 <div className="flex flex-col items-center flex-grow text-center">
                     <List className="text-md flex flex-col items-center w-full">
-
                         {items.map((item, index) => (
                             <ListItem
-                                className={`text-center ${selectedItem === index ? colors.selectedText : colors.text} ${selectedItem === index ? colors.selectedBg : ''} ${colors.border} ${colors.hoverBg} mt-2 w-full cursor-pointer`}
+                                className={`text-center ${selectedItem === index ? colors.selectedText : colors.text
+                                    } ${selectedItem === index ? colors.selectedBg : ""} ${colors.border
+                                    } ${colors.hoverBg} mt-2 w-full cursor-pointer`}
                                 key={item.item}
                                 onClick={() => {
-                                    setSelectedItem(index); // Update selected item
-                                    navigate(item.to); // Navigate to the respective route
-                                    setSideBarOpen(false); // Close the sidebar on small screens
+                                    setSelectedItem(index);
+                                    navigate(item.to);
+                                    setSideBarOpen(false);
                                 }}
                             >
-                                {item.item}
-                                {item.item === "Chat" && (
-                                    <ListItemSuffix>
+                                <div className="flex items-center justify-between w-full">
+                                    <span className="flex items-center">
+                                        {item.icon}
+                                        <span className="ml-4">{item.item}</span>
+                                    </span>
+                                    {item.item === "Chat" && unreadMessages > 0 && (
                                         <Chip
-                                            value=""
+                                            value={unreadMessages.toString()}
                                             size="sm"
                                             variant="ghost"
                                             color="blue-gray"
                                             className="rounded-full"
                                         />
-                                    </ListItemSuffix>
-                                )}
+                                    )}
+                                </div>
                             </ListItem>
                         ))}
                     </List>
@@ -113,14 +139,14 @@ export function SideBar() {
                     <div className="text-sm mt-auto w-full">
                         <ListItem
                             className={`${colors.text} ${colors.border} hover:${colors.selectedText} hover:${colors.selectedBg} cursor-pointer`}
-                            onClick={() => navigate("/profile")} // Add navigation for Profile
+                            onClick={() => navigate("/profile")}
                         >
                             <UserCircleIcon className="h-5 w-5 mr-2" />
                             Profile
                         </ListItem>
                         <ListItem
                             className={`${colors.text} ${colors.border} hover:${colors.selectedText} hover:${colors.selectedBg} cursor-pointer`}
-                            onClick={() => navigate("/settings")} // Add navigation for Settings
+                            onClick={() => navigate("/settings")}
                         >
                             <Cog6ToothIcon className="h-5 w-5 mr-2" />
                             Settings
@@ -128,7 +154,6 @@ export function SideBar() {
                         <ListItem
                             className={`${colors.text} ${colors.border} hover:${colors.selectedText} hover:${colors.selectedBg} cursor-pointer`}
                             onClick={() => {
-                                // Handle Logout Logic
                                 navigate("/signin");
                             }}
                         >

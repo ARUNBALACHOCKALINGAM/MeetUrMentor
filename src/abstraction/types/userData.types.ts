@@ -31,6 +31,7 @@ export interface FormData {
     leetcode: string;
     codechef: string;
     portfolio: string;
+    avatar:string;
   }
 
   

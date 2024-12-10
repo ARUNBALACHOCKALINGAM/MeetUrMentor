@@ -15,46 +15,48 @@ const initialState = {
   portfolio: "",
   company: "",
   role: "",
-  track: ""
+  track: "",
+  avatar: "" // New field for avatar
 };
 
 const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    setUserType: (state,action) => {
-      return {
-        ...state,
-        userType:action.payload
-      };
-    },
-    setUserLoginInfo: (state,action) => {
-      return {
-        ...state,
-        ...action.payload
-      };
-    },
-    setUserDetails: (state,action) => {
-        return {
-            ...state,
-            ...action.payload
-        };
-    },
-    setUserPrompts: (state,action) => {
-      return {
-          ...state,
-          ...action.payload
-      };
-  },
-    setUserTrack: (state,action) => {
-        return {
-            ...state,
-            track: action.payload.track
-        };
-    }
-
-  },
+    setUserType: (state, action) => ({
+      ...state,
+      userType: action.payload
+    }),
+    setUserLoginInfo: (state, action) => ({
+      ...state,
+      ...action.payload
+    }),
+    setUserDetails: (state, action) => ({
+      ...state,
+      ...action.payload
+    }),
+    setUserPrompts: (state, action) => ({
+      ...state,
+      ...action.payload
+    }),
+    setUserTrack: (state, action) => ({
+      ...state,
+      track: action.payload.track
+    }),
+    setAvatar: (state, action) => ({
+      ...state,
+      avatar: action.payload // Reducer to set avatar
+    })
+  }
 });
 
-export const { setUserLoginInfo,setUserTrack,setUserPrompts,setUserDetails,setUserType} = userSlice.actions;
+export const {
+  setUserLoginInfo,
+  setUserTrack,
+  setUserPrompts,
+  setUserDetails,
+  setUserType,
+  setAvatar
+} = userSlice.actions;
+
 export default userSlice.reducer;

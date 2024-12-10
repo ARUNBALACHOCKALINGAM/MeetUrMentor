@@ -5,12 +5,12 @@ import Details from "./Details";
 import { Home } from "./Home";
 import { PersonalCard } from "../features/match/PersonalCard";
 import { Chat } from "../features/chat/Chat";
-import { Tasks } from "../features/tasks/Tasks";
+import { KanbanBoard } from "../features/tasks/KanbanBoard";
 import { Progress } from "../features/progress/Progress";
 import { Achievements } from "../features/achievements/Achievements";
 import { Resources } from "../features/resources/Resources";
 import { Profile } from "../features/profile/Profile";
-import { Settings } from "../features/settings/settings";
+import { Settings } from "../features/settings/Settings";
 
 
 const pagesData: routerType[] = [
@@ -66,7 +66,7 @@ const pagesData: routerType[] = [
   },
   {
     path: "tasks",
-    element: <Home children={<Tasks/>}/>,
+    element: <Home children={<KanbanBoard/>}/>,
     title: "tasks",
   },
   {
