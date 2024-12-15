@@ -70,7 +70,7 @@ export const PersonalCard = ({ userType }: AuthFormProps) => {
 
   return (
     <div
-      className={`mt-[2%] mx-auto rounded-2xl shadow-md border-gray-300 border relative transition-opacity duration-500 h-[90%] ${isFading ? "opacity-0" : "opacity-100"
+      className={`mt-[2%] mx-auto rounded-2xl shadow-md border-gray-300 border relative transition-opacity duration-500 lg:w-9/12 h-[90%] ${isFading ? "opacity-0" : "opacity-100"
         }`}
     >
       <div className="flex flex-col lg:flex-row h-full">
@@ -108,13 +108,13 @@ export const PersonalCard = ({ userType }: AuthFormProps) => {
           </div>
 
           <div>
-            <p className="text-sm text-gray-700 mt-10 text-left">
+            <p className="text-sm text-gray-700 mt-10 text-left md:hidden">
               {currentProfile.description}
             </p>
           </div>
         </div>
         {/* Tick and Cross Actions */}
-        <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 flex justify-center gap-10 items-center">
+        <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 flex justify-center gap-10 items-center">
           <button
             className={`bg-white border border-2 ${userType === "mentor" ? "shadow-red-500" : "shadow-red-500"} text-gray-700 rounded-full w-16 h-16 flex shadow-md items-center justify-center transition-all ${colors.shadow}`}
           onClick={handleAction}

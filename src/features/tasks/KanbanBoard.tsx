@@ -1,43 +1,63 @@
 import React, { useState } from "react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import { AuthFormProps } from "../../abstraction/types/authentication.types";
+import { useNavigate } from "react-router-dom";
+import Confetti from 'react-confetti'
 
-// Section names as an array for better reusability
 const SECTIONS = ["todo", "inprogress", "completed"] as const;
-
-// Type for section keys
 type SectionType = typeof SECTIONS[number];
+
+interface Task {
+  name: string;
+  level?: "Level 1" | "Level 2" | "Level 3";
+  assignedBy: "default" | "mentor";
+}
 
 export const KanbanBoard = ({ userType }: AuthFormProps) => {
   const colors =
     userType === "mentor"
       ? {
-          bg: "bg-white",
-          border: "border-[#FFC400]",
-          text: "text-[#FF8C00]",
-          hoverBg: "hover:bg-[#FFF5E6]",
-          shadow: "hover:shadow-sm shadow-[#FFC400]",
-        }
+        bg: "bg-white",
+        border: "border-[#FFC400]",
+        text: "text-[#FF8C00]",
+        hoverBg: "hover:bg-[#FFF5E6]",
+        shadow: "hover:shadow-sm shadow-[#FFC400]",
+      }
       : {
-          bg: "bg-white",
-          border: "border-[#1D4ED8]",
-          text: "text-[#1D4ED8]",
-          hoverBg: "hover:bg-[#1D4ED8]",
-          shadow: "shadow-xs hover:shadow-[#1D4ED8]",
-        };
+        bg: "bg-white",
+        border: "border-[#1D4ED8]",
+        text: "text-[#1D4ED8]",
+        hoverBg: "hover:border-2",
+        shadow: "shadow-xs hover:shadow-[#1D4ED8]",
+      };
 
-  const [tasks, setTasks] = useState<Record<SectionType, string[]>>({
-    todo: ["Task 1", "Task 2"],
-    inprogress: ["Task 3"],
-    completed: ["Task 4"],
+  const navigate = useNavigate();
+
+  const [tasks, setTasks] = useState<Record<SectionType, Task[]>>({
+    todo: [
+      { name: "Task 1", level: "Level 1", assignedBy: "default" },
+      { name: "Task 2", level: "Level 2", assignedBy: "mentor" },
+    ],
+    inprogress: [{ name: "Task 3", level: "Level 3", assignedBy: "mentor" }],
+    completed: [{ name: "Task 4", assignedBy: "default" }],
   });
 
+  const [taskCompleted,setTaskCompleted] = useState(false);
+
   const addTask = (section: SectionType) => {
-    const task = prompt("Enter the task:");
-    if (task) {
+    const taskName = prompt("Enter the task name:");
+    const taskLevel = prompt("Enter task level (Level 1, Level 2, Level 3):");
+    const assignedBy = userType === "mentor" ? "mentor" : "default";
+
+    if (taskName && taskLevel) {
+      const newTask: Task = {
+        name: taskName,
+        level: taskLevel as "Level 1" | "Level 2" | "Level 3",
+        assignedBy,
+      };
       setTasks((prev) => ({
         ...prev,
-        [section]: [...prev[section], task],
+        [section]: [...prev[section], newTask],
       }));
     }
   };
@@ -71,38 +91,75 @@ export const KanbanBoard = ({ userType }: AuthFormProps) => {
       [sourceSection]: sourceList,
       [destinationSection]: destinationList,
     });
+
+    if (destinationSection === "completed") {
+      setTaskCompleted(true)
+    }
   };
+
+  setTimeout(()=>{
+    setTaskCompleted(false)
+  },8000,taskCompleted)
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <div className="bg-gray-100 justify-center rounded-md h-full flex flex-wrap gap-4 p-4">
+      {taskCompleted && <Confetti
+        width={window.innerWidth}
+        height={window.innerHeight}
+      />}
+      <div className="justify-center rounded-md h-full flex flex-wrap gap-4 p-4">
         {SECTIONS.map((section) => (
           <Droppable key={section} droppableId={section}>
             {(provided) => (
               <div
                 ref={provided.innerRef}
                 {...provided.droppableProps}
-                className={`flex-1 min-w-[280px] max-w-[calc(95%-1rem)] md:min-w-[200px] md:max-w-[calc(33%-1rem)] p-4 rounded-md border ${colors.border} ${colors.bg} ${colors.shadow}`}
+                className={`flex-1 min-w-[280px] max-w-[calc(95%-1rem)] md:min-w-[200px] md:max-w-[calc(33%-1rem)] p-4 rounded-md border ${colors.border} ${colors.bg} ${colors.shadow} flex flex-col`}
               >
                 <div className={`text-lg font-semibold ${colors.text} capitalize`}>
                   {section}
                 </div>
-                <div className="mt-4 space-y-2">
+                <hr className="mt-2" />
+                <div className="mt-4 space-y-2 overflow-y-auto flex-grow max-h-[90%]">
                   {tasks[section].map((task, index) => (
-                    <Draggable key={task} draggableId={task} index={index}>
+                    <Draggable key={task.name} draggableId={task.name} index={index}>
                       {(provided) => (
                         <div
+                          onClick={() => navigate("/task")}
                           ref={provided.innerRef}
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
-                          className={`p-2 rounded-md ${colors.hoverBg} flex justify-between items-center`}
+                          className={`p-2 rounded-md ${colors.hoverBg} border ${colors.border} flex justify-between items-center relative group`}
                         >
-                          <span>{task}</span>
+                          <div className="flex flex-col text-left">
+                            <span>{task.name}</span>
+                            <div className="text-xs flex space-x-2 text-sm text-gray-500 mt-1">
+                              {task?.level && <span className="px-2 py-1 rounded-md bg-blue-200">
+                                {task.level}
+                              </span>}
+                              <span className={`px-2 py-1 rounded-md ${task.assignedBy === "default" ? "bg-blue-200" : "bg-yellow-200"}`}>
+                                {task.assignedBy}
+                              </span>
+                            </div>
+                          </div>
                           <button
                             onClick={() => deleteTask(section, index)}
-                            className="text-red-500 hover:underline"
+                            className="text-red-500 hidden group-hover:block absolute right-2"
                           >
-                            Delete
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth="1.5"
+                              stroke="currentColor"
+                              className="w-5 h-5"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M6 18L18 6M6 6l12 12"
+                              />
+                            </svg>
                           </button>
                         </div>
                       )}
@@ -110,12 +167,15 @@ export const KanbanBoard = ({ userType }: AuthFormProps) => {
                   ))}
                   {provided.placeholder}
                 </div>
-                <button
-                  onClick={() => addTask(section)}
-                  className={`mt-4 w-full p-2 rounded-md text-center ${colors.text} border ${colors.border} hover:shadow-md`}
-                >
-                  Add Task
-                </button>
+                {userType === "mentor" &&
+                  <div className="pt-4">
+                    <button
+                      onClick={() => navigate("/addtask")}
+                      className={`w-full mt-auto p-2 rounded-md text-center ${colors.text} border ${colors.border} hover:shadow-md`}
+                    >
+                      Add Task
+                    </button>
+                  </div>}
               </div>
             )}
           </Droppable>
@@ -124,3 +184,5 @@ export const KanbanBoard = ({ userType }: AuthFormProps) => {
     </DragDropContext>
   );
 };
+
+

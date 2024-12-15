@@ -20,7 +20,7 @@ export const Home = ({ children }: { children: React.ReactElement }) => {
         <Logo userType={userType} />
 
         {/* Profile Card Section */}
-        <div className="mt-10 h-screen overflow-y-hidden lg:mt-[1.5%] w-[98%] lg:w-[80%] lg:h-5/6">
+        <div className="mt-10 h-screen overflow-y-auto drop-shadow-md lg:mt-[1.5%] w-[98%] lg:w-11/12 lg:h-5/6">
           {childrenWithProps}
         </div>
       </div>

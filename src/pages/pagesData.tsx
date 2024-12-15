@@ -11,6 +11,9 @@ import { Achievements } from "../features/achievements/Achievements";
 import { Resources } from "../features/resources/Resources";
 import { Profile } from "../features/profile/Profile";
 import { Settings } from "../features/settings/Settings";
+import { TaskDetails } from "../features/tasks/TaskDetails";
+import { TaskForm } from "../features/tasks/TaskForm";
+import ActivityLog from "../features/tasks/ActivityLog";
 
 
 const pagesData: routerType[] = [
@@ -68,6 +71,16 @@ const pagesData: routerType[] = [
     path: "tasks",
     element: <Home children={<KanbanBoard/>}/>,
     title: "tasks",
+  },
+  {
+    path: "task",
+    element: <Home children={<TaskDetails/>}/>,
+    title: "task",
+  },
+  {
+    path: "addtask",
+    element: <Home children={<TaskForm/>}/>,
+    title: "addtask",
   },
   {
     path: "progress",

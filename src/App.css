@@ -4,3 +4,13 @@
   height: 100vh;
 }
 
+
+/* Hide scrollbar for all elements */
+::-webkit-scrollbar {
+  display: none; /* For Chrome, Safari, and Edge */
+}
+
+body {
+  -ms-overflow-style: none; /* For Internet Explorer and Edge */
+  scrollbar-width: none; /* For Firefox */
+}

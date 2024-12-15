@@ -62,7 +62,7 @@ export function SideBar() {
     ];
 
     return (
-        <div className="z-50 absolute lg:grid lg:grid-cols-[20rem_auto] h-screen lg:relative">
+        <div className="z-50 absolute lg:grid lg:grid-cols-[18rem_auto] h-screen lg:relative">
             {/* Hamburger Menu (Small Screens) */}
             <div onClick={() => setSideBarOpen(true)} className="z-10  lg:hidden">
                 <HiOutlineMenuAlt3

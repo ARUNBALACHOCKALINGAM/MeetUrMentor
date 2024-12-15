@@ -22,8 +22,6 @@ export const Chat: React.FC<ChatProps> = ({ userType }) => {
         },
     };
 
-
-
     const handleSendMessage = (): void => {
         if (inputValue.trim()) {
             setMessages([...messages, { text: inputValue, sender: userType }]);
@@ -32,9 +30,22 @@ export const Chat: React.FC<ChatProps> = ({ userType }) => {
     };
 
     return (
-        <div className="h-full md:rounded-lg py-8 px-4 relative md:bg-gray-100 md:border md:border-gray-300 md:shadow-md">
+        <div className="h-full md:rounded-lg py-6 px-4 relative md:border md:border-gray-300 md:shadow-md">
+            {/* Header Section */}
+            <div className="flex items-center mb-4 pb-4 border-b border-gray-300">
+                <div className="w-10 h-10 rounded-full bg-gray-400 flex items-center justify-center text-white font-bold text-lg mr-4">
+                    {/* Hardcoded profile picture (initials) */}
+                    A
+                </div>
+                <div>
+                    {/* Hardcoded name */}
+                    <h1 className="text-md font-semibold">Alex Mentor</h1>
+                    <p className="text-xs text-left text-gray-500">Active now</p>
+                </div>
+            </div>
+
             {/* Message Display Section */}
-            <div className="overflow-y-auto h-[90%] mb-2">
+            <div className="overflow-y-auto h-[74%] mb-2">
                 {messages.map((message, index) => (
                     <div
                         key={index}
@@ -45,17 +56,11 @@ export const Chat: React.FC<ChatProps> = ({ userType }) => {
                             className={`flex items-center ${message.sender === userType ? "flex-row-reverse" : "flex-row"
                                 }`}
                         >
-                            {/* Avatar */}
-                            <div
-                                className={`w-10 h-10 rounded-full ${message.sender === "mentor" ? "bg-[#FFC400]" : "bg-[#1D4ED8]"
-                                    } flex items-center justify-center text-white font-bold`}
-                            >
-                                {message.sender === "mentor" ? "M" : "U"}
-                            </div>
+                            
 
                             {/* Message Bubble */}
                             <div
-                                className={`${message.sender===userType ? "mr-2" : "ml-2"} p-2 rounded-lg ${colors[message.sender as "mentor" | "student"].bg
+                                className={`${message.sender === userType ? "mr-2" : "ml-2"} p-2 rounded-lg ${colors[message.sender as "mentor" | "student"].bg
                                     } ${colors[message.sender as "mentor" | "student"].border} ${colors[message.sender as "mentor" | "student"].text
                                     } border shadow-md`}
                             >
@@ -91,4 +96,3 @@ export const Chat: React.FC<ChatProps> = ({ userType }) => {
         </div>
     );
 };
-
