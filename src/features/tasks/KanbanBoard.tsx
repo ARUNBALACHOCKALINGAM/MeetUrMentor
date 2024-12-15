@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import { AuthFormProps } from "../../abstraction/types/authentication.types";
 import { useNavigate } from "react-router-dom";
@@ -44,23 +44,7 @@ export const KanbanBoard = ({ userType }: AuthFormProps) => {
 
   const [taskCompleted,setTaskCompleted] = useState(false);
 
-  const addTask = (section: SectionType) => {
-    const taskName = prompt("Enter the task name:");
-    const taskLevel = prompt("Enter task level (Level 1, Level 2, Level 3):");
-    const assignedBy = userType === "mentor" ? "mentor" : "default";
 
-    if (taskName && taskLevel) {
-      const newTask: Task = {
-        name: taskName,
-        level: taskLevel as "Level 1" | "Level 2" | "Level 3",
-        assignedBy,
-      };
-      setTasks((prev) => ({
-        ...prev,
-        [section]: [...prev[section], newTask],
-      }));
-    }
-  };
 
   const deleteTask = (section: SectionType, index: number) => {
     setTasks((prev) => ({

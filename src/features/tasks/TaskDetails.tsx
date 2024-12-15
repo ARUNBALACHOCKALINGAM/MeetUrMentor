@@ -3,7 +3,7 @@ import { UserState } from "../../abstraction/types/userData.types";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Attachments } from "./Attachments";
-import { ArrowLeftCircleIcon, ArrowLeftIcon } from "@heroicons/react/24/solid";
+import { ArrowLeftCircleIcon } from "@heroicons/react/24/solid";
 import ActivityLog from "./ActivityLog";
 
 export const TaskDetails = () => {

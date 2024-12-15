@@ -1,7 +1,7 @@
 // Types
 import { InputField } from "../../abstraction/types/inputField.types";
 
-export const Input = ({type,value,placeholder,additionalStyling,labelText,errorMessage,Icon,onBlur,onChange,field,containerStyles,labelStyles}: InputField) => {
+export const Input = ({type,disabled,value,placeholder,additionalStyling,labelText,errorMessage,Icon,onBlur,onChange,field,containerStyles,labelStyles}: InputField) => {
 
   const handleChange = (eVal:string) => {
     onChange(eVal,field);

@@ -1,4 +1,3 @@
-import React from 'react'
 
 export const History = ({colors,historyData}:any) => {
     return (

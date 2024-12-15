@@ -13,5 +13,6 @@ export interface InputField{
     field?:string;
     containerStyles?:string;
     labelStyles?:string;
+    disabled?:boolean;
   }
   

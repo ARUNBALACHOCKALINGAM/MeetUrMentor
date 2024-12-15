@@ -80,7 +80,8 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
   const dispatch = useDispatch();
 
   const handleSave = () => {
-    dispatch(setUserDetails({ formData }));
+    dispatch(setUserDetails({ ...formData }));
+    dispatch(setAvatar(formData.avatar));
     navigate("/track");
   };
 
@@ -216,11 +217,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
             additionalStyling="bg-gray-200 text-gray-600"
           />
           <Button
-            onClick={() => {
-              dispatch(setUserDetails({ ...formData }));
-              dispatch(setAvatar(formData.avatar));
-              navigate("/track");
-            }}
+            onClick={handleSave}
             buttonText="Save"
             additionalStyling={`${
               userType === "mentor" ? "bg-[#FF7324] hover:bg-[#FF6B00]" : "bg-[#4267B2] hover:bg-[#365899]"

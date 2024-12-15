@@ -19,7 +19,7 @@ export function SideBar() {
     const [sideBarOpen, setSideBarOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState(0);
     const userType = useSelector((state: UserState) => state.user?.userType || "student");
-    const unreadMessages = useSelector((state: UserState) => state.chat?.unreadCount || 0);
+    const unreadMessages = 0;
     const navigate = useNavigate();
 
     // Responsive sidebar behavior
@@ -58,7 +58,6 @@ export function SideBar() {
         { item: "Tasks", icon: <FaTasks />, to: "/tasks" },
         { item: "Progress", icon: <FaBarsProgress />, to: "/progress" },
         { item: "Achievements", icon: <FaTrophy />, to: "/achievements" },
-        { item: "Resources", icon: <FaNoteSticky />, to: "/resources" },
     ];
 
     return (
@@ -73,9 +72,7 @@ export function SideBar() {
 
             {/* Sidebar */}
             <Card
-                className={`fixed top-0 left-0 h-full text-center w-64 p-4 shadow-xl shadow-blue-gray-900/5 ${colors.bg} text-black z-40 transition-transform lg:w-full lg:relative lg:translate-x-0 ${sideBarOpen ? "translate-x-0" : "-translate-x-full"
-                    }`}
-            >
+                className={`fixed top-0 left-0 h-full text-center w-64 p-4  shadow-blue-gray-900/5 ${colors.bg} text-black z-40 transition-transform lg:w-full lg:relative lg:translate-x-0 ${sideBarOpen ? "translate-x-0" : "-translate-x-full"}`}  placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}            >
                 <div className="flex items-center text-center justify-between my-2 ml-2">
                     <div className="flex items-center">
                         <UserCircleIcon
@@ -103,19 +100,16 @@ export function SideBar() {
                 <hr className="my-2 border-blue-gray-50" />
                 {/* Main Content Area */}
                 <div className="flex flex-col items-center flex-grow text-center">
-                    <List className="text-md flex flex-col items-center w-full">
+                    <List className="text-md flex flex-col items-center w-full" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
                         {items.map((item, index) => (
                             <ListItem
-                                className={`text-center ${selectedItem === index ? colors.selectedText : colors.text
-                                    } ${selectedItem === index ? colors.selectedBg : ""} ${colors.border
-                                    } ${colors.hoverBg} mt-2 w-full cursor-pointer`}
+                                className={`text-center ${selectedItem === index ? colors.selectedText : colors.text} ${selectedItem === index ? colors.selectedBg : ""} ${colors.border} ${colors.hoverBg} mt-2 w-full cursor-pointer`}
                                 key={item.item}
                                 onClick={() => {
                                     setSelectedItem(index);
                                     navigate(item.to);
                                     setSideBarOpen(false);
-                                }}
-                            >
+                                } } placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}                            >
                                 <div className="flex items-center justify-between w-full">
                                     <span className="flex items-center">
                                         {item.icon}
@@ -139,15 +133,13 @@ export function SideBar() {
                     <div className="text-sm mt-auto w-full">
                         <ListItem
                             className={`${colors.text} ${colors.border} hover:${colors.selectedText} hover:${colors.selectedBg} cursor-pointer`}
-                            onClick={() => navigate("/profile")}
-                        >
+                            onClick={() => navigate("/profile")} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}                        >
                             <UserCircleIcon className="h-5 w-5 mr-2" />
                             Profile
                         </ListItem>
                         <ListItem
                             className={`${colors.text} ${colors.border} hover:${colors.selectedText} hover:${colors.selectedBg} cursor-pointer`}
-                            onClick={() => navigate("/settings")}
-                        >
+                            onClick={() => navigate("/settings")} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}                        >
                             <Cog6ToothIcon className="h-5 w-5 mr-2" />
                             Settings
                         </ListItem>
@@ -155,8 +147,7 @@ export function SideBar() {
                             className={`${colors.text} ${colors.border} hover:${colors.selectedText} hover:${colors.selectedBg} cursor-pointer`}
                             onClick={() => {
                                 navigate("/signin");
-                            }}
-                        >
+                            } }  placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}                        >
                             <PowerIcon className="h-5 w-5 mr-2" />
                             Log Out
                         </ListItem>

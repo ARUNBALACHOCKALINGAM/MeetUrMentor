@@ -5,3 +5,10 @@ export interface Comments {
     path: string;
     element: JSX.Element;
   }
+
+export interface Task {
+    name: string,
+    points: number,
+    difficulty: string,
+    status: string,
+};

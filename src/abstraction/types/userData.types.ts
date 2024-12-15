@@ -15,6 +15,7 @@ export interface UserState {
         company: string;
         role: string;
         track: string;
+        avatar:string;
     }
 }
 

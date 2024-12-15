@@ -8,12 +8,10 @@ import { Chat } from "../features/chat/Chat";
 import { KanbanBoard } from "../features/tasks/KanbanBoard";
 import { Progress } from "../features/progress/Progress";
 import { Achievements } from "../features/achievements/Achievements";
-import { Resources } from "../features/resources/Resources";
 import { Profile } from "../features/profile/Profile";
 import { Settings } from "../features/settings/Settings";
 import { TaskDetails } from "../features/tasks/TaskDetails";
 import { TaskForm } from "../features/tasks/TaskForm";
-import ActivityLog from "../features/tasks/ActivityLog";
 
 
 const pagesData: routerType[] = [
@@ -91,11 +89,6 @@ const pagesData: routerType[] = [
     path: "achievements",
     element: <Home children={<Achievements/>}/>,
     title: "achievements",
-  },
-  {
-    path: "resources",
-    element: <Home children={<Resources/>}/>,
-    title: "resources",
   },
   {
     path: "profile",

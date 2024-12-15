@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Comments from './Comments';
 import { History } from './History';
 import { FaSortAmountDown } from "react-icons/fa";
