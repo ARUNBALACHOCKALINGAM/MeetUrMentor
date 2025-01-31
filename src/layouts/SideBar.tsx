@@ -14,6 +14,8 @@ import { FaBarsProgress, FaMessage, FaNoteSticky } from "react-icons/fa6";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { UserState } from "../abstraction/types/userData.types";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase";
 
 export function SideBar() {
     const [sideBarOpen, setSideBarOpen] = useState(false);
@@ -21,6 +23,17 @@ export function SideBar() {
     const userType = useSelector((state: UserState) => state.user?.userType || "student");
     const unreadMessages = 0;
     const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        try {
+            await signOut(auth);
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            navigate('/');
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     // Responsive sidebar behavior
     useEffect(() => {
@@ -145,9 +158,7 @@ export function SideBar() {
                         </ListItem>
                         <ListItem
                             className={`${colors.text} ${colors.border} hover:${colors.selectedText} hover:${colors.selectedBg} cursor-pointer`}
-                            onClick={() => {
-                                navigate("/signin");
-                            } }  placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}                        >
+                            onClick={handleLogout}  placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}                        >
                             <PowerIcon className="h-5 w-5 mr-2" />
                             Log Out
                         </ListItem>

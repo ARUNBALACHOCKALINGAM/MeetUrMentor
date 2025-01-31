@@ -1,12 +1,13 @@
 // INBUILT IMPORTS
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { json, useNavigate } from "react-router-dom";
 
 // EXTERNAL IMPORTS
 import { FaGithubAlt } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { AiOutlineLock, AiOutlineMail } from "react-icons/ai";
+import { auth, githubAuthProvider, googleAuthProvider } from '../../../firebase';
 
 // INTERNAL COMPONENTS
 import { Input } from "../../../components/form/Input";
@@ -17,6 +18,7 @@ import { NotRegisteredYet } from "../../../components/form/NotRegisteredYet";
 import { setStudentLoginInfo } from "../../../data/store/student";
 import { setMentorLoginInfo } from "../../../data/store/mentor";
 import { AuthFormProps } from "../../../abstraction/types/authentication.types";
+import { signInWithPopup } from "firebase/auth";
 
 
 
@@ -25,7 +27,7 @@ export const AuthForm = ({ type, userType }: AuthFormProps) => {
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -48,16 +50,33 @@ export const AuthForm = ({ type, userType }: AuthFormProps) => {
 
   // Event handlers based on user type
   const handleSignIn = () => {
-    if (userType === "student") {
-      console.log("student sign in API call");
-      dispatch(setStudentLoginInfo({ email }));
-      navigate("/details");
-    } else {
-      console.log("mentor sign in API call");
-      dispatch(setMentorLoginInfo({ email }));
-      navigate("/details");
+
+  };
+  // Event handlers based on user type
+  const handleGoogleSignIn = async () => {
+    try {
+      const result = await signInWithPopup(auth, googleAuthProvider);
+      localStorage.setItem('token', result.user.getIdToken().toString());
+      localStorage.setItem('user', JSON.stringify(result.user));
+      navigate('/home');
+    } catch (error) {
+      console.log(error);
     }
   };
+  // Event handlers based on user type
+  const handleGithubSignIn = async () => {
+    try {
+      const result = await signInWithPopup(auth, githubAuthProvider);
+      localStorage.setItem('token', result.user.getIdToken().toString());
+      localStorage.setItem('user', JSON.stringify(result.user));
+      navigate('/home');
+    } catch (error) {
+
+      console.log(error);
+    }
+  };
+
+
 
   const handleSignUp = () => {
     if (userType === "student") {
@@ -72,19 +91,19 @@ export const AuthForm = ({ type, userType }: AuthFormProps) => {
   };
 
   return (
-    <div className={`h-full xl:w-9/12 md:w-9/12 w-11/12 mx-auto md:mt-0 ${type==="Signin" ? "lg:mt-[6.5%]" : "lg:mt-[12.5%]"}`}>
+    <div className={`h-full xl:w-9/12 md:w-9/12 w-11/12 mx-auto md:mt-0 ${type === "Signin" ? "lg:mt-[6.5%]" : "lg:mt-[12.5%]"}`}>
       <Welcome userType={userType} type={type} />
 
       <div className="flex justify-between w-full mt-4">
         <Button
           Icon={<FcGoogle className="w-8 sm:w-5" />}
-          onClick={type === "Signin" ? handleSignIn : handleSignUp}
+          onClick={handleGoogleSignIn}
           buttonText={type === "Signin" ? "Sign in with Google" : "Sign up with Google"}
           additionalStyling="border-2 custom-width-45 mr-2 text-2xl"
         />
         <Button
           Icon={<FaGithubAlt className="w-20 sm:w-5" />}
-          onClick={type === "Signin" ? handleSignIn : handleSignUp}
+          onClick={handleGithubSignIn}
           buttonText={type === "Signin" ? "Sign in with Github" : "Sign up with Github"}
           additionalStyling="border-2 bg-white text-black custom-width-45 ml-2"
         />
@@ -107,18 +126,18 @@ export const AuthForm = ({ type, userType }: AuthFormProps) => {
         onBlur={validateEmail}
       />
 
-      {type === "Signin" && (
-        <Input
-          labelText="Password"
-          placeholder="Password"
-          Icon={<AiOutlineLock />}
-          type="password"
-          value={password}
-          errorMessage={passwordError}
-          onChange={setPassword}
-          onBlur={validatePassword}
-        />
-      )}
+
+      <Input
+        labelText="Password"
+        placeholder="Password"
+        Icon={<AiOutlineLock />}
+        type="password"
+        value={password}
+        errorMessage={passwordError}
+        onChange={setPassword}
+        onBlur={validatePassword}
+      />
+
 
       {type === "Signin" && <RememberSection userType={userType} />}
 
