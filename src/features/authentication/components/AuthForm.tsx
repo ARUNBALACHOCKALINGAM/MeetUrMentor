@@ -1,7 +1,7 @@
 // INBUILT IMPORTS
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { json, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 // EXTERNAL IMPORTS
 import { FaGithubAlt } from "react-icons/fa";
@@ -15,10 +15,13 @@ import { Button } from "../../../components/ui/Button";
 import { Welcome } from "../../../components/ui/Welcome";
 import { RememberSection } from "../../../components/form/RememberSection";
 import { NotRegisteredYet } from "../../../components/form/NotRegisteredYet";
-import { setStudentLoginInfo } from "../../../data/store/student";
-import { setMentorLoginInfo } from "../../../data/store/mentor";
 import { AuthFormProps } from "../../../abstraction/types/authentication.types";
 import { signInWithPopup } from "firebase/auth";
+import axiosInstance from "../../../utils/axiosInstance";
+
+
+//REDUX
+import {loginSuccess, loginFailed, registerSuccess, registerFailed} from "../../../data/store/user";
 
 
 
@@ -27,6 +30,7 @@ export const AuthForm = ({ type, userType }: AuthFormProps) => {
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [message,setMessage] = useState('');
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -48,10 +52,30 @@ export const AuthForm = ({ type, userType }: AuthFormProps) => {
     }
   };
 
-  // Event handlers based on user type
-  const handleSignIn = () => {
-
+  const handleSignIn = async () => {
+    try {
+      const result = await axiosInstance.post("/auth/login", {
+        email: email,
+        password: password,
+      });
+  
+      if (result.status === 200) {
+        localStorage.setItem("user", result.data?.email);
+        dispatch(loginSuccess()); // Dispatch login success action
+        navigate("/home"); // Navigate after the modal closes
+      }
+    } catch (error:any) {
+      if (error.response && error.response.status === 400) {
+        const errorMessage = error.response.data?.message || "Login Failed. Please check your credentials";
+        dispatch(loginFailed({ message: errorMessage })); // Dispatch login failed action with backend message
+      } else {
+        dispatch(loginFailed({ message: "An unexpected error occurred. Please try again." }));
+      }
+      console.error("Login error:", error);
+    }
   };
+
+
   // Event handlers based on user type
   const handleGoogleSignIn = async () => {
     try {
@@ -78,15 +102,27 @@ export const AuthForm = ({ type, userType }: AuthFormProps) => {
 
 
 
-  const handleSignUp = () => {
-    if (userType === "student") {
-      console.log("student sign up API call");
-      dispatch(setStudentLoginInfo({ email }));
-      navigate("/details");
-    } else {
-      console.log("mentor sign up API call");
-      dispatch(setMentorLoginInfo({ email }));
-      navigate("/details");
+  const handleSignUp = async () => {
+    try {
+      const result = await axiosInstance.post("/auth/register", {
+        email: email,
+        password: password,
+      });
+
+      // If registration is successful
+      if (result.status === 200) {
+        dispatch(registerSuccess()); // Dispatch register success action
+        navigate("/details"); // Navigate to the details page
+      }
+
+    } catch (error:any) {
+      if (error.response && error.response.status === 400) {
+        const errorMessage = error.response.data?.message || "Registration Failed. Please check your credentials";
+        dispatch(registerFailed({ message: errorMessage })); // Dispatch login failed action with backend message
+      } else {
+        dispatch(registerFailed({ message: "An unexpected error occurred. Please try again." }));
+      }
+      console.error("Login error:", error);
     }
   };
 

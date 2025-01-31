@@ -11,11 +11,13 @@ import { HiOutlineMenuAlt3 } from "react-icons/hi";
 import { IoMdClose } from "react-icons/io";
 import { FaChalkboardTeacher, FaTasks, FaTrophy } from "react-icons/fa";
 import { FaBarsProgress, FaMessage, FaNoteSticky } from "react-icons/fa6";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { UserState } from "../abstraction/types/userData.types";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
+import { logoutSuccess } from "../data/store/user";
+import axiosInstance from "../utils/axiosInstance";
 
 export function SideBar() {
     const [sideBarOpen, setSideBarOpen] = useState(false);
@@ -23,10 +25,15 @@ export function SideBar() {
     const userType = useSelector((state: UserState) => state.user?.userType || "student");
     const unreadMessages = 0;
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const handleLogout = async () => {
         try {
             await signOut(auth);
+            const result = await axiosInstance.post("/logout");
+            if(result.status==200){
+                dispatch(logoutSuccess())
+            }
             localStorage.removeItem('token');
             localStorage.removeItem('user');
             navigate('/');

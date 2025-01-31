@@ -16,7 +16,12 @@ const initialState = {
   company: "",
   role: "",
   track: "",
-  avatar: "" // New field for avatar
+  avatar: "",
+  isLoggedIn: false,
+  isRegistered: false,
+  modalMessage: "",
+  isModalOpen: false,
+  isLoggedOut:false,
 };
 
 const userSlice = createSlice({
@@ -46,7 +51,33 @@ const userSlice = createSlice({
     setAvatar: (state, action) => ({
       ...state,
       avatar: action.payload // Reducer to set avatar
-    })
+    }),
+    loginSuccess: (state) => {
+      state.isLoggedIn = true;
+      state.modalMessage = "Login successful!";
+      state.isModalOpen = true;
+    },
+    loginFailed: (state,action) => {
+      state.modalMessage = action.payload.message;
+      state.isModalOpen = true;
+    },
+    logoutSuccess: (state) => {
+      state.modalMessage = "Logged out successfully";
+      state.isModalOpen = true;
+    },
+    registerSuccess: (state) => {
+      state.isRegistered = true;
+      state.modalMessage = "User registered successfully!";
+      state.isModalOpen = true;
+    },
+    registerFailed: (state,action) => {
+      state.modalMessage = action.payload.message;
+      state.isModalOpen = true;
+    },
+    closeModal: (state) => {
+      state.isModalOpen = false;
+      state.modalMessage = "";
+    },
   }
 });
 
@@ -56,7 +87,13 @@ export const {
   setUserPrompts,
   setUserDetails,
   setUserType,
-  setAvatar
+  setAvatar,
+  loginSuccess,
+  loginFailed,
+  logoutSuccess,
+  registerSuccess,
+  registerFailed,
+  closeModal
 } = userSlice.actions;
 
 export default userSlice.reducer;
