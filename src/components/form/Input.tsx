@@ -5,7 +5,7 @@ export const Input = ({type,disabled,value,placeholder,additionalStyling,labelTe
 
   const handleChange = (eVal:string) => {
     onChange(eVal,field);
-    onBlur() // Reset error message on input change
+    onBlur && onBlur()  // Reset error message on input change
   };
 
 

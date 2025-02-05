@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setAvatar, setUserDetails } from "../../data/store/user";
+import { addingDetailsFailed, setAvatar, setUserDetails } from "../../data/store/user";
 import { Banner } from "../../layouts/Banner";
 import { Button } from "../../components/ui/Button";
 import { Input } from "../../components/form/Input";
@@ -43,21 +43,78 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const validateForm = () => {
+    console.log('Hi')
     const newErrors: Record<string, string> = {};
-    if (!formData.username) newErrors.username = "Username is required";
-    if (!formData.highestQualification) newErrors.highestQualification = "Qualification is required";
-    if (!formData.university) newErrors.university = "University is required";
-    if (!formData.cgpa) newErrors.cgpa = "CGPA is required";
+
+    // Validate username
+    if (!formData.username.trim()) {
+      newErrors.username = "Username is required";
+    }
+
+    // Validate about
+    if (!formData.about.trim()) {
+      newErrors.about = "About is required";
+    }
+
+    if (userType === "student") {
+      // Validate highestQualification
+      if (!formData.highestQualification.trim()) {
+        newErrors.highestQualification = "Highest qualification is required";
+      }
+
+      // Validate university
+      if (!formData.university.trim()) {
+        newErrors.university = "University is required";
+      }
+
+      // Validate CGPA
+      if (!formData.cgpa.trim()) {
+        newErrors.cgpa = "CGPA is required";
+      } else if (isNaN(Number(formData.cgpa)) || Number(formData.cgpa) < 0 || Number(formData.cgpa) > 10) {
+        newErrors.cgpa = "CGPA must be a number between 0 and 10";
+      }
+
+    } else {
+      // Validate company
+      if (!formData.company.trim()) {
+        newErrors.company = "Highest qualification is required";
+      }
+
+      // Validate role
+      if (!formData.role.trim()) {
+        newErrors.role = "University is required";
+      }
+    }
+
+    // Validate LinkedIn
+    if (!formData.linkedin.trim()) {
+      newErrors.linkedin = "LinkedIn profile is required";
+    } else if (!/^https?:\/\/(www\.)?linkedin\.com\/in\/[a-zA-Z0-9-]+\/?$/.test(formData.linkedin)) {
+      newErrors.linkedin = "Invalid LinkedIn URL";
+    }
+
+    // Validate GitHub
+    if (!formData.github.trim()) {
+      newErrors.github = "GitHub profile is required";
+    } else if (!/^https?:\/\/(www\.)?github\.com\/[a-zA-Z0-9-]+\/?$/.test(formData.github)) {
+      newErrors.github = "Invalid GitHub URL";
+    }
+
+    // Validate avatar
+    if (!formData.avatar.trim()) {
+      newErrors.avatar = "Avatar is required";
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const socialMediaFields = [
-    { name: "linkedin", logo: <FaLinkedin />, placeholder: "LinkedIn Profile URL" },
-    { name: "github", logo: <FaGithub />, placeholder: "GitHub Profile URL" },
-    { name: "leetcode", logo: <FaCode />, placeholder: "Leetcode Profile URL" },
-    { name: "codechef", logo: <FaDev />, placeholder: "CodeChef Profile URL" },
-    { name: "portfolio", logo: <FaGlobe />, placeholder: "Portfolio URL" },
+    { name: "linkedin", logo: <FaLinkedin />, placeholder: "LinkedIn" },
+    { name: "github", logo: <FaGithub />, placeholder: "GitHub" },
+    { name: "leetcode", logo: <FaCode />, placeholder: "Leetcode" },
+    { name: "codechef", logo: <FaDev />, placeholder: "CodeChef" },
+    { name: "portfolio", logo: <FaGlobe />, placeholder: "Portfolio" },
   ];
 
   const mentorFields = [
@@ -67,7 +124,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
 
   const studentFields = [
     { name: "university", logo: <FaUniversity />, placeholder: "University Name" },
-    { name: "highestQualification", logo: <FaGraduationCap />, placeholder: "Highest Qualification" },
+    { name: "highestqualification", logo: <FaGraduationCap />, placeholder: "Highest Qualification" },
     { name: "cgpa", logo: <FaClipboardList />, placeholder: "CGPA" },
   ];
 
@@ -79,10 +136,16 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const handleSave = () => {
-    dispatch(setUserDetails({ ...formData }));
-    dispatch(setAvatar(formData.avatar));
-    navigate("/track");
+  const handleSave = (event: Event | undefined) => {
+    event?.preventDefault();
+    if (formData.username || formData.about || formData.avatar){
+      dispatch(setUserDetails({ ...formData }));
+      dispatch(setAvatar(formData.avatar));
+      navigate("/track");
+    } else {
+      dispatch(addingDetailsFailed({ message: "Please fill the required field(s)" }))
+    }
+
   };
 
   return (
@@ -158,17 +221,17 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
             {(userType === "mentor" ? mentorFields : studentFields).map(
               (field) => (
-                <div key={field.name} className="sm:col-span-2">
+                <div key={field.name} className="whitespace-nowrap sm:col-span-2">
                   <Input
                     type="text"
                     value={formData[field.name as keyof FormData]}
                     onChange={handleInputChange}
                     field={field.name.toLowerCase()}
                     placeholder={field.placeholder}
-                    labelText={field.name}
+                    labelText={field.placeholder}
                     labelStyles={`font-semibold ${userType === "mentor"
-                        ? "text-[#FF7324]"
-                        : "text-[#4267B2]"
+                      ? "text-[#FF7324]"
+                      : "text-[#4267B2]"
                       }`}
                     onBlur={validateForm}
                   />
@@ -190,7 +253,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
             {socialMediaFields.map((field, index) => (
               <div
                 key={field.name}
-                className={`sm:col-span-${index === 0 ? "3" : "2"}`}
+                className={`whitespace-nowrap sm:col-span-${index === 0 ? "3" : "2"}`}
               >
                 <Input
                   type="text"
@@ -198,7 +261,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
                   onChange={handleInputChange}
                   field={field.name.toLowerCase()}
                   placeholder={field.placeholder}
-                  labelText={field.name}
+                  labelText={field.placeholder}
                   labelStyles={`font-semibold ${userType === "mentor" ? "text-[#FF7324]" : "text-[#4267B2]"
                     }`}
                   Icon={field.logo}
@@ -217,11 +280,10 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
             additionalStyling="bg-gray-200 text-gray-600"
           />
           <Button
-            onClick={handleSave}
+            onClick={() => handleSave(event)}
             buttonText="Save"
-            additionalStyling={`${
-              userType === "mentor" ? "bg-[#FF7324] hover:bg-[#FF6B00]" : "bg-[#4267B2] hover:bg-[#365899]"
-            } text-white`}
+            additionalStyling={`${userType === "mentor" ? "bg-[#FF7324] hover:bg-[#FF6B00]" : "bg-[#4267B2] hover:bg-[#365899]"
+              } text-white`}
           />
         </div>
       </div>

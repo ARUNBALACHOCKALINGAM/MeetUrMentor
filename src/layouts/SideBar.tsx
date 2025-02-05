@@ -30,7 +30,7 @@ export function SideBar() {
     const handleLogout = async () => {
         try {
             await signOut(auth);
-            const result = await axiosInstance.post("/logout");
+            const result = await axiosInstance.post("/auth/logout");
             if(result.status==200){
                 dispatch(logoutSuccess())
             }

@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  userType: "student",
+  userType: "",
   email: "",
   username: "",
   about: "",
@@ -22,6 +22,7 @@ const initialState = {
   modalMessage: "",
   isModalOpen: false,
   isLoggedOut:false,
+  isDetailsValid:false,
 };
 
 const userSlice = createSlice({
@@ -37,10 +38,6 @@ const userSlice = createSlice({
       ...action.payload
     }),
     setUserDetails: (state, action) => ({
-      ...state,
-      ...action.payload
-    }),
-    setUserPrompts: (state, action) => ({
       ...state,
       ...action.payload
     }),
@@ -74,17 +71,21 @@ const userSlice = createSlice({
       state.modalMessage = action.payload.message;
       state.isModalOpen = true;
     },
+    addingDetailsFailed: (state,action) => {
+      state.modalMessage = action.payload.message;
+      state.isModalOpen = true;
+    },
     closeModal: (state) => {
       state.isModalOpen = false;
       state.modalMessage = "";
     },
+
   }
 });
 
 export const {
   setUserLoginInfo,
   setUserTrack,
-  setUserPrompts,
   setUserDetails,
   setUserType,
   setAvatar,
@@ -93,6 +94,7 @@ export const {
   logoutSuccess,
   registerSuccess,
   registerFailed,
+  addingDetailsFailed,
   closeModal
 } = userSlice.actions;
 

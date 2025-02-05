@@ -21,7 +21,7 @@ import axiosInstance from "../../../utils/axiosInstance";
 
 
 //REDUX
-import {loginSuccess, loginFailed, registerSuccess, registerFailed} from "../../../data/store/user";
+import {loginSuccess, loginFailed, registerSuccess, registerFailed, setUserLoginInfo} from "../../../data/store/user";
 
 
 
@@ -58,6 +58,8 @@ export const AuthForm = ({ type, userType }: AuthFormProps) => {
         email: email,
         password: password,
       });
+
+      dispatch(setUserLoginInfo({email:email,userType:userType}));
   
       if (result.status === 200) {
         localStorage.setItem("user", result.data?.email);
@@ -103,10 +105,12 @@ export const AuthForm = ({ type, userType }: AuthFormProps) => {
 
 
   const handleSignUp = async () => {
+    dispatch(setUserLoginInfo({email:email,userType:userType}));
     try {
       const result = await axiosInstance.post("/auth/register", {
         email: email,
         password: password,
+        usertype:userType
       });
 
       // If registration is successful
