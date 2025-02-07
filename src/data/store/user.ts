@@ -2,6 +2,8 @@ import { createSlice, createAsyncThunk, isRejectedWithValue } from "@reduxjs/too
 import axiosInstance from "../../utils/axiosInstance";
 
 
+
+
 const initialState = {
   userType: localStorage.getItem("userType") || "student",
   email: "",
@@ -25,7 +27,19 @@ const initialState = {
   isModalOpen: false,
   isLoggedOut: false,
   isDetailsValid: false,
+  matchedUser:null,
 };
+
+
+export const fetchUserDetails = createAsyncThunk("user/fetchUserDetails",async (email:any) => {
+  try {
+    console.log(email);
+    const result = await axiosInstance.get(`/user/details?email=${email}`);
+    return result.data;
+  } catch (error:any) {
+    isRejectedWithValue(error?.message || "Error while fetching user data");
+  }
+})
 
 
 const userSlice = createSlice({
@@ -82,6 +96,13 @@ const userSlice = createSlice({
       state.isModalOpen = false;
       state.modalMessage = "";
     },
+  },
+  extraReducers(builder){
+    builder.addCase(fetchUserDetails.fulfilled,(state,action)=>{
+      Object.assign(state,action.payload);
+    }).addCase(fetchUserDetails.rejected,(state,action)=>{
+      console.log(action.payload);
+    })
   }
 });
 

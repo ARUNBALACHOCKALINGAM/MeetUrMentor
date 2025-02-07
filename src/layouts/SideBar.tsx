@@ -22,7 +22,8 @@ import axiosInstance from "../utils/axiosInstance";
 export function SideBar() {
     const [sideBarOpen, setSideBarOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState(0);
-    const userType = useSelector((state: UserState) => state.user?.userType || "student");
+    const user = useSelector((state: UserState) => state.user);
+    const userType  = user?.userType || "student";
     const unreadMessages = 0;
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -41,6 +42,13 @@ export function SideBar() {
             console.log(error);
         }
     }
+
+    useEffect(() => {
+        if (window.location.pathname !== "/home") {
+            navigate("/home", { replace: true });
+        }
+    }, []);
+    
 
     // Responsive sidebar behavior
     useEffect(() => {
@@ -107,7 +115,7 @@ export function SideBar() {
                                     : "text-studentButtonColor"
                                 }`}
                         >
-                            Hey Arun!
+                            Hey {user.username}
                         </h1>
                     </div>
                     {/* Close Button for Small Screens */}

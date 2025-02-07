@@ -2,10 +2,18 @@ import { SideBar } from '../layouts/SideBar';
 import { Logo } from '../layouts/Logo';
 import { useSelector } from 'react-redux';
 import { UserState } from '../abstraction/types/userData.types';
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useAppDispatch } from '../utils/hooks/useAppDispatch';
+import { fetchUserDetails } from '../data/store/user';
 
 export const Home = ({ children }: { children: React.ReactElement }) => {
   const userType = useSelector((state: UserState) => state.user.userType);
+
+  const dispatch = useAppDispatch();
+
+  useEffect(()=>{
+    dispatch(fetchUserDetails(localStorage.getItem("email")));
+  },[dispatch]);
 
   // Clone the children to inject userType as a prop
   const childrenWithProps = React.cloneElement(children, { userType });

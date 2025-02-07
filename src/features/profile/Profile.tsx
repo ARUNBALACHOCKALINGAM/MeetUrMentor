@@ -4,26 +4,11 @@ import { UserState } from '../../abstraction/types/userData.types';
 import { FaEdit, FaSave } from 'react-icons/fa';
 
 export const Profile = () => {
-  const userType = useSelector((state: UserState) => state.user.userType);
+  const user = useSelector((state: UserState) => state.user);
 
-  const initialUserDetail = {
-    userType: 'student',
-    email: 'abclingam1@gmail.com',
-    username: 'Arunbala',
-    about: 'A lead developer at Big4 company',
-    highestQualification: 'BTECH',
-    university: 'VIT',
-    cgpa: '8.8',
-    linkedIn: 'linkedin.com/arunbala',
-    github: 'github.com/ARUNBALACHOCKALINGAM',
-    leetcode: '',
-    codechef: '',
-    portfolio: '',
-    company: 'Natwest',
-    role: 'Software developer',
-    track: 'Front-end',
-    avatar: 'src/assets/aiavatars/jack.png',
-  };
+  const initialUserDetail = user;
+  const userType = user?.userType || "student";
+  
 
   const [userDetail, setUserDetail] = useState(initialUserDetail);
   const [editingField, setEditingField] = useState<string | null>(null);
@@ -66,7 +51,7 @@ export const Profile = () => {
     <div className={`p-6 ${colors.bg} ${colors.border} ${colors.shadow} rounded-lg text-left mx-auto`}>
       <div className="flex items-center mb-6">
         <img
-          src={userDetail.avatar}
+          src={`src/assets/aiavatars/${userDetail.avatar}`}
           alt="Avatar"
           className="w-24 h-24 rounded-full mr-4 border border-gray-300"
         />
