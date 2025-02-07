@@ -54,8 +54,17 @@ export const PersonalCard = ({ userType }: AuthFormProps) => {
           shadow: "shadow-xs hover:shadow-[#1D4ED8]",
         };
 
-  const handleAction = () => {
-    setIsFading(true);
+  const handleAction = async () => {
+    try {
+      const result = await axiosInstance.post('/user/like',{email:localStorage.getItem("email"),likedUserEmail:currentProfile.email});
+      if(result.statusText === "OK"){
+        console.log(result.data);
+        setIsFading(true);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
     setTimeout(() => {
       setIsFading(false);
       setCurrentProfileIndex((prevIndex) => (prevIndex + 1) % profiles.length);
@@ -135,6 +144,7 @@ export const PersonalCard = ({ userType }: AuthFormProps) => {
                 : "text-blue-500 shadow-blue-500"
             } border border-2 shadow-md rounded-full w-16 h-16 flex items-center justify-center transition-all ${colors.shadow}`}
             onClick={handleAction}
+          
           >
             <FaHeart size={28} />
           </button>

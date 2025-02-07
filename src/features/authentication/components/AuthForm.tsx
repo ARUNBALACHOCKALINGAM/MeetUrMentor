@@ -57,6 +57,7 @@ export const AuthForm = ({ type, userType }: AuthFormProps) => {
       const result = await axiosInstance.post("/auth/login", {
         email: email,
         password: password,
+        userType:userType
       });
 
       dispatch(setUserLoginInfo({email:email,userType:userType}));
