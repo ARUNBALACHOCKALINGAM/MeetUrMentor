@@ -7,7 +7,6 @@ export const Welcome = ({ type, userType }: AuthFormProps) => {
   const dispatch = useDispatch();
 
   const handleRoleChange = (newUserType: "mentor" | "student") => {
-    console.log(newUserType)
     dispatch(setUserType(newUserType));
   };
 

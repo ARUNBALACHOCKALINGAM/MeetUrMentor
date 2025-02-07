@@ -1,7 +1,9 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, isRejectedWithValue } from "@reduxjs/toolkit";
+import axiosInstance from "../../utils/axiosInstance";
+
 
 const initialState = {
-  userType: "",
+  userType: localStorage.getItem("userType") || "student",
   email: "",
   username: "",
   about: "",
@@ -21,9 +23,10 @@ const initialState = {
   isRegistered: false,
   modalMessage: "",
   isModalOpen: false,
-  isLoggedOut:false,
-  isDetailsValid:false,
+  isLoggedOut: false,
+  isDetailsValid: false,
 };
+
 
 const userSlice = createSlice({
   name: "user",
@@ -54,7 +57,7 @@ const userSlice = createSlice({
       state.modalMessage = "Login successful!";
       state.isModalOpen = true;
     },
-    loginFailed: (state,action) => {
+    loginFailed: (state, action) => {
       state.modalMessage = action.payload.message;
       state.isModalOpen = true;
     },
@@ -67,11 +70,11 @@ const userSlice = createSlice({
       state.modalMessage = "User registered successfully!";
       state.isModalOpen = true;
     },
-    registerFailed: (state,action) => {
+    registerFailed: (state, action) => {
       state.modalMessage = action.payload.message;
       state.isModalOpen = true;
     },
-    addingDetailsFailed: (state,action) => {
+    addingDetailsFailed: (state, action) => {
       state.modalMessage = action.payload.message;
       state.isModalOpen = true;
     },
@@ -79,7 +82,6 @@ const userSlice = createSlice({
       state.isModalOpen = false;
       state.modalMessage = "";
     },
-
   }
 });
 

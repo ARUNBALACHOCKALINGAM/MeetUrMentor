@@ -35,11 +35,13 @@ const Track = () => {
   const user = useSelector((state: UserState) => state.user);
   const userType = user?.userType;
   const dispatch = useDispatch();
+  const email = localStorage.getItem("email");
 
   const handleRoleSelection = async (role: String) => {
     dispatch(setUserTrack({ track: role }));
     try {
-      const result = await axiosInstance.post("/user/details",user);
+      const userDetails = await axiosInstance.get(`/user/details?email=${email}`);
+      const result = await axiosInstance.post("/user/details",{...userDetails.data,track:role});
       if(result.status == 200){
         navigate('/home')
         console.log(result.data);

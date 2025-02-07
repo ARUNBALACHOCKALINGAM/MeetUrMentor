@@ -1,15 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./data/store/store"; // Import your Redux store
 import Router from "./pages/router";
-import {Alert} from "./components/ui/Alert"; // Import your Modal component
-import { useSelector, useDispatch } from "react-redux";
+import { Alert } from "./components/ui/Alert"; // Import your Modal component
+import { useSelector } from "react-redux";
 import { closeModal } from "./data/store/user"; // Import the closeModal action
+import { useAppDispatch } from "./utils/hooks/useAppDispatch";
 
 const App = () => {
-  const dispatch = useDispatch();
-  const { isModalOpen, modalMessage ,userType} = useSelector((state:any) => state.user);
+  const dispatch = useAppDispatch();
+  const { isModalOpen, modalMessage, userType} = useSelector((state: any) => state.user);
+
+
+
 
   // Auto-close the modal after 3 seconds
   React.useEffect(() => {
@@ -24,8 +28,10 @@ const App = () => {
 
   return (
     <BrowserRouter>
-      <Router />
-      {isModalOpen && <Alert message={modalMessage} onClose={() => dispatch(closeModal())} userType={userType} />}
+
+        <Router />
+        {isModalOpen && <Alert message={modalMessage} onClose={() => dispatch(closeModal())} userType={userType} />}
+  
     </BrowserRouter>
   );
 };

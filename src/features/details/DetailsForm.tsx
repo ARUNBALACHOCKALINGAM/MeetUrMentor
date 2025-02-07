@@ -1,13 +1,15 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { addingDetailsFailed, setAvatar, setUserDetails } from "../../data/store/user";
+import { addingDetailsFailed,setAvatar, setUserDetails } from "../../data/store/user";
 import { Banner } from "../../layouts/Banner";
 import { Button } from "../../components/ui/Button";
 import { Input } from "../../components/form/Input";
 import { Textarea } from "../../components/form/TextArea";
 import { FaLinkedin, FaGithub, FaCode, FaDev, FaGlobe, FaUserTie, FaBriefcase, FaUniversity, FaGraduationCap, FaClipboardList } from 'react-icons/fa';
 import { FormData } from "../../abstraction/types/userData.types";
+import { useAppDispatch } from "../../utils/hooks/useAppDispatch";
+import axiosInstance from "../../utils/axiosInstance";
 
 
 type DetailsFormProps = {
@@ -30,6 +32,9 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
     portfolio: "",
     avatar: ""
   });
+
+  const dispatch = useAppDispatch();
+
 
   // Fix: Explicitly type `field` as keyof FormData
   const handleInputChange = (value: string, field?: string) => {
@@ -56,11 +61,9 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
       newErrors.about = "About is required";
     }
 
+
+ 
     if (userType === "student") {
-      // Validate highestQualification
-      if (!formData.highestQualification.trim()) {
-        newErrors.highestQualification = "Highest qualification is required";
-      }
 
       // Validate university
       if (!formData.university.trim()) {
@@ -74,15 +77,15 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
         newErrors.cgpa = "CGPA must be a number between 0 and 10";
       }
 
-    } else {
+    } else if(userType==="mentor") {
       // Validate company
       if (!formData.company.trim()) {
-        newErrors.company = "Highest qualification is required";
+        newErrors.company = "Company is required";
       }
 
       // Validate role
       if (!formData.role.trim()) {
-        newErrors.role = "University is required";
+        newErrors.role = "Role is required";
       }
     }
 
@@ -93,12 +96,12 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
       newErrors.linkedin = "Invalid LinkedIn URL";
     }
 
-    // Validate GitHub
-    if (!formData.github.trim()) {
-      newErrors.github = "GitHub profile is required";
-    } else if (!/^https?:\/\/(www\.)?github\.com\/[a-zA-Z0-9-]+\/?$/.test(formData.github)) {
-      newErrors.github = "Invalid GitHub URL";
-    }
+    // // Validate GitHub
+    // if (!formData.github.trim()) {
+    //   newErrors.github = "GitHub profile is required";
+    // } else if (!/^https?:\/\/(www\.)?github\.com\/[a-zA-Z0-9-]+\/?$/.test(formData.github)) {
+    //   newErrors.github = "Invalid GitHub URL";
+    // }
 
     // Validate avatar
     if (!formData.avatar.trim()) {
@@ -106,6 +109,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
     }
 
     setErrors(newErrors);
+    console.log(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
@@ -118,8 +122,8 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
   ];
 
   const mentorFields = [
-    { name: "company", logo: <FaBriefcase />, placeholder: "Company Name" },
-    { name: "role", logo: <FaUserTie />, placeholder: "Mentor's Role" },
+    { name: "company", logo: <FaBriefcase />, placeholder: "Company" },
+    { name: "role", logo: <FaUserTie />, placeholder: "Role" },
   ];
 
   const studentFields = [
@@ -134,14 +138,21 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
 
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
-  const handleSave = (event: Event | undefined) => {
+
+  const handleSave = async (event: Event | undefined) => {
     event?.preventDefault();
-    if (formData.username || formData.about || formData.avatar){
+    if (validateForm()){
       dispatch(setUserDetails({ ...formData }));
       dispatch(setAvatar(formData.avatar));
-      navigate("/track");
+      try {
+        const result = await axiosInstance.post("/user/details",{...formData,email:localStorage.getItem("email"),userType:localStorage.getItem("userType")});
+        if(result.status===200){
+          navigate("/track");
+        }
+      } catch (error) {
+        console.error(error);
+      }
     } else {
       dispatch(addingDetailsFailed({ message: "Please fill the required field(s)" }))
     }
@@ -173,7 +184,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
             />
           </div>
           {/* Avatar Selection */}
-          <div className="sm:col-span-4 mt-4">
+          <div onBlur={validateForm} className="sm:col-span-4 mt-4">
             <h2 className={`text-sm md:text-lg font-semibold ${userType === "mentor" ? "text-[#FF7324]" : "text-[#4267B2]"}`}>
               Select Your Avatar
             </h2>
@@ -189,6 +200,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
                 </div>
               ))}
             </div>
+            <p className="text-red-500 text-xs mt-1 text-left mt-5">{errors?.avatar}</p>
           </div>
 
           {/* About Textarea */}
@@ -216,7 +228,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
             className={`text-lg lg:text-2xl font-semibold ${userType === "mentor" ? "text-[#FF7324]" : "text-[#4267B2]"
               }`}
           >
-            Education {userType === "student" ? "" : "and Work"}
+            {userType === "student" ? "Education" : "Work"}
           </h2>
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
             {(userType === "mentor" ? mentorFields : studentFields).map(
@@ -229,6 +241,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
                     field={field.name.toLowerCase()}
                     placeholder={field.placeholder}
                     labelText={field.placeholder}
+                    errorMessage={errors[field.name]}
                     labelStyles={`font-semibold ${userType === "mentor"
                       ? "text-[#FF7324]"
                       : "text-[#4267B2]"
@@ -253,6 +266,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
             {socialMediaFields.map((field, index) => (
               <div
                 key={field.name}
+                id={field.name}
                 className={`whitespace-nowrap sm:col-span-${index === 0 ? "3" : "2"}`}
               >
                 <Input
@@ -262,6 +276,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
                   field={field.name.toLowerCase()}
                   placeholder={field.placeholder}
                   labelText={field.placeholder}
+                  errorMessage={errors[field.name]}
                   labelStyles={`font-semibold ${userType === "mentor" ? "text-[#FF7324]" : "text-[#4267B2]"
                     }`}
                   Icon={field.logo}

@@ -1,6 +1,5 @@
 import { routerType } from "../abstraction/types/router.types";
 import Track from "./Track";
-import { AuthPage } from "./AuthPage";
 import Details from "./Details";
 import { Home } from "./Home";
 import { PersonalCard } from "../features/match/PersonalCard";
@@ -12,34 +11,10 @@ import { Profile } from "../features/profile/Profile";
 import { Settings } from "../features/settings/Settings";
 import { TaskDetails } from "../features/tasks/TaskDetails";
 import { TaskForm } from "../features/tasks/TaskForm";
+import authRoutes from "./authRoutes";
 
 
 const pagesData: routerType[] = [
-  {
-    path: "/",
-    element: <AuthPage type="Signin" />,
-    title: "signin",
-  },
-  {
-    path: "signin",
-    element: <AuthPage type="Signin" />,
-    title: "signin",
-  },
-  {
-    path: "signup",
-    element: <AuthPage type="Signup" />,
-    title: "signup",
-  },
-  {
-    path: "forgotpassword",
-    element: <AuthPage forgotPassword={true} />,
-    title: "forgotpassword",
-  },
-  {
-    path: "resetpassword",
-    element: <AuthPage reset={true} />,
-    title: "resetpassword",
-  },
   {
     path: "track",
     element: <Track />,
@@ -100,7 +75,7 @@ const pagesData: routerType[] = [
     element: <Home children={<Settings/>}/>,
     title: "settings",
   },
-  
+  ...authRoutes
 ];
 
 export default pagesData;

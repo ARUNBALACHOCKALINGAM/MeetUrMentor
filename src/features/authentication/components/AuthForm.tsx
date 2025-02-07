@@ -62,7 +62,8 @@ export const AuthForm = ({ type, userType }: AuthFormProps) => {
       dispatch(setUserLoginInfo({email:email,userType:userType}));
   
       if (result.status === 200) {
-        localStorage.setItem("user", result.data?.email);
+        localStorage.setItem("email", result.data?.email);
+        localStorage.setItem("userType", result.data?.userType);
         dispatch(loginSuccess()); // Dispatch login success action
         navigate("/home"); // Navigate after the modal closes
       }
@@ -113,8 +114,12 @@ export const AuthForm = ({ type, userType }: AuthFormProps) => {
         usertype:userType
       });
 
+      console.log(result.data);
+
       // If registration is successful
       if (result.status === 200) {
+        localStorage.setItem("email", result.data?.email);
+        localStorage.setItem("userType", result.data?.userType);
         dispatch(registerSuccess()); // Dispatch register success action
         navigate("/details"); // Navigate to the details page
       }

@@ -9,7 +9,6 @@ import { UserState } from "../abstraction/types/userData.types";
 
 export const AuthPage = ({ type,forgotPassword=false,reset=false}: AuthFormProps) => {
     const userType = useSelector((state: UserState) => state.user.userType);
-    console.log(userType);
     
     return (
         <div className={`flex justify-between items-center w-screen h-screen ${userType==="student" ? "bg-studentAccent/75" : "bg-mentorPrimary/75"} overflow-hidden`}>
