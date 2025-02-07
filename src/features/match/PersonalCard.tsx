@@ -94,7 +94,7 @@ export const PersonalCard = ({ userType }: AuthFormProps) => {
               Track: {currentProfile.track}
             </h2>
             <p className="text-gray-600 text-sm mt-2">
-              {currentProfile.role} at {currentProfile.company}
+              {currentProfile.role && `${currentProfile.role} at ${currentProfile.company}`} 
             </p>
           </div>
 
