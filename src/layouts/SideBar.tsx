@@ -23,7 +23,7 @@ export function SideBar() {
     const [sideBarOpen, setSideBarOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState(0);
     const user = useSelector((state: UserState) => state.user);
-    const userType  = user?.userType || "student";
+    const userType = user?.userType || "student";
     const unreadMessages = 0;
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -32,7 +32,7 @@ export function SideBar() {
         try {
             await signOut(auth);
             const result = await axiosInstance.post("/auth/logout");
-            if(result.status==200){
+            if (result.status == 200) {
                 dispatch(logoutSuccess())
             }
             localStorage.removeItem('token');
@@ -48,7 +48,7 @@ export function SideBar() {
             navigate("/home", { replace: true });
         }
     }, []);
-    
+
 
     // Responsive sidebar behavior
     useEffect(() => {
@@ -100,19 +100,26 @@ export function SideBar() {
 
             {/* Sidebar */}
             <Card
-                className={`fixed top-0 left-0 h-full text-center w-64 p-4  shadow-blue-gray-900/5 ${colors.bg} text-black z-40 transition-transform lg:w-full lg:relative lg:translate-x-0 ${sideBarOpen ? "translate-x-0" : "-translate-x-full"}`}  placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}            >
+                className={`fixed top-0 left-0 h-full text-center w-64 p-4  shadow-blue-gray-900/5 ${colors.bg} text-black z-40 transition-transform lg:w-full lg:relative lg:translate-x-0 ${sideBarOpen ? "translate-x-0" : "-translate-x-full"}`} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}            >
                 <div className="flex items-center text-center justify-between my-2 ml-2">
                     <div className="flex items-center">
-                        <UserCircleIcon
-                            className={`h-12 w-12 ${userType === "mentor"
+                        {user.avatar ?
+                            <img
+                                className="h-12 w-12 rounded-3xl object-cover"
+                                src={`src/assets/aiavatars/${user.avatar}`}
+                                alt="Profile Background"
+                            /> : <UserCircleIcon
+                                className={`h-12 w-12 ${userType === "mentor"
                                     ? "text-mentorButtonColor"
                                     : "text-studentPrimary/80"
-                                }`}
-                        />
+                                    }`}
+                            />
+                        }
+
                         <h1
                             className={`ml-2 tracking-wide text-lg ml-4 lg:text-xl ${userType === "mentor"
-                                    ? "text-mentorButtonColor"
-                                    : "text-studentButtonColor"
+                                ? "text-mentorButtonColor"
+                                : "text-studentButtonColor"
                                 }`}
                         >
                             Hey {user.username}
@@ -137,7 +144,7 @@ export function SideBar() {
                                     setSelectedItem(index);
                                     navigate(item.to);
                                     setSideBarOpen(false);
-                                } } placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}                            >
+                                }} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}                            >
                                 <div className="flex items-center justify-between w-full">
                                     <span className="flex items-center">
                                         {item.icon}
@@ -173,7 +180,7 @@ export function SideBar() {
                         </ListItem>
                         <ListItem
                             className={`${colors.text} ${colors.border} hover:${colors.selectedText} hover:${colors.selectedBg} cursor-pointer`}
-                            onClick={handleLogout}  placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}                        >
+                            onClick={handleLogout} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}                        >
                             <PowerIcon className="h-5 w-5 mr-2" />
                             Log Out
                         </ListItem>
