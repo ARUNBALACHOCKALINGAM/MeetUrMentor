@@ -96,6 +96,9 @@ const userSlice = createSlice({
       state.isModalOpen = false;
       state.modalMessage = "";
     },
+    setMatchedUser: (state,action) => {
+      state.matchedUser = action.payload.likedUser;
+    }
   },
   extraReducers(builder){
     builder.addCase(fetchUserDetails.fulfilled,(state,action)=>{
@@ -118,7 +121,8 @@ export const {
   registerSuccess,
   registerFailed,
   addingDetailsFailed,
-  closeModal
+  closeModal,
+  setMatchedUser
 } = userSlice.actions;
 
 export default userSlice.reducer;

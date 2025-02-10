@@ -4,6 +4,8 @@ import TaskTable from "./TaskTable";
 import { useSelector } from "react-redux";
 import { UserState } from "../../abstraction/types/userData.types";
 import { Task } from "../../abstraction/types/tasks.types";
+import { FaArrowRightLong } from "react-icons/fa6";
+import { ProgressBar } from "./ProgressBar";
 
 export const Progress = () => {
 
@@ -69,27 +71,20 @@ export const Progress = () => {
       {/* Level Selection */}
       <div className="flex items-center space-x-6 mt-4">
         {levels.map((level) => (
-          <button
-            key={level.level}
-            onClick={() => setSelectedLevel(level)}
-            className={`px-6 py-2 rounded-md  ${selectedLevel.level === level.level ? colors.bg : "bg-gray-400"}  text-white`}
-          >
-            Level {level.level}
-          </button>
+          <>
+            <button
+              key={level.level}
+              onClick={() => setSelectedLevel(level)}
+              className={`px-6 py-2 rounded-md  ${selectedLevel.level === level.level ? colors.bg : "bg-gray-400"}  text-white`}
+            >
+              Level {level.level}
+            </button>
+             {levels.at(levels.length-1) !== level && <FaArrowRightLong/>}
+            </>
         ))}
       </div>
       {/* Progress Bar */}
-      <div className="w-full bg-gray-200 rounded-full h-4 my-4">
-        <div
-          className="h-4 rounded-full"
-          style={{ width: `${progress}%`, backgroundColor: userType === "mentor" ? "#FFC400" : "#1D4ED8" }}
-        ></div>
-        <div className="text-gray-400 text-sm mt-2 text-left">
-          <span>4/6 tasks |</span>
-          <span className="ml-2">{progress}% Completed</span>
-        </div>
-
-      </div>
+      <ProgressBar progress={progress} userType={userType}/>
       {/* Task Table */}
       <TaskTable tasks={selectedLevel.tasks} userType={userType} />
     </div>

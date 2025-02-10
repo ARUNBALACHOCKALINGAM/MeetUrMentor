@@ -19,7 +19,9 @@ export interface User {
     role: string;
     track: string;
     avatar:string;
+    matchedUser:string;
 }
+
 
 export interface SocialMedia {
     name: string;
