@@ -1,6 +1,7 @@
 export type Message = {
-    text: string;
-    sender: "mentor" | "student"; // Restrict sender to known keys
+    message: string;
+    sender: "mentor" | "student";
+    senderUserType?:"mentor" | "student";  // Restrict sender to known keys
   };
   
   

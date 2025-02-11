@@ -17,7 +17,7 @@ import { RememberSection } from "../../../components/form/RememberSection";
 import { NotRegisteredYet } from "../../../components/form/NotRegisteredYet";
 import { AuthFormProps } from "../../../abstraction/types/authentication.types";
 import { signInWithPopup } from "firebase/auth";
-import axiosInstance from "../../../utils/axiosInstance";
+import axiosAuth from "../../../utils/axiosInstance";
 
 
 //REDUX
@@ -54,7 +54,7 @@ export const AuthForm = ({ type, userType }: AuthFormProps) => {
 
   const handleSignIn = async () => {
     try {
-      const result = await axiosInstance.post("/auth/login", {
+      const result = await axiosAuth.post("/auth/login", {
         email: email,
         password: password,
         userType:userType
@@ -109,7 +109,7 @@ export const AuthForm = ({ type, userType }: AuthFormProps) => {
   const handleSignUp = async () => {
     dispatch(setUserLoginInfo({email:email,userType:userType}));
     try {
-      const result = await axiosInstance.post("/auth/register", {
+      const result = await axiosAuth.post("/auth/register", {
         email: email,
         password: password,
         usertype:userType

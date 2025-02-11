@@ -17,7 +17,7 @@ import { UserState } from "../abstraction/types/userData.types";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
 import { logoutSuccess } from "../data/store/user";
-import axiosInstance from "../utils/axiosInstance";
+import axiosAuth from "../utils/axiosInstance";
 
 export function SideBar() {
     const [sideBarOpen, setSideBarOpen] = useState(false);
@@ -31,7 +31,7 @@ export function SideBar() {
     const handleLogout = async () => {
         try {
             await signOut(auth);
-            const result = await axiosInstance.post("/auth/logout");
+            const result = await axiosAuth.post("/auth/logout");
             if (result.status == 200) {
                 dispatch(logoutSuccess())
             }
@@ -81,7 +81,7 @@ export function SideBar() {
             };
 
     const items = [
-        { item: `Find your ${userType === "mentor" ? "student" : "mentor"}`, icon: <FaChalkboardTeacher />, to: "/home" },
+        { item: user.matchedUser ? "DashBoard" : `Find your ${userType === "mentor" ? "student" : "mentor"}`, icon: <FaChalkboardTeacher />, to: "/home" },
         { item: "Chat", icon: <FaMessage />, to: "/chat" },
         { item: "Tasks", icon: <FaTasks />, to: "/tasks" },
         { item: "Progress", icon: <FaBarsProgress />, to: "/progress" },
@@ -166,7 +166,7 @@ export function SideBar() {
 
                     {/* Profile, Settings, Log Out at the Bottom */}
                     <div className="text-sm mt-auto w-full">
-                        <ListItem
+                        {/* <ListItem
                             className={`${colors.text} ${colors.border} hover:${colors.selectedText} hover:${colors.selectedBg} cursor-pointer`}
                             onClick={() => navigate("/profile")} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}                        >
                             <UserCircleIcon className="h-5 w-5 mr-2" />
@@ -177,7 +177,7 @@ export function SideBar() {
                             onClick={() => navigate("/settings")} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}                        >
                             <Cog6ToothIcon className="h-5 w-5 mr-2" />
                             Settings
-                        </ListItem>
+                        </ListItem> */}
                         <ListItem
                             className={`${colors.text} ${colors.border} hover:${colors.selectedText} hover:${colors.selectedBg} cursor-pointer`}
                             onClick={handleLogout} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}                        >

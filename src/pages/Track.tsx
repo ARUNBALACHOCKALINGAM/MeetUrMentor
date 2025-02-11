@@ -12,7 +12,7 @@ import { IoIosStats } from "react-icons/io";
 import { FaPen } from "react-icons/fa";
 import { UserState } from "../abstraction/types/userData.types";
 import { setUserTrack } from "../data/store/user";
-import axiosInstance from "../utils/axiosInstance";
+import axiosAuth from "../utils/axiosInstance";
 
 // Define roles outside the component to avoid re-creation
 const roles = [
@@ -40,8 +40,8 @@ const Track = () => {
   const handleRoleSelection = async (role: String) => {
     dispatch(setUserTrack({ track: role }));
     try {
-      const userDetails = await axiosInstance.get(`/user/details?email=${email}`);
-      const result = await axiosInstance.post("/user/details",{...userDetails.data,track:role});
+      const userDetails = await axiosAuth.get(`/user/details?email=${email}`);
+      const result = await axiosAuth.post("/user/details",{...userDetails.data,track:role});
       if(result.status == 200){
         navigate('/home')
         console.log(result.data);

@@ -1,4 +1,10 @@
-
+export interface Level {
+  _id:string,
+  tasks: Task[],
+  isUnlocked: boolean,
+  isCompleted:boolean,
+  level:string
+}
 
 export interface Comments {
     comments: string;

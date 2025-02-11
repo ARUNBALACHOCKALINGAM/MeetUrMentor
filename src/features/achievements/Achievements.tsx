@@ -18,9 +18,7 @@ export const Achievements = () => {
   ];
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Achievements</h1>
-      <hr className="my-4 "/>
+    <div className="w-[90%] mx-auto p-6">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {achievements.map((achievement, index) => (
           <div

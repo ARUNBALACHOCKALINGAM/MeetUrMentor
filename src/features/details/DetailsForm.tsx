@@ -9,7 +9,7 @@ import { Textarea } from "../../components/form/TextArea";
 import { FaLinkedin, FaGithub, FaCode, FaDev, FaGlobe, FaUserTie, FaBriefcase, FaUniversity, FaGraduationCap, FaClipboardList } from 'react-icons/fa';
 import { FormData } from "../../abstraction/types/userData.types";
 import { useAppDispatch } from "../../utils/hooks/useAppDispatch";
-import axiosInstance from "../../utils/axiosInstance";
+import axiosAuth from "../../utils/axiosInstance";
 
 
 type DetailsFormProps = {
@@ -146,7 +146,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ userType }) => {
       dispatch(setUserDetails({ ...formData }));
       dispatch(setAvatar(formData.avatar));
       try {
-        const result = await axiosInstance.post("/user/details",{...formData,email:localStorage.getItem("email"),userType:localStorage.getItem("userType")});
+        const result = await axiosAuth.post("/user/details",{...formData,email:localStorage.getItem("email"),userType:localStorage.getItem("userType")});
         if(result.status===200){
           navigate("/track");
         }

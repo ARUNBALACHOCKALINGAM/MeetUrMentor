@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, isRejectedWithValue } from "@reduxjs/toolkit";
-import axiosInstance from "../../utils/axiosInstance";
+import axiosAuth from "../../utils/axiosInstance";
 
 
 
@@ -28,18 +28,32 @@ const initialState = {
   isLoggedOut: false,
   isDetailsValid: false,
   matchedUser:null,
+  matchedUserDetails: {},
+  currentLevel: ""
 };
 
 
 export const fetchUserDetails = createAsyncThunk("user/fetchUserDetails",async (email:any) => {
   try {
     console.log(email);
-    const result = await axiosInstance.get(`/user/details?email=${email}`);
+    const result = await axiosAuth.get(`/user/details?email=${email}`);
     return result.data;
   } catch (error:any) {
     isRejectedWithValue(error?.message || "Error while fetching user data");
   }
 })
+
+export const fetchMatchedUserDetails = createAsyncThunk("user/fetchMatchedUserDetails",async (matchedUser:any) => {
+  try {
+    const userDetails = await axiosAuth.get(`/user/details?id=${matchedUser}`)
+    console.log(userDetails.data);
+    if(userDetails.status==200){
+      return userDetails.data;
+    }     
+  } catch (error:any) {
+    isRejectedWithValue(error?.message || "Error while fetching user data");
+  }
+});
 
 
 const userSlice = createSlice({
@@ -98,12 +112,19 @@ const userSlice = createSlice({
     },
     setMatchedUser: (state,action) => {
       state.matchedUser = action.payload.likedUser;
+    },
+    setMatchedUserDetails: (state,action) => {
+      state.matchedUserDetails = action.payload.matchedUserDetails;
     }
   },
   extraReducers(builder){
     builder.addCase(fetchUserDetails.fulfilled,(state,action)=>{
       Object.assign(state,action.payload);
     }).addCase(fetchUserDetails.rejected,(state,action)=>{
+      console.log(action.payload);
+    }).addCase(fetchMatchedUserDetails.fulfilled,(state,action)=>{
+      Object.assign(state.matchedUserDetails,action.payload);
+    }).addCase(fetchMatchedUserDetails.rejected,(state,action)=>{
       console.log(action.payload);
     })
   }
@@ -122,7 +143,8 @@ export const {
   registerFailed,
   addingDetailsFailed,
   closeModal,
-  setMatchedUser
+  setMatchedUser,
+  setMatchedUserDetails
 } = userSlice.actions;
 
 export default userSlice.reducer;

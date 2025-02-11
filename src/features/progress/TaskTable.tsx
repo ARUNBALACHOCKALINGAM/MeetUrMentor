@@ -1,5 +1,6 @@
 // TaskTable.jsx
 
+import { useNavigate } from "react-router-dom";
 import { Task } from "../../abstraction/types/tasks.types";
 
 
@@ -10,6 +11,10 @@ type TaskTableProps = {
 };
 
 const TaskTable = ({ tasks, userType }: TaskTableProps) => {
+
+    
+
+    const navigate = useNavigate();
     const colors =
         userType === "mentor"
             ? {
@@ -70,10 +75,10 @@ const TaskTable = ({ tasks, userType }: TaskTableProps) => {
                             </td>
                             <td className="px-6 py-4">
                                 <button
-                                    onClick={() => alert(`Downloading resources for ${task.name}`)}
+                                    onClick={() => navigate('/task')}
                                     className={`px-4 py-1 text-white rounded-md ${colors.hoverBg} ${userType === "mentor" ? "bg-mentorPrimary/75 hover:bg-mentorPrimary" : "bg-blue-500 hover:bg-blue-600"}`}
                                 >
-                                    Download
+                                    View
                                 </button>
                             </td>
                         </tr>

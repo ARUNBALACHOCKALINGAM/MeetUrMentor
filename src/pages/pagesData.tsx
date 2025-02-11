@@ -46,7 +46,7 @@ const pagesData: routerType[] = [
     title: "tasks",
   },
   {
-    path: "task",
+    path: "task/:taskId",
     element: <Home children={<TaskDetails/>}/>,
     title: "task",
   },

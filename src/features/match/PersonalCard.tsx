@@ -8,7 +8,7 @@ import {
 } from "react-icons/fa";
 import { SiCodechef, SiLeetcode } from "react-icons/si";
 import { AuthFormProps } from "../../abstraction/types/authentication.types";
-import axiosInstance from "../../utils/axiosInstance";
+import axiosAuth from "../../utils/axiosInstance";
 import { UserProfile, UserState } from "../../abstraction/types/userData.types";
 import { useAppDispatch } from "../../utils/hooks/useAppDispatch";
 import { setMatchedUser } from "../../data/store/user";
@@ -24,7 +24,7 @@ export const PersonalCard = ({ userType }: AuthFormProps) => {
 
   const fetchUsersByUserType = async () => {
     try {
-      const response = await axiosInstance.get(`/user?userType=${userType==="mentor" ? "student" : "mentor"}&email=${localStorage.getItem("email")}`);
+      const response = await axiosAuth.get(`/user?userType=${userType==="mentor" ? "student" : "mentor"}&email=${localStorage.getItem("email")}`);
       setProfiles(response.data);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -64,7 +64,7 @@ export const PersonalCard = ({ userType }: AuthFormProps) => {
 
   const handleAction = async () => {
     try {
-      const result = await axiosInstance.post('/user/like',{email:localStorage.getItem("email"),likedUserEmail:currentProfile.email});
+      const result = await axiosAuth.post('/user/like',{email:localStorage.getItem("email"),likedUserEmail:currentProfile.email});
       if(result.statusText === "OK"){
         if(result.data.likedUser){
           dispatch(setMatchedUser({likedUser:result.data.likedUser}));

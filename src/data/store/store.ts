@@ -1,14 +1,17 @@
-// store.js
-import { configureStore } from '@reduxjs/toolkit';
-import userReducer from './user';
+// src/data/store/store.ts
+import { configureStore } from "@reduxjs/toolkit";
+import userReducer from "./user";
+import taskReducer from "./tasks";
 
-
-const store = configureStore({
+export const store = configureStore({
   reducer: {
     user: userReducer,
-    // Add other reducers here if needed
+    tasks: taskReducer, // Changed to "tasks" to match usage in components
   },
 });
 
-export default store;
+// Export RootState type
+export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+
+export default store;

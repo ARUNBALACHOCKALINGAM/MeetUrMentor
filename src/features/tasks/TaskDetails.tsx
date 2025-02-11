@@ -1,15 +1,18 @@
 import { useSelector } from "react-redux";
 import { UserState } from "../../abstraction/types/userData.types";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { Attachments } from "./Attachments";
 import { ArrowLeftCircleIcon } from "@heroicons/react/24/solid";
 import ActivityLog from "./ActivityLog";
+import { SubTask } from "./SubTask";
+import { axiosTask } from "../../utils/axiosInstance";
 
 export const TaskDetails = () => {
     const navigate = useNavigate();
     const userType = useSelector((state: UserState) => state.user.userType);
     const [isEditing, setIsEditing] = useState(false);
+    const [task,setTask] = useState({});
     const [title, setTitle] = useState("Task Name");
     const [description, setDescription] = useState(
         "This is a detailed task description that explains the task requirements, objectives, and any additional notes. The description should provide all the necessary information about the task so the assignee knows exactly what needs to be done."
@@ -18,6 +21,21 @@ export const TaskDetails = () => {
     const [newComment, setNewComment] = useState("");
     const [status, setStatus] = useState("Todo");
     const [attachments, setAttachments] = useState<File[]>([]);
+    
+    const { taskId } = useParams();
+
+    useEffect(() => {
+        const fetchTask = async () => {
+          try {
+            const response = await axiosTask.get(`/tasks/${taskId}`);
+            setTask(response.data);
+          } catch (error) {
+            console.error("Error fetching task:", error);
+          }
+        };
+        
+        fetchTask();
+      }, [taskId]);
 
     const colors =
         userType === "mentor"
@@ -80,9 +98,9 @@ export const TaskDetails = () => {
                     />
                 ) : (
                     <div className="flex items-center space-x-4 mt-2">
-                        <h2 className={`text-xl font-semibold ${colors.text}`}>{title}</h2>
+                        <h2 className={`text-xl font-semibold ${colors.text}`}>{task.name}</h2>
                         <select
-                            value={status}
+                            value={task.status}
                             onChange={(e) => setStatus(e.target.value)}
                             className={`px-2 py-1 text-xs bg-gray-200 text-gray-800 rounded-md border ${userType === "mentor" ? "bg-yellow-200" : "bg-blue-100"}`}
                         >
@@ -116,7 +134,7 @@ export const TaskDetails = () => {
                         className="mt-2 w-full border border-gray-300 rounded px-2 py-1 text-md"
                     />
                 ) : (
-                    <p className="text-gray-700/75 mt-2 italic text-sm">{description}</p>
+                    <p className="text-gray-700/75 mt-2 italic text-sm">{task.description}</p>
                 )}
             </div>
 
@@ -125,8 +143,10 @@ export const TaskDetails = () => {
             {/* Attachments Section */}
             <Attachments colors={colors} isEditing={isEditing} handleFileUpload={handleFileUpload} attachments={attachments}/>
 
-       
 
+            {/*Sub-issues*/}
+            <SubTask/>
+            
             {/* Actions */}
             {/* <ActivityLog/> */}
             <ActivityLog colors={colors}/>

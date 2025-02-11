@@ -1,16 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import { AuthFormProps } from "../../abstraction/types/authentication.types";
 import { useNavigate } from "react-router-dom";
 import Confetti from 'react-confetti'
+import { axiosTask } from "../../utils/axiosInstance";
 
-const SECTIONS = ["todo", "inprogress", "completed"] as const;
+const SECTIONS = ["Todo", "Inprogress", "Completed"] as const;
 type SectionType = typeof SECTIONS[number];
 
 interface Task {
+  _id: string; // Assuming your tasks have an _id field
   name: string;
-  level?: "Level 1" | "Level 2" | "Level 3";
-  assignedBy: "default" | "mentor";
+  level?: string; // Changed to string to match your model
+  type: "default" | "mentor"; // Changed assignedBy to type to match your model
+  status: SectionType; // Add status to task
 }
 
 export const KanbanBoard = ({ userType }: AuthFormProps) => {
@@ -34,27 +37,68 @@ export const KanbanBoard = ({ userType }: AuthFormProps) => {
   const navigate = useNavigate();
 
   const [tasks, setTasks] = useState<Record<SectionType, Task[]>>({
-    todo: [
-      { name: "Task 1", level: "Level 1", assignedBy: "default" },
-      { name: "Task 2", level: "Level 2", assignedBy: "mentor" },
-    ],
-    inprogress: [{ name: "Task 3", level: "Level 3", assignedBy: "mentor" }],
-    completed: [{ name: "Task 4", assignedBy: "default" }],
+    Todo: [],
+    Inprogress: [],
+    Completed: [],
   });
 
-  const [taskCompleted,setTaskCompleted] = useState(false);
+  const [taskCompleted, setTaskCompleted] = useState(false);
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const response = await axiosTask.post("/tasks/level", { track: "Frontend", level: "Level 1" });
+        const fetchedTasks: Task[] = response.data;
 
 
+        console.log(response.data);
 
-  const deleteTask = (section: SectionType, index: number) => {
-    setTasks((prev) => ({
-      ...prev,
-      [section]: prev[section].filter((_, i) => i !== index),
-    }));
+        // Group tasks by status
+        const groupedTasks: Record<SectionType, Task[]> = {
+          Todo: [],
+          Inprogress: [],
+          Completed: [],
+        };
+
+        fetchedTasks.forEach((task) => {
+          groupedTasks[task.status].push(task);
+        });
+
+        setTasks(groupedTasks);
+      } catch (error) {
+        console.error("Error fetching tasks:", error);
+      }
+    };
+
+    fetchTasks();
+  }, []);
+
+  const deleteTask = async (section: SectionType, index: number) => {
+    // Optimistically update the UI
+    const taskIdToDelete = tasks[section][index]._id;
+    setTasks((prev) => {
+      const newTasks = { ...prev };
+      newTasks[section] = prev[section].filter((_, i) => i !== index);
+      return newTasks;
+    });
+
+    // Call the API to delete the task (assuming you have a delete API endpoint)
+    try {
+      await axiosTask.delete(`/tasks/${taskIdToDelete}`);
+      // If the API call is successful, the optimistic update remains.
+      // If it fails, you'll need to handle the error and possibly revert the UI update.
+    } catch (error) {
+      console.error("Error deleting task:", error);
+      // Revert the UI update if the API call fails
+      // You might want to show an error message to the user as well
+      // Example:
+      // setTasks(prevTasks); // Revert to the previous state
+    }
   };
 
-  const onDragEnd = (result: DropResult) => {
-    const { source, destination } = result;
+
+  const onDragEnd = async (result: DropResult) => {
+    const { source, destination, draggableId } = result;
 
     if (!destination) return;
 
@@ -65,25 +109,48 @@ export const KanbanBoard = ({ userType }: AuthFormProps) => {
     const sourceSection = source.droppableId as SectionType;
     const destinationSection = destination.droppableId as SectionType;
 
-    const sourceList = [...tasks[sourceSection]];
-    const [movedItem] = sourceList.splice(source.index, 1);
-    const destinationList = [...tasks[destinationSection]];
-    destinationList.splice(destination.index, 0, movedItem);
+    // Find the moved task
+    const taskToMove = tasks[sourceSection].find(task => task._id === draggableId);
+    if (!taskToMove) return;
 
-    setTasks({
-      ...tasks,
-      [sourceSection]: sourceList,
-      [destinationSection]: destinationList,
+    // Optimistically update the UI
+    setTasks(prevTasks => {
+      const newTasks = { ...prevTasks };
+
+      // Remove task from source section
+      newTasks[sourceSection] = newTasks[sourceSection].filter(task => task._id !== draggableId);
+
+      // Add task to destination section
+      newTasks[destinationSection] = [
+        ...newTasks[destinationSection].slice(0, destination.index),
+        taskToMove,
+        ...newTasks[destinationSection].slice(destination.index)
+      ];
+
+      return newTasks;
     });
 
-    if (destinationSection === "completed") {
-      setTaskCompleted(true)
+    // Update task status on the server
+    try {
+      await axiosTask.put(`/tasks/updateStatus/${draggableId}`, { status: destinationSection });
+      if (destinationSection === "Completed") {
+        setTaskCompleted(true)
+      }
+    } catch (error) {
+      console.error("Error updating task status:", error);
+      // Revert the UI update if the API call fails
+      // setTasks(prevTasks); // Revert to the previous state
     }
   };
 
-  setTimeout(()=>{
-    setTaskCompleted(false)
-  },8000,taskCompleted)
+  useEffect(() => {
+    if (taskCompleted) {
+      const timer = setTimeout(() => {
+        setTaskCompleted(false);
+      }, 8000);
+      return () => clearTimeout(timer); // Clear the timeout if the component unmounts or taskCompleted changes
+    }
+  }, [taskCompleted]);
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
@@ -91,7 +158,7 @@ export const KanbanBoard = ({ userType }: AuthFormProps) => {
         width={window.innerWidth}
         height={window.innerHeight}
       />}
-      <div className="justify-center rounded-md h-full flex flex-wrap gap-4 p-4">
+      <div className="w-[95%] mx-auto justify-center rounded-md h-full flex flex-wrap gap-4 p-4">
         {SECTIONS.map((section) => (
           <Droppable key={section} droppableId={section}>
             {(provided) => (
@@ -106,10 +173,10 @@ export const KanbanBoard = ({ userType }: AuthFormProps) => {
                 <hr className="mt-2" />
                 <div className="mt-4 space-y-2 overflow-y-auto flex-grow max-h-[90%]">
                   {tasks[section].map((task, index) => (
-                    <Draggable key={task.name} draggableId={task.name} index={index}>
+                    <Draggable key={task._id} draggableId={task._id} index={index}>
                       {(provided) => (
                         <div
-                          onClick={() => navigate("/task")}
+                          onClick={() => navigate(`/task/${task._id}`)}
                           ref={provided.innerRef}
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
@@ -121,13 +188,16 @@ export const KanbanBoard = ({ userType }: AuthFormProps) => {
                               {task?.level && <span className="px-2 py-1 rounded-md bg-blue-200">
                                 {task.level}
                               </span>}
-                              <span className={`px-2 py-1 rounded-md ${task.assignedBy === "default" ? "bg-blue-200" : "bg-yellow-200"}`}>
-                                {task.assignedBy}
+                              <span className={`px-2 py-1 rounded-md ${task.type === "default" ? "bg-blue-200" : "bg-yellow-200"}`}>
+                                {task.type}
                               </span>
                             </div>
                           </div>
-                          <button
-                            onClick={() => deleteTask(section, index)}
+                          {task.type === "mentor" && <button
+                            onClick={(e) => {
+                              e.stopPropagation(); // Prevent navigation
+                              deleteTask(section, index);
+                            }}
                             className="text-red-500 hidden group-hover:block absolute right-2"
                           >
                             <svg
@@ -144,7 +214,8 @@ export const KanbanBoard = ({ userType }: AuthFormProps) => {
                                 d="M6 18L18 6M6 6l12 12"
                               />
                             </svg>
-                          </button>
+                          </button>}
+
                         </div>
                       )}
                     </Draggable>
@@ -168,5 +239,3 @@ export const KanbanBoard = ({ userType }: AuthFormProps) => {
     </DragDropContext>
   );
 };
-
-

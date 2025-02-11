@@ -52,25 +52,30 @@ const TodoList: React.FC<TodoProps> = ({ role }) => {
   };
 
   return (
-    <div className={`px-6 py-8 h-full overflow-scroll max-w-lg mx-auto rounded-lg shadow-md ${colors[role].bg} ${colors[role].border} border-2`}>
-      <h2 className={`text-2xl font-semibold mb-4 ${colors[role].text}`}>Today's task</h2>
+    <div className={`w-full  px-2 py-2 md:px-6 md:py-8 h-full overflow-scroll mx-auto rounded-lg shadow-md ${colors[role].bg} ${colors[role].border} border-2`}>
+      {/* Title (smaller on mobile) */}
+      <h2 className={`text-xl sm:text-2xl font-semibold mb-3 sm:mb-4 ${colors[role].text}`}>
+        Today's task
+      </h2>
 
+      {/* Input and button (adjusted for small screens) */}
       <div className="flex gap-2 mb-4">
         <input
           type="text"
           value={newTask}
           onChange={(e) => setNewTask(e.target.value)}
           placeholder="Add a new task..."
-          className="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="flex-1 p-2 text-sm sm:text-base border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
         <button
           onClick={addTask}
-          className={`px-4 py-2 text-white font-semibold rounded-lg transition ${colors[role].buttonBg} ${colors[role].buttonHoverBg}`}
+          className={`px-2 sm:px-4 py-2 text-sm sm:text-base text-white font-semibold rounded-lg transition ${colors[role].buttonBg} ${colors[role].buttonHoverBg}`}
         >
           Add
         </button>
       </div>
 
+      {/* Task List */}
       <ul className="space-y-3">
         {tasks.map((task) => (
           <motion.li
@@ -82,13 +87,13 @@ const TodoList: React.FC<TodoProps> = ({ role }) => {
               task.completed ? "opacity-50 line-through" : ""
             }`}
           >
-            <span className="flex-1">{task.text}</span>
+            <span className="flex-1 text-sm sm:text-base">{task.text}</span>
             <div className="flex gap-2">
               <button onClick={() => toggleTask(task.id)} className="text-green-600 hover:text-green-800">
-                <CheckCircle size={20} />
+                <CheckCircle size={18}  />
               </button>
               <button onClick={() => deleteTask(task.id)} className="text-red-600 hover:text-red-800">
-                <Trash size={20} />
+                <Trash size={18}  />
               </button>
             </div>
           </motion.li>
