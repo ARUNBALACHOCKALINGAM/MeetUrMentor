@@ -1,62 +1,46 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Comments from './Comments';
 import { History } from './History';
 import { FaSortAmountDown } from "react-icons/fa";
+import { Activity } from '../../abstraction/types/tasks.types';
+import { axiosTask } from '../../utils/axiosInstance';
 
-const historyData = [
-    {
-        id: 1,
-        user: 'B Arun Bala Chockalingam',
-        date: '17 September 2024 at 12:11',
-        status: 'IN PROGRESS',
-        tag: 'IN DEVELOPMENT',
-    },
-    {
-        id: 2,
-        user: 'B Arun Bala Chockalingam',
-        date: '17 September 2024 at 12:11',
-        status: 'IN DEVELOPMENT',
-        tag: 'IN UAT',
-    },
-    {
-        id: 3,
-        user: 'B Arun Bala Chockalingam',
-        date: '9 September 2024 at 08:16',
-        status: 'IN PROGRESS',
-        tag: 'IN DEVELOPMENT',
-    },
-    {
-        id: 4,
-        user: 'Automation for Jira',
-        date: '20 August 2024 at 04:32',
-        comment: 'Updated the code as per the configuration requirements',
-    },
-    {
-        id: 5,
-        user: 'Prashant Kumar Singh',
-        date: '16 August 2024 at 12:17',
-        description: 'Go through the Hangfire file clean-up job, take the full understanding of current flow, and make it configurable to pick locations and drop files conditionally.',
-    },
-];
-
-
-
-const ActivityLog = ({ colors }: any) => {
+const ActivityLog = ({ activities, colors, taskId }: any) => {
     const [activeTab, setActiveTab] = useState('History');
-
-    const [comments, setComments] = useState([{ comment: "Good job on the progress so far! Remember to focus on the key deliverables by next week.", author: "Alex Mentor", commentId: "Eqe23r", dateCreated: "01/02/2024 20:00:00" }]);
+    const [comments, setComments] = useState<Activity[]>([]);
     const [newComment, setNewComment] = useState("");
 
-    const handleAddComment = () => {
+    // Fetch comments from the backend
+    useEffect(() => {
+        const fetchComments = async () => {
+            try {
+                const response = await axiosTask.get(`/activity/comments/${taskId}`);
+                setComments(response.data); // Update the comments state with the fetched data
+            } catch (error) {
+                console.error("Error fetching comments:", error);
+            }
+        };
+
+        fetchComments();
+    }, [taskId]);
+
+    const handleAddComment = async () => {
         if (newComment.trim() !== "") {
-            const newCommentObject = {
-                comment: newComment,
-                author: "Current User", // Replace with dynamic user if needed
-                commentId: Math.random().toString(36).substr(2, 9), // Generate a unique ID
-                dateCreated: new Date().toLocaleString(), // Add a timestamp
-            };
-            setComments([...comments, newCommentObject]);
-            setNewComment("");
+            try {
+                // Make a POST request to add a comment
+                const response = await axiosTask.post(`/activity/comments/${taskId}`, {
+                    content: newComment,
+                });
+
+                // Update the local state with the new comment
+                const newActivity = response.data; // Assuming the response contains the new activity
+                setComments((prevActivities) => [...prevActivities, newActivity]);
+
+                // Clear the comment input
+                setNewComment("");
+            } catch (error) {
+                console.error("Error adding comment:", error);
+            }
         }
     };
 
@@ -78,18 +62,36 @@ const ActivityLog = ({ colors }: any) => {
                         </button>
                     ))}
                 </div>
-                <button className='text-black text-sm flex items-center justify-center text-gray-700/90'><span>Newest First</span> <FaSortAmountDown className='ml-2'/> </button>
+                <button className='text-black text-sm flex items-center justify-center text-gray-700/90'>
+                    <span>Newest First</span> <FaSortAmountDown className='ml-2' />
+                </button>
             </div>
 
             {/* Conditional Render */}
-            {activeTab === 'All' ?
-                (<div>
-                    <History colors={colors} historyData={historyData} />
-                    <Comments isAll={true} colors={colors} setNewComment={setNewComment} newComment={newComment} comments={comments} handleAddComment={handleAddComment} />
-                </div>) : activeTab === 'History' ? (
-                    <History colors={colors} historyData={historyData} />
-                ) : <Comments isAll={false} colors={colors} setNewComment={setNewComment} newComment={newComment} comments={comments} handleAddComment={handleAddComment} />
-            }
+            {activeTab === 'All' ? (
+                <div>
+                    <History colors={colors} historyData={activities} />
+                    <Comments
+                        isAll={true}
+                        colors={colors}
+                        setNewComment={setNewComment}
+                        newComment={newComment}
+                        comments={comments}
+                        handleAddComment={handleAddComment}
+                    />
+                </div>
+            ) : activeTab === 'History' ? (
+                <History colors={colors} historyData={activities} />
+            ) : (
+                <Comments
+                    isAll={false}
+                    colors={colors}
+                    setNewComment={setNewComment}
+                    newComment={newComment}
+                    comments={comments}
+                    handleAddComment={handleAddComment}
+                />
+            )}
         </div>
     );
 };

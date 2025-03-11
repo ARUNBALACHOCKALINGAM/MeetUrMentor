@@ -18,3 +18,25 @@ export interface Task {
     difficulty: string,
     status: string,
 };
+
+export type SingleTask = {
+  subTasks: Array<SingleTask>;
+  id: string;
+  _id?:string;
+  name: string;
+  description: string;
+  status: "Todo" | "InProgress" | "Completed";
+  title:string;
+  resources:any;
+  // Add other fields as needed
+};
+
+export type Activity = {
+  _id:string;
+  taskId:string;
+  username:string;
+  content:string;
+  userId:string;
+  type:string;
+  createdAt:string;
+}

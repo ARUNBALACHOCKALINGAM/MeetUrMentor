@@ -1,36 +1,48 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { UserState } from "../../abstraction/types/userData.types";
+import { useNavigate, useParams } from "react-router-dom";
+import { axiosTask } from "../../utils/axiosInstance";
+import { SingleTask } from "../../abstraction/types/tasks.types";
 
 export const TaskForm: React.FC = () => {
-  const userType = useSelector((state: UserState) => state.user.userType);
+  const user = useSelector((state: UserState) => state.user);
+  const { taskId } = useParams();
 
   const colors =
-    userType === "mentor"
+    user.userType === "mentor"
       ? {
-          bg: "bg-white",
-          border: "border-[#FFC400]",
-          text: "text-[#FF8C00]",
-          hoverBg: "hover:bg-[#FFF5E6]",
-          shadow: "hover:shadow-sm shadow-[#FFC400]",
-        }
+        bg: "bg-white",
+        border: "border-[#FFC400]",
+        text: "text-[#FF8C00]",
+        hoverBg: "hover:bg-[#FFF5E6]",
+        shadow: "hover:shadow-sm shadow-[#FFC400]",
+      }
       : {
-          bg: "bg-white",
-          border: "border-[#1D4ED8]",
-          text: "text-[#1D4ED8]",
-          hoverBg: "hover:bg-[#1D4ED8]",
-          shadow: "shadow-xs hover:shadow-[#1D4ED8]",
-        };
+        bg: "bg-white",
+        border: "border-[#1D4ED8]",
+        text: "text-[#1D4ED8]",
+        hoverBg: "hover:bg-[#1D4ED8]",
+        shadow: "shadow-xs hover:shadow-[#1D4ED8]",
+      };
 
   const [formData, setFormData] = useState({
-    title: "",
+    name: "",
     description: "",
+    difficulty: "Medium" as "Easy" | "Medium" | "Hard", // Default to Medium
+    points: 5, // Default to 5
     attachments: [] as File[],
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+    // Clear errors when user starts typing
+    if (errors[name]) {
+      setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,21 +50,94 @@ export const TaskForm: React.FC = () => {
     setFormData({ ...formData, attachments: files });
   };
 
-  const handleSave = () => {
-    console.log("Task saved:", formData);
+  const validateForm = () => {
+    const newErrors: { [key: string]: string } = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = "Task title is required";
+    }
+    if (!formData.description.trim()) {
+      newErrors.description = "Description is required";
+    }
+    if (formData.points < 1 || formData.points > 10) {
+      newErrors.points = "Points must be between 1 and 10";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0; // Return true if no errors
+  };
+
+  const navigate = useNavigate()
+
+  const handleSave = async () => {
+    if (!validateForm()) {
+      return; // Stop if validation fails
+    }
+
+    let requestData = new FormData();
+
+    // Append each file to FormData
+    formData.attachments.forEach((file, index) => {
+      requestData.append(`resources`, file);
+    });
+
+    requestData = {...formData,...requestData}
+
+    try {
+      const response = await axiosTask.post("/tasks/create", {
+        ...requestData,
+        track: user.track,
+        parentTaskId: taskId,
+      });
+      if (response.status == 201) {
+        navigate(`/task/${taskId}`)
+      }
+    } catch (error) {
+      console.error("Error saving task:", error);
+    }
   };
 
   const handleDiscard = () => {
     setFormData({
-      title: "",
+      name: "",
       description: "",
+      difficulty: "Medium",
+      points: 5,
       attachments: [],
     });
+    setErrors({});
   };
+
+  const [task, setTask] = useState<SingleTask>({
+    name: "",
+    id: "",
+    description: "",
+    status: "Todo",
+    title: "",
+    subTasks: [],
+    resources: [],
+  });
+
+  useEffect(() => {
+    const fetchTask = async () => {
+      try {
+        const response = await axiosTask.get(`/tasks/${taskId}`);
+        setTask(response.data);
+      } catch (error) {
+        console.error("Error fetching task:", error);
+      }
+    };
+
+    if (taskId) {
+      fetchTask();
+    }
+  }, [taskId]);
 
   return (
     <div className={`p-6 mx-auto h-full overflow-y-scroll rounded-lg text-left bg-gray-50 shadow-lg ${colors.border}`}>
-      <h2 className={`text-xl font-semibold ${colors.text}`}>Create a New Task</h2>
+      <h2 className={`text-xl font-semibold ${colors.text}`}>
+        Create a {taskId ? "Sub-" : "New-"}Task {taskId && `for ${task.name}`}
+      </h2>
       <hr className="my-4 border-gray-300" />
       <div className="mt-4 space-y-4">
         {/* Title Input */}
@@ -60,12 +145,14 @@ export const TaskForm: React.FC = () => {
           <label className="block text-sm font-medium text-gray-700">Task Title</label>
           <input
             type="text"
-            name="title"
-            value={formData.title}
+            name="name"
+            value={formData.name}
             onChange={handleInputChange}
-            className="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-mentorPrimary focus:border-mentorPrimary"
+            className={`mt-1 w-full border ${errors.name ? "border-red-500" : "border-gray-300"
+              } rounded-lg px-3 py-2 focus:ring-2 focus:ring-mentorPrimary focus:border-mentorPrimary`}
             placeholder="Enter task title"
           />
+          {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
         </div>
 
         {/* Description Textarea */}
@@ -75,10 +162,43 @@ export const TaskForm: React.FC = () => {
             name="description"
             value={formData.description}
             onChange={handleInputChange}
-            className="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-mentorPrimary focus:border-mentorPrimary"
+            className={`mt-1 w-full border ${errors.description ? "border-red-500" : "border-gray-300"
+              } rounded-lg px-3 py-2 focus:ring-2 focus:ring-mentorPrimary focus:border-mentorPrimary`}
             placeholder="Enter task description"
             rows={4}
           />
+          {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
+        </div>
+
+        {/* Difficulty Dropdown */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Difficulty</label>
+          <select
+            name="difficulty"
+            value={formData.difficulty}
+            onChange={handleInputChange}
+            className="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-mentorPrimary focus:border-mentorPrimary"
+          >
+            <option value="Easy">Easy</option>
+            <option value="Medium">Medium</option>
+            <option value="Hard">Hard</option>
+          </select>
+        </div>
+
+        {/* Points Input */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Points (1-10)</label>
+          <input
+            type="number"
+            name="points"
+            value={formData.points}
+            onChange={handleInputChange}
+            min={1}
+            max={10}
+            className={`mt-1 w-full border ${errors.points ? "border-red-500" : "border-gray-300"
+              } rounded-lg px-3 py-2 focus:ring-2 focus:ring-mentorPrimary focus:border-mentorPrimary`}
+          />
+          {errors.points && <p className="text-red-500 text-sm mt-1">{errors.points}</p>}
         </div>
 
         {/* Attachments Input */}
@@ -105,9 +225,8 @@ export const TaskForm: React.FC = () => {
               {formData.attachments.map((file, index) => (
                 <div
                   key={index}
-                  className="border overflow-hidden rounded-lg shadow-sm bg-white	 flex flex-col items-center justify-center text-center space-y-2"
+                  className="border overflow-hidden rounded-lg shadow-sm bg-white flex flex-col items-center justify-center text-center space-y-2"
                 >
-            
                   {file.type.startsWith("image/") ? (
                     <img
                       src={URL.createObjectURL(file)}
@@ -123,30 +242,31 @@ export const TaskForm: React.FC = () => {
                   ) : (
                     <div className="text-sm text-gray-500">File Preview Not Available</div>
                   )}
-                  <span className="text-sm bg-none w-full text-left ml-2 px-2 font-medium text-gray-700 truncate">{file.name}</span>
+                  <span className="text-sm bg-none w-full text-left ml-2 px-2 font-medium text-gray-700 truncate">
+                    {file.name}
+                  </span>
                 </div>
               ))}
             </div>
           )}
         </div>
-
-      
       </div>
-        {/* Action Buttons */}
-        <div className="flex space-x-4 mt-6">
-          <button
-            onClick={handleSave}
-            className={`px-4 py-2 rounded-lg text-white bg-mentorPrimary/75 hover:mentorPrimary focus:ring-2 focus:ring-mentorPrimary focus:ring-offset-2 ${colors.shadow}`}
-          >
-            Save
-          </button>
-          <button
-            onClick={handleDiscard}
-            className="px-4 py-2 rounded-lg text-white bg-red-600 hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-          >
-            Discard
-          </button>
-        </div>
+
+      {/* Action Buttons */}
+      <div className="flex space-x-4 mt-6">
+        <button
+          onClick={handleSave}
+          className={`px-4 py-2 rounded-lg text-white bg-mentorPrimary/75 hover:bg-mentorPrimary focus:ring-2 focus:ring-mentorPrimary focus:ring-offset-2 ${colors.shadow}`}
+        >
+          Save
+        </button>
+        <button
+          onClick={handleDiscard}
+          className="px-4 py-2 rounded-lg text-white bg-red-600 hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+        >
+          Discard
+        </button>
+      </div>
     </div>
   );
 };

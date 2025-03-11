@@ -52,8 +52,13 @@ const pagesData: routerType[] = [
   },
   {
     path: "addtask",
-    element: <Home children={<TaskForm/>}/>,
+    element: <Home children={<TaskForm />}/>,
     title: "addtask",
+  },
+  {
+    path: "addtask/:taskId",
+    element: <Home children={<TaskForm />}/>,
+    title: "addtask/:taskId",
   },
   {
     path: "progress",
