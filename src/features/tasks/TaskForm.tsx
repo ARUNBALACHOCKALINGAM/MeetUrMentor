@@ -8,106 +8,35 @@ import { SingleTask } from "../../abstraction/types/tasks.types";
 export const TaskForm: React.FC = () => {
   const user = useSelector((state: UserState) => state.user);
   const { taskId } = useParams();
+  const navigate = useNavigate();
 
   const colors =
     user.userType === "mentor"
       ? {
-        bg: "bg-white",
-        border: "border-[#FFC400]",
-        text: "text-[#FF8C00]",
-        hoverBg: "hover:bg-[#FFF5E6]",
-        shadow: "hover:shadow-sm shadow-[#FFC400]",
-      }
+          bg: "bg-white",
+          border: "border-[#FFC400]",
+          text: "text-[#FF8C00]",
+          hoverBg: "hover:bg-[#FFF5E6]",
+          shadow: "hover:shadow-sm shadow-[#FFC400]",
+        }
       : {
-        bg: "bg-white",
-        border: "border-[#1D4ED8]",
-        text: "text-[#1D4ED8]",
-        hoverBg: "hover:bg-[#1D4ED8]",
-        shadow: "shadow-xs hover:shadow-[#1D4ED8]",
-      };
+          bg: "bg-white",
+          border: "border-[#1D4ED8]",
+          text: "text-[#1D4ED8]",
+          hoverBg: "hover:bg-[#1D4ED8]",
+          shadow: "shadow-xs hover:shadow-[#1D4ED8]",
+        };
 
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    difficulty: "Medium" as "Easy" | "Medium" | "Hard", // Default to Medium
-    points: 5, // Default to 5
+    difficulty: "Medium" as "Easy" | "Medium" | "Hard",
+    points: 5,
     attachments: [] as File[],
   });
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-    // Clear errors when user starts typing
-    if (errors[name]) {
-      setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
-    }
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files ? Array.from(e.target.files) : [];
-    setFormData({ ...formData, attachments: files });
-  };
-
-  const validateForm = () => {
-    const newErrors: { [key: string]: string } = {};
-
-    if (!formData.name.trim()) {
-      newErrors.name = "Task title is required";
-    }
-    if (!formData.description.trim()) {
-      newErrors.description = "Description is required";
-    }
-    if (formData.points < 1 || formData.points > 10) {
-      newErrors.points = "Points must be between 1 and 10";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0; // Return true if no errors
-  };
-
-  const navigate = useNavigate()
-
-  const handleSave = async () => {
-    if (!validateForm()) {
-      return; // Stop if validation fails
-    }
-
-    let requestData = new FormData();
-
-    // Append each file to FormData
-    formData.attachments.forEach((file, index) => {
-      requestData.append(`resources`, file);
-    });
-
-    requestData = {...formData,...requestData}
-
-    try {
-      const response = await axiosTask.post("/tasks/create", {
-        ...requestData,
-        track: user.track,
-        parentTaskId: taskId,
-      });
-      if (response.status == 201) {
-        navigate(`/task/${taskId}`)
-      }
-    } catch (error) {
-      console.error("Error saving task:", error);
-    }
-  };
-
-  const handleDiscard = () => {
-    setFormData({
-      name: "",
-      description: "",
-      difficulty: "Medium",
-      points: 5,
-      attachments: [],
-    });
-    setErrors({});
-  };
-
+  const [loading, setLoading] = useState(false);
   const [task, setTask] = useState<SingleTask>({
     name: "",
     id: "",
@@ -132,6 +61,88 @@ export const TaskForm: React.FC = () => {
       fetchTask();
     }
   }, [taskId]);
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    if (errors[name]) {
+      setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files ? Array.from(e.target.files) : [];
+    setFormData({ ...formData, attachments: files });
+  };
+
+  const validateForm = () => {
+    const newErrors: { [key: string]: string } = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = "Task title is required";
+    }
+    if (!formData.description.trim()) {
+      newErrors.description = "Description is required";
+    }
+    if (formData.points < 1 || formData.points > 10) {
+      newErrors.points = "Points must be between 1 and 10";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSave = async () => {
+    if (!validateForm()) {
+      return;
+    }
+
+    setLoading(true);
+
+    const requestData = new FormData();
+    requestData.append("name", formData.name);
+    requestData.append("description", formData.description);
+    requestData.append("difficulty", formData.difficulty);
+    requestData.append("points", formData.points.toString());
+    requestData.append("track", user.track);
+    if (taskId) {
+      requestData.append("parentTaskId", taskId);
+    }
+
+    formData.attachments.forEach((file) => {
+      requestData.append("resources", file);
+    });
+
+    try {
+      const response = await axiosTask.post("/tasks/create", requestData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      if (response.status === 201) {
+        navigate(`/task/${taskId || response.data._id}`);
+      }
+    } catch (error) {
+      console.error("Error saving task:", error);
+      setErrors({ submit: "Failed to save task. Please try again." });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDiscard = () => {
+    setFormData({
+      name: "",
+      description: "",
+      difficulty: "Medium",
+      points: 5,
+      attachments: [],
+    });
+    setErrors({});
+  };
 
   return (
     <div className={`p-6 mx-auto h-full overflow-y-scroll rounded-lg text-left bg-gray-50 shadow-lg ${colors.border}`}>
@@ -256,9 +267,10 @@ export const TaskForm: React.FC = () => {
       <div className="flex space-x-4 mt-6">
         <button
           onClick={handleSave}
+          disabled={loading}
           className={`px-4 py-2 rounded-lg text-white bg-mentorPrimary/75 hover:bg-mentorPrimary focus:ring-2 focus:ring-mentorPrimary focus:ring-offset-2 ${colors.shadow}`}
         >
-          Save
+          {"Save"}
         </button>
         <button
           onClick={handleDiscard}
@@ -267,6 +279,7 @@ export const TaskForm: React.FC = () => {
           Discard
         </button>
       </div>
+      {errors.submit && <p className="text-red-500 text-sm mt-2">{errors.submit}</p>}
     </div>
   );
 };

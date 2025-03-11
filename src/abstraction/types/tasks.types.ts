@@ -28,6 +28,9 @@ export type SingleTask = {
   status: "Todo" | "InProgress" | "Completed";
   title:string;
   resources:any;
+  points: number;
+  difficulty: "Easy" | "Medium" | "Hard";
+  type:string;
   // Add other fields as needed
 };
 

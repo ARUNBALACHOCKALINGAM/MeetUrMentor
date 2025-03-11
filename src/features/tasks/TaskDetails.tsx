@@ -20,11 +20,13 @@ export const TaskDetails = () => {
         status: "Todo",
         title: "",
         subTasks: [],
-        resources:[]
+        resources: [],
+        points: 5,
+        difficulty: "Medium",
+        type: "default"
     });
 
     const [activities, setActivities] = useState<Activity[]>([]);
-    const [newComment, setNewComment] = useState("");
     const [attachments, setAttachments] = useState<File[]>([]);
 
     const { taskId } = useParams();
@@ -34,6 +36,12 @@ export const TaskDetails = () => {
             try {
                 const response = await axiosTask.get(`/tasks/${taskId}`);
                 setTask(response.data);
+
+                // Convert existing resources to File objects for the attachments state
+                const existingFiles = response.data.resources.map((resource: any) => {
+                    return new File([resource.data], resource.name, { type: resource.type });
+                });
+                setAttachments(existingFiles);
             } catch (error) {
                 console.error("Error fetching task:", error);
             }
@@ -69,31 +77,50 @@ export const TaskDetails = () => {
 
     const handleEdit = async () => {
         setIsEditing((prev) => !prev);
-        try {
-            const response = await axiosTask.put(`/tasks/update/${taskId}`, task);
-            console.log(response);
-        } catch (error) {
-            console.error("Error updating task:", error);
+        if (isEditing) {
+            try {
+                const formData = new FormData();
+
+                // Append task fields to the form data
+                formData.append('name', task.name);
+                formData.append('description', task.description);
+                formData.append('difficulty', task.difficulty);
+                formData.append('points', task.points.toString());
+                formData.append('type', task.type);
+
+                // Append files to the form data
+                attachments.forEach((file) => {
+                    formData.append('resources', file);
+                });
+
+                const response = await axiosTask.put(`/tasks/update/${taskId}`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data', // Required for file uploads
+                    },
+                });
+                console.log(response);
+            } catch (error) {
+                console.error("Error updating task:", error);
+            }
         }
     };
 
     const colors =
         userType === "mentor"
             ? {
-                  bg: "bg-white",
-                  border: "border-[#FFC400]",
-                  text: "text-black",
-                  hoverBg: "hover:bg-[#FFF5E6]",
-                  shadow: "hover:shadow-sm shadow-[#FFC400]",
-              }
+                bg: "bg-white",
+                border: "border-[#FFC400]",
+                text: "text-black",
+                hoverBg: "hover:bg-[#FFF5E6]",
+                shadow: "hover:shadow-sm shadow-[#FFC400]",
+            }
             : {
-                  bg: "bg-white",
-                  border: "border-[#1D4ED8]",
-                  text: "text-black",
-                  hoverBg: "hover:bg-[#1D4ED8]",
-                  shadow: "shadow-xs hover:shadow-[#1D4ED8]",
-              };
-
+                bg: "bg-white",
+                border: "border-[#1D4ED8]",
+                text: "text-black",
+                hoverBg: "hover:bg-[#1D4ED8]",
+                shadow: "shadow-xs hover:shadow-[#1D4ED8]",
+            };
 
     const onUpdateStatus = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         const newStatus = e.target.value as "Todo" | "InProgress" | "Completed";
@@ -110,10 +137,9 @@ export const TaskDetails = () => {
         }
     };
 
-    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files ? Array.from(e.target.files) : [];
-        
-        setAttachments([...attachments, ...files]);
+        setAttachments((prevAttachments) => [...prevAttachments, ...files]);
     };
 
     return (
@@ -183,7 +209,12 @@ export const TaskDetails = () => {
             <hr className="my-4 border-gray-100" />
 
             {/* Attachments Section */}
-            <Attachments colors={colors} isEditing={isEditing} handleFileUpload={handleFileUpload} attachments={attachments} />
+            <Attachments
+                colors={colors}
+                isEditing={isEditing}
+                handleFileUpload={handleFileUpload}
+                attachments={attachments}
+            />
 
             {/* Sub-issues */}
             <SubTask parentTask={task} subTasks={task.subTasks} onDeleteSubTask={onDeleteSubTask} />
