@@ -42,9 +42,11 @@ export const TaskForm: React.FC = () => {
     id: "",
     description: "",
     status: "Todo",
-    title: "",
     subTasks: [],
     resources: [],
+    points:5,
+    difficulty:"Medium",
+    type:"mentor"
   });
 
   useEffect(() => {

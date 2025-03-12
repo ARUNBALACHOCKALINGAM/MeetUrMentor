@@ -37,12 +37,12 @@ export const SubTask = ({ subTasks, parentTask, onDeleteSubTask }: SubTaskProps)
         navigate(`/addTask/${parentTask._id}`);
     };
 
-    const onDeleteTask = async (taskId: string) => {
+    const onDeleteTask = async (taskId?: string) => {
         setIsDeleting(true);
         try {
             await axiosTask.delete(`/tasks/${taskId}/${parentTask._id}`);
             // Notify the parent component to remove the deleted task from the UI
-            onDeleteSubTask(taskId);
+            onDeleteSubTask(taskId || "");
             console.log("Task deleted successfully");
         } catch (error) {
             console.error("Error deleting task:", error);

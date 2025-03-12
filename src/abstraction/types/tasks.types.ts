@@ -26,7 +26,6 @@ export type SingleTask = {
   name: string;
   description: string;
   status: "Todo" | "InProgress" | "Completed";
-  title:string;
   resources:any;
   points: number;
   difficulty: "Easy" | "Medium" | "Hard";
@@ -43,3 +42,13 @@ export type Activity = {
   type:string;
   createdAt:string;
 }
+
+
+export type Attachment = {
+  name: string;
+  size: number;
+  type: string;
+  _id:string
+  data?:File;
+  url?: any;
+};
