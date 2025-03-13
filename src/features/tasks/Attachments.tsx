@@ -73,10 +73,10 @@ export const Attachments = ({
               <div key={file._id} className="border rounded-lg shadow-sm p-2 relative">
                 <p className="text-xs text-gray-700 truncate mt-1">{file.name.split("-")[file.name.split("-").length - 1]}</p>
                 <p className="text-xs text-gray-500">
-                  Size: {fileDetails[file._id]?.size ? `${(fileDetails[file._id].size / 1024).toFixed(2)} KB` : 'Loading...'}
+                  Size: {fileDetails[file._id]?.metadata.size ? `${(fileDetails[file._id].size / 1024).toFixed(2)} KB` : 'Loading...'}
                 </p>
                 <p className="text-xs text-gray-500">
-                  Type: {fileDetails[file._id]?.mimetype || 'Loading...'}
+                  Type: {fileDetails[file._id]?.metadata.mimetype || 'Loading...'}
                 </p>
 
                 {isEditing ? (
